@@ -41,6 +41,27 @@ Dependencies flow top-down. Foundation depends on nothing. Core Systems depend o
 
 ---
 
+## Implementation Status
+
+| WP | Title | Status | Branch | Notes |
+|----|-------|--------|--------|-------|
+| WP-1 | SDF UI Shader | ✅ Implemented | 004-uisystem-foundation | `SDFRect.shader` + `SDFRectGraphic.cs`; per-elevation material variants via `ElevationMaterialSetup.cs` |
+| WP-2 | Theme System | ✅ Implemented | 004-uisystem-foundation | `ThemeData.cs` + `ThemeManager.cs`; default assets auto-created by `DefaultAssetsSetup.cs` |
+| WP-3 | Typography | ✅ Implemented | 004-uisystem-foundation | `TypographyConfig.cs` + `TypographyResolver.cs` + `IThemeSubscriber`; default asset auto-created |
+| WP-4 | State Layer | 🔲 Planned | 005-uisystem-button | UV2.x/y reserved for overlay opacity + ripple radius |
+| WP-5 | Button | 🔲 Planned | 005-uisystem-button | Depends on WP-4 |
+| WP-6 | Card | 🔲 Planned | 006-uisystem-components | — |
+| WP-7 | Toggle | 🔲 Planned | 006-uisystem-components | Thumb as separate GameObject |
+| WP-8 | TextField | 🔲 Planned | 006-uisystem-components | — |
+| WP-9 | Dialog/Snackbar | 🔲 Planned | 006-uisystem-components | — |
+| WP-10 | Editor Wizard | 🔲 Planned | 005+006 | Partial per phase |
+
+### Architecture Decision: Per-Elevation Material Variants
+
+Shadow and outline are **material-level** properties (SetFloat/SetVector on Material). Because `CanvasRenderer` does not support `MaterialPropertyBlock`, per-element shadow customization would break draw-call batching. The chosen architecture uses **6 shared elevation materials** (`SDFRectMat_Elev0..5`) — all elements at the same elevation share one material and batch into a single draw call. Fill color and corner radii are per-vertex (UV0.zw, UV1.xy) and do not break batching.
+
+---
+
 ## Work Packages
 
 ### WP-1: Foundation — SDF UI Shader
