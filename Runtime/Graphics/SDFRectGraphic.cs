@@ -83,7 +83,7 @@ namespace mehmetsrl.UISystem
         public int ElevationLevel
         {
             get => _elevationLevel;
-            set { _elevationLevel = Mathf.Clamp(value, 0, 5); SetVerticesDirty(); UpdateMaterialProperties(); }
+            set { _elevationLevel = Mathf.Clamp(value, 0, 5); SetVerticesDirty(); SetMaterialDirty(); UpdateMaterialProperties(); }
         }
 
         public bool OutlineEnabled
@@ -117,25 +117,31 @@ namespace mehmetsrl.UISystem
         }
 
         // ------------------------------------------------------------------ //
-        //  Material                                                            //
+        //  Material — shared per elevation level (1 draw call per level)      //
         // ------------------------------------------------------------------ //
-        private Material _materialInstance;
+        private static readonly Material[] s_ElevationMaterials = new Material[6];
+        private static Shader s_Shader;
+
+        private static Material GetOrCreateElevationMaterial(int level)
+        {
+            level = Mathf.Clamp(level, 0, 5);
+            if (s_ElevationMaterials[level] != null) return s_ElevationMaterials[level];
+
+            if (s_Shader == null) s_Shader = Shader.Find("UISystem/SDFRect");
+            if (s_Shader == null)
+            {
+                Debug.LogError("[UISystem] SDFRect shader not found. Make sure Shaders/SDFRect.shader is included in the build.");
+                return null;
+            }
+
+            var mat = new Material(s_Shader) { name = $"SDFRectMat_Elev{level}_Runtime" };
+            mat.SetFloat(ShadowEnabledId, level > 0 ? 1f : 0f);
+            s_ElevationMaterials[level] = mat;
+            return mat;
+        }
 
         public override Material defaultMaterial
-        {
-            get
-            {
-                if (_materialInstance != null) return _materialInstance;
-                var shader = Shader.Find("UISystem/SDFRect");
-                if (shader == null)
-                {
-                    Debug.LogError("[UISystem] SDFRect shader not found. Make sure it is in a Resources folder or included in the build.");
-                    return base.defaultMaterial;
-                }
-                _materialInstance = new Material(shader) { name = "SDFRectMat_Instance" };
-                return _materialInstance;
-            }
-        }
+            => GetOrCreateElevationMaterial(_elevationLevel) ?? base.defaultMaterial;
 
         // ------------------------------------------------------------------ //
         //  Lifecycle                                                           //
@@ -147,28 +153,27 @@ namespace mehmetsrl.UISystem
             UpdateMaterialProperties();
         }
 
+        private void Start()
+        {
+            // OnEnable may run before ThemeManager.Awake sets Instance.
+            // Start() is guaranteed to run after all Awake() calls, so re-subscribe here.
+            SubscribeToThemeManager();
+            SetVerticesDirty();
+            UpdateMaterialProperties();
+        }
+
         protected override void OnDisable()
         {
             base.OnDisable();
             UnsubscribeFromThemeManager();
         }
 
-        protected override void OnDestroy()
-        {
-            base.OnDestroy();
-            if (_materialInstance != null)
-            {
-                if (Application.isPlaying)
-                    Destroy(_materialInstance);
-                else
-                    DestroyImmediate(_materialInstance);
-            }
-        }
-
         private void SubscribeToThemeManager()
         {
-            if (Core.ThemeManager.Instance != null)
-                Core.ThemeManager.Instance.OnThemeChanged += OnThemeChanged;
+            if (Core.ThemeManager.Instance == null) return;
+            // Unsubscribe first to prevent double-subscription if called from both OnEnable and Start.
+            Core.ThemeManager.Instance.OnThemeChanged -= OnThemeChanged;
+            Core.ThemeManager.Instance.OnThemeChanged += OnThemeChanged;
         }
 
         private void UnsubscribeFromThemeManager()
@@ -182,7 +187,7 @@ namespace mehmetsrl.UISystem
         /// <inheritdoc/>
         public void OnThemeApplied(ThemeData theme)
         {
-            SetVerticesDirty();
+            SetAllDirty();
             UpdateMaterialProperties();
         }
 

@@ -14,37 +14,37 @@ MonoBehaviour:
   m_EditorClassIdentifier: mehmetsrl.UISystem::mehmetsrl.UISystem.TypographyConfig
   _display:
     FontAsset: {fileID: 11400000, guid: 8f95e244ca5af4035aa15ce6652f47cd, type: 2}
-    FontSize: 96
+    FontSize: 36
     FontStyle: 0
     LineSpacing: 0
     CharSpacing: 0
   _headline:
     FontAsset: {fileID: 11400000, guid: 8f95e244ca5af4035aa15ce6652f47cd, type: 2}
-    FontSize: 73
+    FontSize: 28
     FontStyle: 0
     LineSpacing: 0
     CharSpacing: 0
   _title:
     FontAsset: {fileID: 11400000, guid: ef6bdc01dfea74a44bd35de2245d6aec, type: 2}
-    FontSize: 58
+    FontSize: 22
     FontStyle: 0
     LineSpacing: 0
     CharSpacing: 0
   _body:
     FontAsset: {fileID: 11400000, guid: 8f95e244ca5af4035aa15ce6652f47cd, type: 2}
-    FontSize: 42
+    FontSize: 16
     FontStyle: 0
     LineSpacing: 0
     CharSpacing: 0
   _label:
     FontAsset: {fileID: 11400000, guid: ef6bdc01dfea74a44bd35de2245d6aec, type: 2}
-    FontSize: 37
+    FontSize: 14
     FontStyle: 0
     LineSpacing: 0
     CharSpacing: 0
   _caption:
     FontAsset: {fileID: 11400000, guid: 8f95e244ca5af4035aa15ce6652f47cd, type: 2}
-    FontSize: 32
+    FontSize: 12
     FontStyle: 0
     LineSpacing: 0
     CharSpacing: 0
