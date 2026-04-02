@@ -145,6 +145,30 @@ namespace mehmetsrl.UISystem.Core
         }
 
         // ------------------------------------------------------------------ //
+        //  Tonal Elevation Overlay (persistent primary-tint for dark mode)    //
+        // ------------------------------------------------------------------ //
+        private float _tonalOverlayOpacity;
+        private Color _tonalOverlayColor = Color.clear;
+
+        /// <summary>
+        /// Persistent primary-color tint opacity (0–1) for M3 tonal elevation.
+        /// Independent of the interaction state overlay — not reset on idle.
+        /// Typically 0.05 for elevation level 1 (Elevated card/button in dark mode).
+        /// </summary>
+        public float TonalOverlayOpacity
+        {
+            get => _tonalOverlayOpacity;
+            set { _tonalOverlayOpacity = Mathf.Clamp01(value); MarkDirtyRepaint(); }
+        }
+
+        /// <summary>Tonal overlay tint color. Use M3 primary for each theme.</summary>
+        public Color TonalOverlayColor
+        {
+            get => _tonalOverlayColor;
+            set { _tonalOverlayColor = value; MarkDirtyRepaint(); }
+        }
+
+        // ------------------------------------------------------------------ //
         //  State Overlay (driven by WP-4 StateLayerController)                //
         // ------------------------------------------------------------------ //
         private float _stateOverlayOpacity;
@@ -248,6 +272,16 @@ namespace mehmetsrl.UISystem.Core
                 painter.lineWidth   = _outlineThickness;
                 DrawRoundedRect(painter, ShrinkRect(rect, _outlineThickness * 0.5f), tl, tr, br, bl);
                 painter.Stroke();
+            }
+
+            // --- Tonal elevation overlay ---
+            if (_tonalOverlayOpacity > 0f)
+            {
+                var tonalColor = _tonalOverlayColor;
+                tonalColor.a   = _tonalOverlayOpacity;
+                painter.fillColor = tonalColor;
+                DrawRoundedRect(painter, rect, tl, tr, br, bl);
+                painter.Fill(FillRule.OddEven);
             }
 
             // --- State overlay ---

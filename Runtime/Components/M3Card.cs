@@ -187,12 +187,20 @@ namespace mehmetsrl.UISystem.Components
                     _root.ShadowOffsetY = ElevatedShadowOffsetY;
                     _root.ShadowColor   = new Color(0f, 0f, 0f, 0.22f);
                     _root.OutlineThickness = 0f;
+                    // M3 tonal elevation — primary tint at level-1 opacity (5%).
+                    // Makes Elevated cards visible in dark mode where surface-container-low
+                    // is only 2 units above background.
+                    // Primary color is hardcoded to M3 baseline dark primary (#D0BCFF).
+                    // A future improvement could read from ThemeManager for per-theme accuracy.
+                    _root.TonalOverlayColor   = new Color(0.816f, 0.737f, 1f); // #D0BCFF
+                    _root.TonalOverlayOpacity = 0.05f;
                     break;
 
                 case CardVariant.Filled:
                     _root.ShadowBlur    = 0f;
                     _root.ShadowOffsetY = 0f;
                     _root.OutlineThickness = 0f;
+                    _root.TonalOverlayOpacity = 0f;
                     break;
 
                 case CardVariant.Outlined:
@@ -201,6 +209,7 @@ namespace mehmetsrl.UISystem.Components
                     _root.OutlineThickness = 1f;
                     // M3 OutlineVariant baseline light: #CAC4D0
                     _root.OutlineColor = new Color(0.792f, 0.769f, 0.816f, 1f);
+                    _root.TonalOverlayOpacity = 0f;
                     break;
             }
 

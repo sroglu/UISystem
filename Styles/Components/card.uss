@@ -5,9 +5,8 @@
  * All colors via var(--m3-*) tokens. Corner radius is set in C# (M3Card.cs)
  * because Unity renders border-radius: 9999px as an ellipse.
  *
- * Intentional deviations from M3 spec:
- *   - No tonal surface overlay on Elevated variant (requires Painter2D composite,
- *     deferred — visual result close enough without it for game use cases).
+ * Tonal elevation overlay (M3 dark theme primary tint) is applied in C# via
+ * SDFRectElement.TonalOverlayOpacity/Color — see M3Card.ApplyVariant().
  */
 
 /* ============================================================ */
