@@ -18,12 +18,6 @@
 
     <ui:VisualElement name="root" class="showcase-root">
 
-        <!-- M3 Reference image — top-right corner, fixed (outside scroll) -->
-        <ui:VisualElement name="m3-reference" class="m3-reference-panel">
-            <ui:Label text="M3 Spec Reference" class="m3-caption m3-reference-label" />
-            <ui:VisualElement name="m3-ref-image" class="m3-reference-image" />
-        </ui:VisualElement>
-
         <ui:ScrollView class="showcase-scroll"
                        mode="Vertical"
                        horizontal-scroller-visibility="Hidden"
@@ -106,6 +100,12 @@
 
             </ui:VisualElement>
         </ui:ScrollView>
+
+        <!-- M3 Reference link — declared AFTER ScrollView so it renders on top and receives clicks.
+             UI Toolkit hit-tests in reverse child order: later children win. -->
+        <ui:VisualElement name="m3-reference" class="m3-reference-panel">
+            <ui:Label text="M3 Buttons Spec →" class="m3-caption m3-reference-label" />
+        </ui:VisualElement>
 
     </ui:VisualElement>
 
