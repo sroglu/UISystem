@@ -23,12 +23,20 @@ namespace mehmetsrl.UISystem.Components
             // Register panel with ThemeManager for light/dark switching
             ThemeManager.Instance?.RegisterPanel(doc);
 
-            // M3 reference link — click opens spec in browser
+            // M3 reference link — pointer-up on label opens spec in browser.
+            // PointerUpEvent is used instead of ClickEvent because ClickEvent synthesis
+            // can be blocked by the sibling ScrollView's touch drag handling.
             var refPanel = root.Q<VisualElement>("m3-reference");
             if (refPanel != null)
             {
                 refPanel.pickingMode = PickingMode.Position;
-                refPanel.RegisterCallback<ClickEvent>(_ => Application.OpenURL(M3CardsUrl));
+                var refLabel = refPanel.Q<Label>();
+                var target = refLabel ?? (VisualElement)refPanel;
+                target.RegisterCallback<PointerUpEvent>(_ =>
+                {
+                    Debug.Log("[CardDemo] M3 reference link clicked");
+                    Application.OpenURL(M3CardsUrl);
+                });
             }
 
             // Theme switch button
