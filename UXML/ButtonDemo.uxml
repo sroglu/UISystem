@@ -8,7 +8,7 @@
     <Style src="../Styles/typography.uss" />
     <Style src="../Styles/state-layer.uss" />
     <Style src="../Styles/Components/button.uss" />
-    <Style src="../Styles/Components/foundation-demo.uss" />
+    <Style src="../Styles/Components/showcase.uss" />
 
     <!--
         ButtonDemo.uxml — M3Button Demo Scene
@@ -16,79 +16,96 @@
         ThemeManager swaps PanelSettings.themeUss between light.uss and dark.uss.
     -->
 
-    <ui:VisualElement name="root" class="foundation-root">
+    <ui:VisualElement name="root" class="showcase-root">
 
-        <ui:Label text="M3 Button Demo" class="m3-headline foundation-page-title" />
-
-        <!-- M3 Reference image — bottom-right corner -->
+        <!-- M3 Reference image — top-right corner, fixed (outside scroll) -->
         <ui:VisualElement name="m3-reference" class="m3-reference-panel">
             <ui:Label text="M3 Spec Reference" class="m3-caption m3-reference-label" />
             <ui:VisualElement name="m3-ref-image" class="m3-reference-image" />
         </ui:VisualElement>
 
-        <!-- ================================================================ -->
-        <!-- Row 1: Standard Buttons                                          -->
-        <!-- ================================================================ -->
-        <ui:Label text="Button Variants" class="m3-title foundation-section-header" />
+        <ui:ScrollView class="showcase-scroll"
+                       mode="Vertical"
+                       horizontal-scroller-visibility="Hidden"
+                       vertical-scroller-visibility="Auto"
+                       touch-scroll-type="Clamped"
+                       scroll-deceleration-rate="0.135">
 
-        <ui:VisualElement name="button-row" style="flex-direction: row; flex-wrap: wrap; margin-bottom: 16px;">
-            <components:M3Button name="btn-filled"   variant="Filled"   text="Filled"   style="margin: 8px;" />
-            <components:M3Button name="btn-outlined" variant="Outlined" text="Outlined" style="margin: 8px;" />
-            <components:M3Button name="btn-text"     variant="Text"     text="Text"     style="margin: 8px;" />
-            <components:M3Button name="btn-tonal"    variant="Tonal"    text="Tonal"    style="margin: 8px;" />
-        </ui:VisualElement>
+            <ui:VisualElement class="showcase-content">
 
-        <!-- ================================================================ -->
-        <!-- Row 2: Disabled State                                            -->
-        <!-- ================================================================ -->
-        <ui:Label text="Disabled State" class="m3-title foundation-section-header" />
+                <ui:Label text="M3 Button Demo" class="m3-headline showcase-page-title" />
 
-        <ui:VisualElement name="disabled-row" style="flex-direction: row; flex-wrap: wrap; margin-bottom: 16px;">
-            <components:M3Button name="btn-filled-dis"   variant="Filled"   text="Filled"   disabled="true" style="margin: 8px;" />
-            <components:M3Button name="btn-outlined-dis" variant="Outlined" text="Outlined" disabled="true" style="margin: 8px;" />
-            <components:M3Button name="btn-text-dis"     variant="Text"     text="Text"     disabled="true" style="margin: 8px;" />
-            <components:M3Button name="btn-tonal-dis"    variant="Tonal"    text="Tonal"    disabled="true" style="margin: 8px;" />
-        </ui:VisualElement>
+                <!-- ================================================================ -->
+                <!-- Row 1: Standard Buttons                                          -->
+                <!-- ================================================================ -->
+                <ui:VisualElement class="showcase-section">
+                    <ui:Label text="Button Variants" class="m3-title showcase-section__title" />
+                    <ui:VisualElement class="showcase-row">
+                        <components:M3Button name="btn-filled"   variant="Filled"   text="Filled"   style="margin: 8px;" />
+                        <components:M3Button name="btn-outlined" variant="Outlined" text="Outlined" style="margin: 8px;" />
+                        <components:M3Button name="btn-text"     variant="Text"     text="Text"     style="margin: 8px;" />
+                        <components:M3Button name="btn-tonal"    variant="Tonal"    text="Tonal"    style="margin: 8px;" />
+                    </ui:VisualElement>
+                </ui:VisualElement>
 
-        <!-- ================================================================ -->
-        <!-- Row 3: Size Variants                                             -->
-        <!-- ================================================================ -->
-        <ui:Label text="Sizes" class="m3-title foundation-section-header" />
+                <!-- ================================================================ -->
+                <!-- Row 2: Disabled State                                            -->
+                <!-- ================================================================ -->
+                <ui:VisualElement class="showcase-section">
+                    <ui:Label text="Disabled State" class="m3-title showcase-section__title" />
+                    <ui:VisualElement class="showcase-row">
+                        <components:M3Button name="btn-filled-dis"   variant="Filled"   text="Filled"   disabled="true" style="margin: 8px;" />
+                        <components:M3Button name="btn-outlined-dis" variant="Outlined" text="Outlined" disabled="true" style="margin: 8px;" />
+                        <components:M3Button name="btn-text-dis"     variant="Text"     text="Text"     disabled="true" style="margin: 8px;" />
+                        <components:M3Button name="btn-tonal-dis"    variant="Tonal"    text="Tonal"    disabled="true" style="margin: 8px;" />
+                    </ui:VisualElement>
+                </ui:VisualElement>
 
-        <ui:VisualElement name="size-row" style="flex-direction: row; flex-wrap: wrap; align-items: center; margin-bottom: 16px;">
-            <components:M3Button variant="Filled" size="ExtraSmall" text="XSmall"  style="margin: 8px;" />
-            <components:M3Button variant="Filled" size="Small"      text="Small"   style="margin: 8px;" />
-            <components:M3Button variant="Filled" size="Medium"     text="Medium"  style="margin: 8px;" />
-            <components:M3Button variant="Filled" size="Large"      text="Large"   style="margin: 8px;" />
-            <components:M3Button variant="Filled" size="ExtraLarge" text="XLarge"  style="margin: 8px;" />
-        </ui:VisualElement>
+                <!-- ================================================================ -->
+                <!-- Row 3: Size Variants                                             -->
+                <!-- ================================================================ -->
+                <ui:VisualElement class="showcase-section">
+                    <ui:Label text="Sizes" class="m3-title showcase-section__title" />
+                    <ui:VisualElement class="showcase-row" style="align-items: center;">
+                        <components:M3Button variant="Filled" size="ExtraSmall" text="XSmall"  style="margin: 8px;" />
+                        <components:M3Button variant="Filled" size="Small"      text="Small"   style="margin: 8px;" />
+                        <components:M3Button variant="Filled" size="Medium"     text="Medium"  style="margin: 8px;" />
+                        <components:M3Button variant="Filled" size="Large"      text="Large"   style="margin: 8px;" />
+                        <components:M3Button variant="Filled" size="ExtraLarge" text="XLarge"  style="margin: 8px;" />
+                    </ui:VisualElement>
+                </ui:VisualElement>
 
-        <!-- ================================================================ -->
-        <!-- Row 4: Shape Variants                                            -->
-        <!-- ================================================================ -->
-        <ui:Label text="Shapes" class="m3-title foundation-section-header" />
+                <!-- ================================================================ -->
+                <!-- Row 4: Shape Variants                                            -->
+                <!-- ================================================================ -->
+                <ui:VisualElement class="showcase-section">
+                    <ui:Label text="Shapes" class="m3-title showcase-section__title" />
+                    <ui:VisualElement class="showcase-row">
+                        <components:M3Button variant="Outlined" shape="Round"  text="Round"  style="margin: 8px;" />
+                        <components:M3Button variant="Outlined" shape="Square" text="Square" style="margin: 8px;" />
+                        <components:M3Button variant="Filled"   shape="Round"  text="Round"  style="margin: 8px;" />
+                        <components:M3Button variant="Filled"   shape="Square" text="Square" style="margin: 8px;" />
+                    </ui:VisualElement>
+                </ui:VisualElement>
 
-        <ui:VisualElement name="shape-row" style="flex-direction: row; flex-wrap: wrap; margin-bottom: 16px;">
-            <components:M3Button variant="Outlined" shape="Round"  text="Round"  style="margin: 8px;" />
-            <components:M3Button variant="Outlined" shape="Square" text="Square" style="margin: 8px;" />
-            <components:M3Button variant="Filled"   shape="Round"  text="Round"  style="margin: 8px;" />
-            <components:M3Button variant="Filled"   shape="Square" text="Square" style="margin: 8px;" />
-        </ui:VisualElement>
+                <!-- ================================================================ -->
+                <!-- Row 5: Padding                                                   -->
+                <!-- ================================================================ -->
+                <ui:VisualElement class="showcase-section">
+                    <ui:Label text="Padding" class="m3-title showcase-section__title" />
+                    <ui:VisualElement class="showcase-row">
+                        <components:M3Button variant="Filled" text="24dp Baseline"    style="margin: 8px;" />
+                        <components:M3Button variant="Filled" text="16dp Compact" compact="true" style="margin: 8px;" />
+                    </ui:VisualElement>
+                </ui:VisualElement>
 
-        <!-- ================================================================ -->
-        <!-- Row 5: Padding                                                   -->
-        <!-- ================================================================ -->
-        <ui:Label text="Padding" class="m3-title foundation-section-header" />
+                <!-- ================================================================ -->
+                <!-- Theme Switch                                                     -->
+                <!-- ================================================================ -->
+                <components:M3Button name="btn-switch-theme" variant="Filled" text="Switch Theme" style="margin-top: 8px;" />
 
-        <ui:VisualElement name="padding-row" style="flex-direction: row; flex-wrap: wrap; margin-bottom: 24px;">
-            <components:M3Button variant="Filled" text="24dp Baseline"    style="margin: 8px;" />
-            <components:M3Button variant="Filled" text="16dp Compact" compact="true" style="margin: 8px;" />
-        </ui:VisualElement>
-
-        <!-- ================================================================ -->
-        <!-- Theme Switch                                                     -->
-        <!-- ================================================================ -->
-        <components:M3Button name="btn-switch-theme" variant="Filled" text="Switch Theme" style="margin-top: 24px;" />
+            </ui:VisualElement>
+        </ui:ScrollView>
 
     </ui:VisualElement>
 

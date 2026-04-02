@@ -9,105 +9,117 @@
 
         NOTE: Colors are applied via USS classes defined in foundation-demo.uss
         (not inline var() to avoid resolution errors during UXML clone).
-        Assign light.uss + typography.uss + foundation-demo.uss to PanelSettings.
+        Assign light.uss + typography.uss + foundation-demo.uss + showcase.uss to PanelSettings.
     -->
 
-    <ui:VisualElement name="root" class="foundation-root">
+    <ui:VisualElement name="root" class="showcase-root">
 
-        <ui:Label name="page-title" text="UISystem Foundation Demo" class="m3-headline foundation-page-title" />
+        <ui:ScrollView class="showcase-scroll"
+                       mode="Vertical"
+                       horizontal-scroller-visibility="Hidden"
+                       vertical-scroller-visibility="Auto"
+                       touch-scroll-type="Elastic"
+                       scroll-deceleration-rate="0.135"
+                       elasticity="0.1">
 
-        <ui:VisualElement name="columns" class="foundation-columns">
+            <ui:VisualElement class="showcase-content">
 
-            <!-- ============================================================ -->
-            <!-- LEFT COLUMN: Cards + Switch Theme button                     -->
-            <!-- ============================================================ -->
-            <ui:VisualElement name="left-column" class="foundation-column">
+                <ui:Label name="page-title" text="UISystem Foundation Demo" class="m3-headline showcase-page-title" />
 
-                <ui:Label text="Cards" class="m3-title foundation-section-header" />
+                <ui:VisualElement name="columns" class="foundation-columns">
 
-                <!-- Elevated card -->
-                <mehmetsrl.UISystem.Core.SDFRectElement
-                    name="card-elevated"
-                    corner-radius="12"
-                    shadow-blur="8"
-                    shadow-offset-y="2"
-                    shadow-color-r="0" shadow-color-g="0" shadow-color-b="0" shadow-color-a="0.2"
-                    class="card-surface">
-                    <ui:Label text="Elevated Card" class="m3-title on-surface" />
-                    <ui:Label text="Shadow 2dp / blur 8dp / corner 12dp" class="m3-body on-surface-variant" />
-                </mehmetsrl.UISystem.Core.SDFRectElement>
+                    <!-- ============================================================ -->
+                    <!-- LEFT COLUMN: Cards + Switch Theme button                     -->
+                    <!-- ============================================================ -->
+                    <ui:VisualElement name="left-column" class="foundation-column">
 
-                <!-- Filled card -->
-                <mehmetsrl.UISystem.Core.SDFRectElement
-                    name="card-filled"
-                    corner-radius="16"
-                    class="card-primary-container">
-                    <ui:Label text="Filled Card" class="m3-title on-primary-container" />
-                    <ui:Label text="Primary container / corner 16dp" class="m3-body on-primary-container" />
-                </mehmetsrl.UISystem.Core.SDFRectElement>
+                        <ui:Label text="Cards" class="m3-title showcase-section__title" />
 
-                <!-- Outlined card -->
-                <mehmetsrl.UISystem.Core.SDFRectElement
-                    name="card-outlined"
-                    corner-radius="12"
-                    outline-thickness="1"
-                    class="card-transparent">
-                    <ui:Label text="Outlined Card" class="m3-title on-surface" />
-                    <ui:Label text="1dp outline / corner 12dp / transparent" class="m3-body on-surface-variant" />
-                </mehmetsrl.UISystem.Core.SDFRectElement>
+                        <!-- Elevated card -->
+                        <mehmetsrl.UISystem.Core.SDFRectElement
+                            name="card-elevated"
+                            corner-radius="12"
+                            shadow-blur="8"
+                            shadow-offset-y="2"
+                            shadow-color-r="0" shadow-color-g="0" shadow-color-b="0" shadow-color-a="0.2"
+                            class="card-surface">
+                            <ui:Label text="Elevated Card" class="m3-title on-surface" />
+                            <ui:Label text="Shadow 2dp / blur 8dp / corner 12dp" class="m3-body on-surface-variant" />
+                        </mehmetsrl.UISystem.Core.SDFRectElement>
 
-                <!-- Switch Theme button -->
-                <mehmetsrl.UISystem.Core.SDFRectElement
-                    name="btn-switch-theme"
-                    corner-radius="9999"
-                    class="btn-primary">
-                    <ui:Label text="Switch Theme" class="m3-label on-primary" />
-                </mehmetsrl.UISystem.Core.SDFRectElement>
+                        <!-- Filled card -->
+                        <mehmetsrl.UISystem.Core.SDFRectElement
+                            name="card-filled"
+                            corner-radius="16"
+                            class="card-primary-container">
+                            <ui:Label text="Filled Card" class="m3-title on-primary-container" />
+                            <ui:Label text="Primary container / corner 16dp" class="m3-body on-primary-container" />
+                        </mehmetsrl.UISystem.Core.SDFRectElement>
 
-            </ui:VisualElement>
+                        <!-- Outlined card -->
+                        <mehmetsrl.UISystem.Core.SDFRectElement
+                            name="card-outlined"
+                            corner-radius="12"
+                            outline-thickness="1"
+                            class="card-transparent">
+                            <ui:Label text="Outlined Card" class="m3-title on-surface" />
+                            <ui:Label text="1dp outline / corner 12dp / transparent" class="m3-body on-surface-variant" />
+                        </mehmetsrl.UISystem.Core.SDFRectElement>
 
-            <!-- ============================================================ -->
-            <!-- RIGHT COLUMN: Typography + Elevation demo                   -->
-            <!-- ============================================================ -->
-            <ui:VisualElement name="right-column" class="foundation-column">
+                        <!-- Switch Theme button -->
+                        <mehmetsrl.UISystem.Core.SDFRectElement
+                            name="btn-switch-theme"
+                            corner-radius="9999"
+                            class="btn-primary">
+                            <ui:Label text="Switch Theme" class="m3-label on-primary" />
+                        </mehmetsrl.UISystem.Core.SDFRectElement>
 
-                <ui:Label text="Typography Scale" class="m3-title foundation-section-header" />
+                    </ui:VisualElement>
 
-                <ui:VisualElement name="type-scale" class="type-scale-container">
-                    <ui:Label name="sample-display"  text="Display — 36px"  class="m3-display  on-surface-variant" />
-                    <ui:Label name="sample-headline" text="Headline — 28px" class="m3-headline on-surface-variant" />
-                    <ui:Label name="sample-title"    text="Title — 22px"    class="m3-title    on-surface-variant" />
-                    <ui:Label name="sample-body"     text="Body — 16px"     class="m3-body     on-surface-variant" />
-                    <ui:Label name="sample-label"    text="Label — 14px"    class="m3-label    on-surface-variant" />
-                    <ui:Label name="sample-caption"  text="Caption — 12px"  class="m3-caption  on-surface-variant" />
+                    <!-- ============================================================ -->
+                    <!-- RIGHT COLUMN: Typography + Elevation demo                   -->
+                    <!-- ============================================================ -->
+                    <ui:VisualElement name="right-column" class="foundation-column">
+
+                        <ui:Label text="Typography Scale" class="m3-title showcase-section__title" />
+
+                        <ui:VisualElement name="type-scale" class="type-scale-container">
+                            <ui:Label name="sample-display"  text="Display — 36px"  class="m3-display  on-surface-variant" />
+                            <ui:Label name="sample-headline" text="Headline — 28px" class="m3-headline on-surface-variant" />
+                            <ui:Label name="sample-title"    text="Title — 22px"    class="m3-title    on-surface-variant" />
+                            <ui:Label name="sample-body"     text="Body — 16px"     class="m3-body     on-surface-variant" />
+                            <ui:Label name="sample-label"    text="Label — 14px"    class="m3-label    on-surface-variant" />
+                            <ui:Label name="sample-caption"  text="Caption — 12px"  class="m3-caption  on-surface-variant" />
+                        </ui:VisualElement>
+
+                        <ui:Label text="Elevation Levels" class="m3-title showcase-section__title" />
+
+                        <ui:VisualElement name="elevation-row" class="elevation-row">
+                            <mehmetsrl.UISystem.Core.SDFRectElement name="elev-0" corner-radius="8" class="elev-card card-surface">
+                                <ui:Label text="0" class="m3-label on-surface" />
+                            </mehmetsrl.UISystem.Core.SDFRectElement>
+
+                            <mehmetsrl.UISystem.Core.SDFRectElement name="elev-1" corner-radius="8"
+                                shadow-blur="2" shadow-offset-y="1" shadow-color-a="0.15" class="elev-card card-surface">
+                                <ui:Label text="1" class="m3-label on-surface" />
+                            </mehmetsrl.UISystem.Core.SDFRectElement>
+
+                            <mehmetsrl.UISystem.Core.SDFRectElement name="elev-2" corner-radius="8"
+                                shadow-blur="4" shadow-offset-y="1" shadow-color-a="0.18" class="elev-card card-surface">
+                                <ui:Label text="2" class="m3-label on-surface" />
+                            </mehmetsrl.UISystem.Core.SDFRectElement>
+
+                            <mehmetsrl.UISystem.Core.SDFRectElement name="elev-3" corner-radius="8"
+                                shadow-blur="6" shadow-offset-y="2" shadow-color-a="0.20" class="elev-card card-surface">
+                                <ui:Label text="3" class="m3-label on-surface" />
+                            </mehmetsrl.UISystem.Core.SDFRectElement>
+                        </ui:VisualElement>
+
+                    </ui:VisualElement>
+
                 </ui:VisualElement>
-
-                <ui:Label text="Elevation Levels" class="m3-title foundation-section-header" />
-
-                <ui:VisualElement name="elevation-row" class="elevation-row">
-                    <mehmetsrl.UISystem.Core.SDFRectElement name="elev-0" corner-radius="8" class="elev-card card-surface">
-                        <ui:Label text="0" class="m3-label on-surface" />
-                    </mehmetsrl.UISystem.Core.SDFRectElement>
-
-                    <mehmetsrl.UISystem.Core.SDFRectElement name="elev-1" corner-radius="8"
-                        shadow-blur="2" shadow-offset-y="1" shadow-color-a="0.15" class="elev-card card-surface">
-                        <ui:Label text="1" class="m3-label on-surface" />
-                    </mehmetsrl.UISystem.Core.SDFRectElement>
-
-                    <mehmetsrl.UISystem.Core.SDFRectElement name="elev-2" corner-radius="8"
-                        shadow-blur="4" shadow-offset-y="1" shadow-color-a="0.18" class="elev-card card-surface">
-                        <ui:Label text="2" class="m3-label on-surface" />
-                    </mehmetsrl.UISystem.Core.SDFRectElement>
-
-                    <mehmetsrl.UISystem.Core.SDFRectElement name="elev-3" corner-radius="8"
-                        shadow-blur="6" shadow-offset-y="2" shadow-color-a="0.20" class="elev-card card-surface">
-                        <ui:Label text="3" class="m3-label on-surface" />
-                    </mehmetsrl.UISystem.Core.SDFRectElement>
-                </ui:VisualElement>
-
             </ui:VisualElement>
-
-        </ui:VisualElement>
+        </ui:ScrollView>
     </ui:VisualElement>
 
 </ui:UXML>

@@ -8,19 +8,6 @@
 /* ------------------------------------------------------------------ */
 /*  Layout                                                              */
 /* ------------------------------------------------------------------ */
-.foundation-root {
-    flex-direction: column;
-    width: 100%;
-    height: 100%;
-    background-color: var(--m3-background, rgb(255, 251, 254));
-    padding: 24px;
-}
-
-.foundation-page-title {
-    color: var(--m3-on-background, rgb(28, 27, 31));
-    margin-bottom: 24px;
-}
-
 .foundation-columns {
     flex-direction: row;
     flex-grow: 1;
@@ -30,11 +17,6 @@
     flex: 1;
     flex-direction: column;
     margin: 8px;
-}
-
-.foundation-section-header {
-    color: var(--m3-on-surface, rgb(28, 27, 31));
-    margin-bottom: 8px;
 }
 
 /* ------------------------------------------------------------------ */
