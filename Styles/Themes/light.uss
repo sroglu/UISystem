@@ -40,7 +40,7 @@
     --m3-outline:                  rgb(121, 116, 126);   /* #79747E */
     --m3-outline-variant:          rgb(202, 196, 208);   /* #CAC4D0 */
 
-    --m3-background:               rgb(255, 251, 254);   /* #FFFBFE */
+    --m3-background:               rgb(254, 251, 255);   /* #FEFBFF — M3 site value, cool lavender-white */
     --m3-on-background:            rgb(28, 27, 31);      /* #1C1B1F — same as on-surface per M3 */
 
     /* ------------------------------------------------------------------ */
