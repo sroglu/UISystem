@@ -1,0 +1,150 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements"
+         xmlns:core="mehmetsrl.UISystem.Core"
+         xmlns:components="mehmetsrl.UISystem.Components"
+         xsi="http://www.w3.org/2001/XMLSchema-instance"
+         engine="UnityEngine.UIElements"
+         editor-extension-mode="False">
+
+    <Style src="../Styles/typography.uss" />
+    <Style src="../Styles/state-layer.uss" />
+    <Style src="../Styles/Components/card.uss" />
+    <Style src="../Styles/Components/button.uss" />
+    <Style src="../Styles/Components/showcase.uss" />
+
+    <!--
+        CardDemo.uxml — M3Card Demo Scene
+        Demonstrates all 3 M3 card variants with content anatomy and interaction.
+        ThemeManager swaps PanelSettings.themeUss between light.uss and dark.uss.
+    -->
+
+    <ui:VisualElement name="root" class="showcase-root">
+
+        <ui:ScrollView class="showcase-scroll"
+                       mode="Vertical"
+                       horizontal-scroller-visibility="Hidden"
+                       vertical-scroller-visibility="Auto"
+                       touch-scroll-type="Clamped"
+                       scroll-deceleration-rate="0.135">
+
+            <ui:VisualElement class="showcase-content">
+
+                <ui:Label text="M3 Card Demo" class="m3-headline showcase-page-title" />
+
+                <!-- ================================================================ -->
+                <!-- Section 1: Card Variants                                         -->
+                <!-- ================================================================ -->
+                <ui:VisualElement class="showcase-section">
+                    <ui:Label text="Card Variants" class="m3-title showcase-section__title" />
+                    <ui:VisualElement class="showcase-row" style="align-items: flex-start;">
+
+                        <!-- Elevated Card -->
+                        <components:M3Card name="card-elevated" variant="Elevated" style="margin: 8px; width: 200px;">
+                            <ui:VisualElement class="m3-card__header">
+                                <ui:Label text="Elevated" class="m3-card__headline m3-title" />
+                                <ui:Label text="Surface + Shadow" class="m3-card__subhead m3-body" />
+                            </ui:VisualElement>
+                            <ui:VisualElement class="m3-card__content">
+                                <ui:Label text="Cards contain content and actions about a single subject." class="m3-card__supporting-text m3-body" />
+                            </ui:VisualElement>
+                        </components:M3Card>
+
+                        <!-- Filled Card -->
+                        <components:M3Card name="card-filled" variant="Filled" style="margin: 8px; width: 200px;">
+                            <ui:VisualElement class="m3-card__header">
+                                <ui:Label text="Filled" class="m3-card__headline m3-title" />
+                                <ui:Label text="SurfaceContainerHighest" class="m3-card__subhead m3-body" />
+                            </ui:VisualElement>
+                            <ui:VisualElement class="m3-card__content">
+                                <ui:Label text="Cards contain content and actions about a single subject." class="m3-card__supporting-text m3-body" />
+                            </ui:VisualElement>
+                        </components:M3Card>
+
+                        <!-- Outlined Card -->
+                        <components:M3Card name="card-outlined" variant="Outlined" style="margin: 8px; width: 200px;">
+                            <ui:VisualElement class="m3-card__header">
+                                <ui:Label text="Outlined" class="m3-card__headline m3-title" />
+                                <ui:Label text="Surface + Border" class="m3-card__subhead m3-body" />
+                            </ui:VisualElement>
+                            <ui:VisualElement class="m3-card__content">
+                                <ui:Label text="Cards contain content and actions about a single subject." class="m3-card__supporting-text m3-body" />
+                            </ui:VisualElement>
+                        </components:M3Card>
+
+                    </ui:VisualElement>
+                </ui:VisualElement>
+
+                <!-- ================================================================ -->
+                <!-- Section 2: Clickable Cards                                       -->
+                <!-- ================================================================ -->
+                <ui:VisualElement class="showcase-section">
+                    <ui:Label text="Clickable Cards" class="m3-title showcase-section__title" />
+                    <ui:VisualElement class="showcase-row" style="align-items: flex-start;">
+
+                        <components:M3Card name="card-clickable-elevated" variant="Elevated" clickable="true" style="margin: 8px; width: 200px;">
+                            <ui:VisualElement class="m3-card__header">
+                                <ui:Label text="Tap Me" class="m3-card__headline m3-title" />
+                                <ui:Label text="Elevated + Clickable" class="m3-card__subhead m3-body" />
+                            </ui:VisualElement>
+                            <ui:VisualElement class="m3-card__content">
+                                <ui:Label text="Hover and press to see state layer feedback." class="m3-card__supporting-text m3-body" />
+                            </ui:VisualElement>
+                        </components:M3Card>
+
+                        <components:M3Card name="card-clickable-filled" variant="Filled" clickable="true" style="margin: 8px; width: 200px;">
+                            <ui:VisualElement class="m3-card__header">
+                                <ui:Label text="Tap Me" class="m3-card__headline m3-title" />
+                                <ui:Label text="Filled + Clickable" class="m3-card__subhead m3-body" />
+                            </ui:VisualElement>
+                            <ui:VisualElement class="m3-card__content">
+                                <ui:Label text="Hover and press to see state layer feedback." class="m3-card__supporting-text m3-body" />
+                            </ui:VisualElement>
+                        </components:M3Card>
+
+                    </ui:VisualElement>
+                </ui:VisualElement>
+
+                <!-- ================================================================ -->
+                <!-- Section 3: Card with Actions                                     -->
+                <!-- ================================================================ -->
+                <ui:VisualElement class="showcase-section">
+                    <ui:Label text="Card with Actions" class="m3-title showcase-section__title" />
+                    <ui:VisualElement class="showcase-row" style="align-items: flex-start;">
+
+                        <components:M3Card name="card-with-actions" variant="Elevated" style="margin: 8px; width: 280px;">
+                            <ui:VisualElement class="m3-card__header">
+                                <ui:Label text="Action Card" class="m3-card__headline m3-title" />
+                                <ui:Label text="With action buttons" class="m3-card__subhead m3-body" />
+                            </ui:VisualElement>
+                            <ui:VisualElement class="m3-card__content">
+                                <ui:Label text="Cards can contain action buttons at the bottom for user interactions." class="m3-card__supporting-text m3-body" />
+                            </ui:VisualElement>
+                            <ui:VisualElement class="m3-card__actions">
+                                <components:M3Button variant="Text" text="Cancel" style="margin-right: 4px;" />
+                                <components:M3Button variant="Filled" text="Confirm" />
+                            </ui:VisualElement>
+                        </components:M3Card>
+
+                        <components:M3Card name="card-disabled" variant="Outlined" clickable="true" disabled="true" style="margin: 8px; width: 200px;">
+                            <ui:VisualElement class="m3-card__header">
+                                <ui:Label text="Disabled" class="m3-card__headline m3-title" />
+                                <ui:Label text="Not interactive" class="m3-card__subhead m3-body" />
+                            </ui:VisualElement>
+                            <ui:VisualElement class="m3-card__content">
+                                <ui:Label text="This card is disabled." class="m3-card__supporting-text m3-body" />
+                            </ui:VisualElement>
+                        </components:M3Card>
+
+                    </ui:VisualElement>
+                </ui:VisualElement>
+
+                <!-- ================================================================ -->
+                <!-- Theme Switch                                                     -->
+                <!-- ================================================================ -->
+                <components:M3Button name="btn-switch-theme" variant="Filled" text="Switch Theme" style="margin-top: 8px;" />
+
+            </ui:VisualElement>
+        </ui:ScrollView>
+
+    </ui:VisualElement>
+
+</ui:UXML>

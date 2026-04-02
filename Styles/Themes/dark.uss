@@ -27,6 +27,10 @@
     --m3-on-surface:               rgb(230, 225, 229);   /* #E6E1E5 */
     --m3-surface-variant:          rgb(73, 69, 79);      /* #49454F */
     --m3-on-surface-variant:       rgb(202, 196, 208);   /* #CAC4D0 */
+    --m3-surface-container-low:    rgb(30, 29, 34);      /* #1E1D22 */
+    --m3-surface-container:        rgb(34, 33, 38);      /* #221F26 */
+    --m3-surface-container-high:   rgb(39, 38, 43);      /* #27262B */
+    --m3-surface-container-highest:rgb(44, 43, 49);      /* #2C2B31 */
 
     --m3-error:                    rgb(242, 184, 181);   /* #F2B8B5 */
     --m3-on-error:                 rgb(96, 20, 16);      /* #601410 */
