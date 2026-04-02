@@ -1,9 +1,9 @@
 {
   "name": "com.sroglu.uisystem",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "displayName": "UISystem",
   "description": "M3-inspired modular UI component library for Unity. SDF shader, theming, typography, and interactive components.",
-  "unity": "6000.0",
+  "unity": "6000.3",
   "keywords": [
     "ui",
     "material-design",
@@ -14,5 +14,12 @@
   "author": {
     "name": "sroglu"
   },
-  "dependencies": {}
+  "dependencies": {},
+  "samples": [
+    {
+      "displayName": "Foundation Demo",
+      "description": "Demonstrates SDFRectElement, ThemeManager, and typography scale.",
+      "path": "Samples~/Foundation"
+    }
+  ]
 }

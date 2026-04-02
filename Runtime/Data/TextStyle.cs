@@ -1,27 +1,24 @@
 using System;
-using TMPro;
 
 namespace mehmetsrl.UISystem.Data
 {
     /// <summary>
-    /// Defines the visual style for one typography role (font, size, weight, spacing).
+    /// Defines the visual style for one typography role mapped to a USS class name.
+    /// The USS class (e.g. "m3-title") is applied to VisualElements by TypographyResolver.
     /// </summary>
     [Serializable]
     public struct TextStyle
     {
-        /// <summary>TMP font asset. Use the weight-appropriate asset (Regular or Medium).</summary>
-        public TMP_FontAsset FontAsset;
+        /// <summary>USS class name to apply (e.g. "m3-title", "m3-body").</summary>
+        public string UssClassName;
 
-        /// <summary>Font size in reference-resolution pixels (1080x1920).</summary>
+        /// <summary>Font size in reference-resolution pixels (1080x1920). Informational only — actual size set in USS.</summary>
         public float FontSize;
 
-        /// <summary>TMP font style (Normal, Bold, Italic, etc.).</summary>
-        public FontStyles FontStyle;
-
-        /// <summary>TMP line spacing in TMP units.</summary>
+        /// <summary>TMP line spacing in TMP units. Informational only.</summary>
         public float LineSpacing;
 
-        /// <summary>TMP character spacing in TMP units.</summary>
+        /// <summary>TMP character spacing in TMP units. Informational only.</summary>
         public float CharSpacing;
     }
 }

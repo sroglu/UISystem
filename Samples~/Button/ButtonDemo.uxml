@@ -1,0 +1,50 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements"
+         xmlns:core="mehmetsrl.UISystem.Core"
+         xmlns:components="mehmetsrl.UISystem.Components"
+         xsi="http://www.w3.org/2001/XMLSchema-instance"
+         engine="UnityEngine.UIElements"
+         editor-extension-mode="False">
+
+    <!--
+        ButtonDemo.uxml — M3Button Sample
+        Demonstrates all 4 button variants with interaction feedback.
+        Assign button.uss + state-layer.uss + typography.uss to PanelSettings,
+        or include via Style tags below.
+    -->
+
+    <ui:VisualElement name="root" class="foundation-root">
+
+        <ui:Label text="M3 Button Demo" class="m3-headline foundation-page-title" />
+
+        <!-- ================================================================ -->
+        <!-- Row 1: Standard Buttons                                          -->
+        <!-- ================================================================ -->
+        <ui:Label text="Button Variants" class="m3-title foundation-section-header" />
+
+        <ui:VisualElement name="button-row" style="flex-direction: row; flex-wrap: wrap; margin-bottom: 16px;">
+            <components:M3Button name="btn-filled"   variant="Filled"   text="Filled"   style="margin: 8px;" />
+            <components:M3Button name="btn-outlined" variant="Outlined" text="Outlined" style="margin: 8px;" />
+            <components:M3Button name="btn-text"     variant="Text"     text="Text"     style="margin: 8px;" />
+            <components:M3Button name="btn-tonal"    variant="Tonal"    text="Tonal"    style="margin: 8px;" />
+        </ui:VisualElement>
+
+        <!-- ================================================================ -->
+        <!-- Row 2: Disabled State                                            -->
+        <!-- ================================================================ -->
+        <ui:Label text="Disabled State" class="m3-title foundation-section-header" />
+
+        <ui:VisualElement name="disabled-row" style="flex-direction: row; flex-wrap: wrap; margin-bottom: 16px;">
+            <components:M3Button name="btn-filled-disabled"   variant="Filled"   text="Filled"   disabled="true"  style="margin: 8px;" />
+            <components:M3Button name="btn-outlined-disabled" variant="Outlined" text="Outlined" disabled="true"  style="margin: 8px;" />
+            <components:M3Button name="btn-text-disabled"     variant="Text"     text="Text"     disabled="true"  style="margin: 8px;" />
+            <components:M3Button name="btn-tonal-disabled"    variant="Tonal"    text="Tonal"    disabled="true"  style="margin: 8px;" />
+        </ui:VisualElement>
+
+        <!-- ================================================================ -->
+        <!-- Theme Switch                                                     -->
+        <!-- ================================================================ -->
+        <components:M3Button name="btn-switch-theme" variant="Filled" text="Switch Theme" style="margin-top: 24px;" />
+
+    </ui:VisualElement>
+
+</ui:UXML>

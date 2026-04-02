@@ -1,0 +1,91 @@
+/*
+ * dark.uss — M3 Baseline Dark Theme USS Variables
+ * UISystem Foundation Layer (004-uisystem-foundation)
+ *
+ * All --m3-* custom properties define the dark theme design tokens.
+ * ThemeManager.SyncToPanel() swaps this sheet in/out on rootVisualElement.
+ *
+ * Usage: ThemeManager handles the swap. Do not reference this file directly
+ * in UXML — use var(--m3-*) and let ThemeManager apply the correct sheet.
+ */
+
+:root {
+    /* ------------------------------------------------------------------ */
+    /*  Color Palette — M3 Baseline Dark                                   */
+    /* ------------------------------------------------------------------ */
+    --m3-primary:                  rgb(208, 188, 255);   /* #D0BCFF */
+    --m3-on-primary:               rgb(56, 30, 114);     /* #381E72 */
+    --m3-primary-container:        rgb(79, 55, 139);     /* #4F378B */
+    --m3-on-primary-container:     rgb(234, 221, 255);   /* #EADDFF */
+
+    --m3-secondary:                rgb(204, 194, 220);   /* #CCC2DC */
+    --m3-on-secondary:             rgb(50, 44, 63);      /* #332D41 */
+    --m3-secondary-container:      rgb(74, 68, 88);      /* #4A4458 */
+    --m3-on-secondary-container:   rgb(232, 222, 248);   /* #E8DEF8 */
+
+    --m3-surface:                  rgb(28, 27, 31);      /* #1C1B1F */
+    --m3-on-surface:               rgb(230, 225, 229);   /* #E6E1E5 */
+    --m3-surface-variant:          rgb(73, 69, 79);      /* #49454F */
+    --m3-on-surface-variant:       rgb(202, 196, 208);   /* #CAC4D0 */
+
+    --m3-error:                    rgb(242, 184, 181);   /* #F2B8B5 */
+    --m3-on-error:                 rgb(96, 20, 16);      /* #601410 */
+
+    --m3-outline:                  rgb(147, 143, 153);   /* #938F99 */
+    --m3-outline-variant:          rgb(73, 69, 79);      /* #49454F */
+
+    --m3-background:               rgb(28, 27, 31);      /* #1C1B1F */
+    --m3-on-background:            rgb(230, 225, 229);   /* #E6E1E5 — same as on-surface per M3 */
+
+    /* ------------------------------------------------------------------ */
+    /*  Shape Presets (same values — shape is not theme-dependent)         */
+    /* ------------------------------------------------------------------ */
+    --m3-shape-none:               0px;
+    --m3-shape-extra-small:        4px;
+    --m3-shape-small:              8px;
+    --m3-shape-medium:             12px;
+    --m3-shape-large:              16px;
+    --m3-shape-extra-large:        28px;
+    --m3-shape-full:               9999px;
+
+    /* ------------------------------------------------------------------ */
+    /*  Elevation Presets — shadow-blur, shadow-offset-x/y, tonal-alpha    */
+    /* ------------------------------------------------------------------ */
+    --m3-elevation-0-shadow-blur:     0px;
+    --m3-elevation-0-shadow-offset-x: 0px;
+    --m3-elevation-0-shadow-offset-y: 0px;
+    --m3-elevation-0-tonal-alpha:     0;
+
+    --m3-elevation-1-shadow-blur:     2px;
+    --m3-elevation-1-shadow-offset-x: 0px;
+    --m3-elevation-1-shadow-offset-y: 1px;
+    --m3-elevation-1-tonal-alpha:     0.05;
+
+    --m3-elevation-2-shadow-blur:     4px;
+    --m3-elevation-2-shadow-offset-x: 0px;
+    --m3-elevation-2-shadow-offset-y: 1px;
+    --m3-elevation-2-tonal-alpha:     0.08;
+
+    --m3-elevation-3-shadow-blur:     6px;
+    --m3-elevation-3-shadow-offset-x: 0px;
+    --m3-elevation-3-shadow-offset-y: 2px;
+    --m3-elevation-3-tonal-alpha:     0.11;
+
+    --m3-elevation-4-shadow-blur:     8px;
+    --m3-elevation-4-shadow-offset-x: 0px;
+    --m3-elevation-4-shadow-offset-y: 3px;
+    --m3-elevation-4-tonal-alpha:     0.12;
+
+    --m3-elevation-5-shadow-blur:     12px;
+    --m3-elevation-5-shadow-offset-x: 0px;
+    --m3-elevation-5-shadow-offset-y: 4px;
+    --m3-elevation-5-tonal-alpha:     0.14;
+
+    /* ------------------------------------------------------------------ */
+    /*  Motion Durations (ms)                                               */
+    /* ------------------------------------------------------------------ */
+    --m3-motion-emphasized-duration:             500ms;
+    --m3-motion-standard-duration:               300ms;
+    --m3-motion-emphasized-decelerate-duration:  400ms;
+    --m3-motion-standard-decelerate-duration:    250ms;
+}

@@ -1,0 +1,74 @@
+/*
+ * typography.uss — M3 Typography Scale USS Classes
+ * UISystem Foundation Layer (004-uisystem-foundation)
+ *
+ * Apply these classes to Label or any text-bearing VisualElement:
+ *   <Label class="m3-title" text="Card Title" />
+ *
+ * NOTE: -unity-font references TTF files directly. The existing .asset files
+ * are TMPro.TMP_FontAsset which is incompatible with UI Toolkit's
+ * -unity-font-definition (requires UnityEngine.TextCore.Text.FontAsset).
+ * TODO: Regenerate font assets via Window > TextMeshPro > Font Asset Creator
+ *       in TextCore mode, then switch back to -unity-font-definition.
+ * Paths are relative to this file: Styles/typography.uss → ../Assets/Typography/Fonts/
+ */
+
+/* ------------------------------------------------------------------ */
+/*  Display — 36px Regular — splash, large numbers                     */
+/* ------------------------------------------------------------------ */
+.m3-display {
+    font-size: 36px;
+    -unity-font: url("../Assets/Typography/Fonts/Roboto/Roboto-Regular.ttf");
+    -unity-font-style: normal;
+    white-space: normal;
+}
+
+/* ------------------------------------------------------------------ */
+/*  Headline — 28px Regular — section headings                         */
+/* ------------------------------------------------------------------ */
+.m3-headline {
+    font-size: 28px;
+    -unity-font: url("../Assets/Typography/Fonts/Roboto/Roboto-Regular.ttf");
+    -unity-font-style: normal;
+    white-space: normal;
+}
+
+/* ------------------------------------------------------------------ */
+/*  Title — 22px Medium — card titles, dialog titles                   */
+/* ------------------------------------------------------------------ */
+.m3-title {
+    font-size: 22px;
+    -unity-font: url("../Assets/Typography/Fonts/Roboto/Roboto-Medium.ttf");
+    -unity-font-style: normal;
+    white-space: normal;
+}
+
+/* ------------------------------------------------------------------ */
+/*  Body — 16px Regular — general text                                 */
+/* ------------------------------------------------------------------ */
+.m3-body {
+    font-size: 16px;
+    -unity-font: url("../Assets/Typography/Fonts/Roboto/Roboto-Regular.ttf");
+    -unity-font-style: normal;
+    white-space: normal;
+}
+
+/* ------------------------------------------------------------------ */
+/*  Label — 14px Medium — button labels, captions                      */
+/* ------------------------------------------------------------------ */
+.m3-label {
+    font-size: 14px;
+    -unity-font: url("../Assets/Typography/Fonts/Roboto/Roboto-Medium.ttf");
+    -unity-font-style: normal;
+    white-space: normal;
+}
+
+/* ------------------------------------------------------------------ */
+/*  Caption — 12px Regular — helper text, timestamps                   */
+/* ------------------------------------------------------------------ */
+.m3-caption {
+    font-size: 12px;
+    -unity-font: url("../Assets/Typography/Fonts/Roboto/Roboto-Regular.ttf");
+    -unity-font-style: normal;
+    white-space: normal;
+}

@@ -1,105 +1,115 @@
-using mehmetsrl.UISystem;
-using mehmetsrl.UISystem.Data;
 using mehmetsrl.UISystem.Enums;
 using Sirenix.OdinInspector;
-using TMPro;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 namespace mehmetsrl.UISystem.Core
 {
     /// <summary>
-    /// Companion component for TMP_Text. Assigns a TextRole and automatically fetches
-    /// the matching TextStyle from the active TypographyConfig, applying it to the
-    /// sibling TMP_Text component. Re-applies when ThemeManager fires OnThemeChanged.
+    /// Helper MonoBehaviour that maps a TextRole to the corresponding M3 typography
+    /// USS class on a named VisualElement inside a UIDocument. For UI Toolkit layouts
+    /// this is an optional convenience — you can also assign classes directly in UXML.
+    ///
+    /// Typical setup: Place on any GameObject in the scene. Assign the UIDocument,
+    /// enter the element name (as defined in UXML), and choose the TextRole. The resolver
+    /// applies the matching class (.m3-display through .m3-caption) in Awake.
     /// </summary>
-    [RequireComponent(typeof(TMP_Text))]
-    public class TypographyResolver : MonoBehaviour, IThemeSubscriber
+    public class TypographyResolver : MonoBehaviour
     {
-        [Tooltip("Semantic typography role to resolve.")]
+        // ------------------------------------------------------------------ //
+        //  Serialized Fields                                                   //
+        // ------------------------------------------------------------------ //
+        [Tooltip("UIDocument that contains the target element.")]
+        [Required]
+        [SerializeField] private UIDocument _document;
+
+        [Tooltip("The name attribute of the VisualElement to style (as set in UXML).")]
+        [SerializeField] private string _elementName;
+
+        [Tooltip("Semantic typography role to apply.")]
         [SerializeField] private TextRole _role = TextRole.Body;
-
-        [Tooltip("Optional per-component config override. When null, TypographyConfig from ThemeManager is used.")]
-        [SerializeField] private TypographyConfig _configOverride;
-
-        private TMP_Text _tmp;
 
         // ------------------------------------------------------------------ //
         //  Public API                                                          //
         // ------------------------------------------------------------------ //
-        /// <summary>Assigns a new role and immediately re-applies the style.</summary>
+        /// <summary>Assigns a new role and immediately re-applies the USS class.</summary>
         public TextRole Role
         {
             get => _role;
-            set { _role = value; ApplyStyle(); }
+            set { _role = value; ApplyRole(_role); }
+        }
+
+        /// <summary>
+        /// Removes all .m3-* classes from the target element and adds the class
+        /// corresponding to the given role. No-op if the element is not found.
+        /// </summary>
+        public void ApplyRole(TextRole role)
+        {
+            var element = FindElement();
+            if (element == null)
+            {
+                Debug.LogWarning($"[UISystem] TypographyResolver: element '{_elementName}' not found in '{_document?.name}'.", this);
+                return;
+            }
+
+            element.RemoveFromClassList("m3-display");
+            element.RemoveFromClassList("m3-headline");
+            element.RemoveFromClassList("m3-title");
+            element.RemoveFromClassList("m3-body");
+            element.RemoveFromClassList("m3-label");
+            element.RemoveFromClassList("m3-caption");
+
+            element.AddToClassList(RoleToClass(role));
         }
 
         // ------------------------------------------------------------------ //
         //  Lifecycle                                                           //
         // ------------------------------------------------------------------ //
-        private void Awake()
+        private void Start()
         {
-            _tmp = GetComponent<TMP_Text>();
+            ApplyRole(_role);
         }
 
-        private void Start()
+        private void OnEnable()
         {
             if (ThemeManager.Instance != null)
                 ThemeManager.Instance.OnThemeChanged += OnThemeChanged;
-
-            ApplyStyle();
         }
 
-        private void OnDestroy()
+        private void OnDisable()
         {
             if (ThemeManager.Instance != null)
                 ThemeManager.Instance.OnThemeChanged -= OnThemeChanged;
         }
 
-        private void OnThemeChanged(ThemeData theme) => OnThemeApplied(theme);
-
-        /// <inheritdoc/>
-        public void OnThemeApplied(ThemeData theme) => ApplyStyle();
-
         // ------------------------------------------------------------------ //
-        //  Core                                                                //
+        //  Private                                                             //
         // ------------------------------------------------------------------ //
-        private void ApplyStyle()
+        private void OnThemeChanged(ThemeData _) => ApplyRole(_role);
+
+        private VisualElement FindElement()
         {
-            if (_tmp == null)
-                _tmp = GetComponent<TMP_Text>();
-
-            var config = ResolveConfig();
-            if (config == null)
-            {
-                Debug.LogWarning("[UISystem] TypographyResolver: no TypographyConfig found. " +
-                                 "Assign one to ThemeManager or use the local configOverride field.", this);
-                return;
-            }
-
-            TextStyle s = config.GetStyle(_role);
-
-            if (s.FontAsset != null)
-                _tmp.font = s.FontAsset;
-
-            _tmp.fontSize        = s.FontSize;
-            _tmp.fontStyle       = s.FontStyle;
-            _tmp.lineSpacing     = s.LineSpacing;
-            _tmp.characterSpacing = s.CharSpacing;
+            if (_document == null || _document.rootVisualElement == null) return null;
+            if (string.IsNullOrEmpty(_elementName)) return _document.rootVisualElement;
+            return _document.rootVisualElement.Q(_elementName);
         }
 
-        private TypographyConfig ResolveConfig()
+        private static string RoleToClass(TextRole role) => role switch
         {
-            if (_configOverride != null) return _configOverride;
-            return ThemeManager.Instance != null ? ThemeManager.Instance.TypographyConfig : null;
-        }
+            TextRole.Display  => "m3-display",
+            TextRole.Headline => "m3-headline",
+            TextRole.Title    => "m3-title",
+            TextRole.Body     => "m3-body",
+            TextRole.Label    => "m3-label",
+            TextRole.Caption  => "m3-caption",
+            _                 => "m3-body"
+        };
 
 #if UNITY_EDITOR
         private void OnValidate()
         {
-            if (_tmp == null)
-                _tmp = GetComponent<TMP_Text>();
-            if (_tmp != null && Application.isPlaying)
-                ApplyStyle();
+            if (Application.isPlaying)
+                ApplyRole(_role);
         }
 #endif
     }

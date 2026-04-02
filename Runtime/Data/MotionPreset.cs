@@ -16,5 +16,11 @@ namespace mehmetsrl.UISystem.Data
         public float DurationMs;
 
         public float DurationSeconds => DurationMs / 1000f;
+
+        public MotionPreset(float durationMs, AnimationCurve curve = null)
+        {
+            DurationMs = durationMs;
+            Curve      = curve ?? AnimationCurve.Linear(0f, 0f, 1f, 1f);
+        }
     }
 }

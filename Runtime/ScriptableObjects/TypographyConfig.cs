@@ -6,9 +6,9 @@ using UnityEngine;
 namespace mehmetsrl.UISystem
 {
     /// <summary>
-    /// ScriptableObject that maps each TextRole to a concrete TextStyle (font, size,
-    /// weight, spacing). Assign as the TypographyConfig on ThemeManager, or override
-    /// per-component via TypographyResolver._configOverride.
+    /// ScriptableObject that maps each TextRole to a concrete TextStyle (USS class name,
+    /// size, spacing). Assign as the TypographyConfig on ThemeManager.
+    /// TypographyResolver reads this to apply the matching USS class to VisualElements.
     /// </summary>
     [CreateAssetMenu(menuName = "UISystem/Typography Config", fileName = "TypographyConfig")]
     public class TypographyConfig : ScriptableObject

@@ -2,8 +2,7 @@
     "name": "mehmetsrl.UISystem",
     "rootNamespace": "mehmetsrl.UISystem",
     "references": [
-        "Unity.TextMeshPro",
-        "UnityEngine.UI"
+        "Unity.TextMeshPro"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

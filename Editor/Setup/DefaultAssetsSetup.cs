@@ -176,9 +176,7 @@ namespace mehmetsrl.UISystem.Editor
 
         private static TextStyle BuildTextStyle(float size) => new TextStyle
         {
-            FontAsset   = null, // developer assigns after importing font assets
             FontSize    = size,
-            FontStyle   = TMPro.FontStyles.Normal,
             LineSpacing = 0f,
             CharSpacing = 0f,
         };
