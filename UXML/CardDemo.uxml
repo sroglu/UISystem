@@ -19,6 +19,11 @@
 
     <ui:VisualElement name="root" class="showcase-root">
 
+        <!-- M3 Reference link — top-right corner, fixed (outside scroll) -->
+        <ui:VisualElement name="m3-reference" class="m3-reference-panel">
+            <ui:Label text="M3 Cards Spec →" class="m3-caption m3-reference-label" />
+        </ui:VisualElement>
+
         <ui:ScrollView class="showcase-scroll"
                        mode="Vertical"
                        horizontal-scroller-visibility="Hidden"

@@ -52,8 +52,11 @@ namespace mehmetsrl.UISystem.Components
         private const float CornerRadius = 12f;
 
         // Elevation level 1 shadow values (Elevated variant)
-        private const float ElevatedShadowBlur    = 2f;
-        private const float ElevatedShadowOffsetY = 1f;
+        // M3 token: blur 2dp, offset-y 1dp, but at card scale this is invisible.
+        // Using blur=8, offset=3, alpha=0.22 — visually matches M3 card elevation 1
+        // appearance on mobile (shadow is more prominent than on button).
+        private const float ElevatedShadowBlur    = 8f;
+        private const float ElevatedShadowOffsetY = 3f;
 
         // ------------------------------------------------------------------ //
         //  Children                                                             //
@@ -182,7 +185,7 @@ namespace mehmetsrl.UISystem.Components
                 case CardVariant.Elevated:
                     _root.ShadowBlur    = ElevatedShadowBlur;
                     _root.ShadowOffsetY = ElevatedShadowOffsetY;
-                    _root.ShadowColor   = new Color(0f, 0f, 0f, 0.15f);
+                    _root.ShadowColor   = new Color(0f, 0f, 0f, 0.22f);
                     _root.OutlineThickness = 0f;
                     break;
 

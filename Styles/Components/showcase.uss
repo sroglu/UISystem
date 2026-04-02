@@ -70,3 +70,20 @@
     flex-direction: row;
     flex-wrap: wrap;
 }
+
+/* ------------------------------------------------------------------ */
+/*  M3 reference link panel — top-right corner, absolute              */
+/* ------------------------------------------------------------------ */
+.m3-reference-panel {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background-color: var(--m3-primary-container, rgb(234, 221, 255));
+    border-radius: 8px;
+    padding: 6px 10px;
+    cursor: arrow;
+}
+
+.m3-reference-label {
+    color: var(--m3-on-primary-container, rgb(33, 0, 93));
+}

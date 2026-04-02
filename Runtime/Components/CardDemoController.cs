@@ -13,6 +13,8 @@ namespace mehmetsrl.UISystem.Components
     [RequireComponent(typeof(UIDocument))]
     public class CardDemoController : MonoBehaviour
     {
+        private const string M3CardsUrl = "https://m3.material.io/components/cards/overview";
+
         private void Start()
         {
             var doc  = GetComponent<UIDocument>();
@@ -20,6 +22,14 @@ namespace mehmetsrl.UISystem.Components
 
             // Register panel with ThemeManager for light/dark switching
             ThemeManager.Instance?.RegisterPanel(doc);
+
+            // M3 reference link — click opens spec in browser
+            var refPanel = root.Q<VisualElement>("m3-reference");
+            if (refPanel != null)
+            {
+                refPanel.pickingMode = PickingMode.Position;
+                refPanel.RegisterCallback<ClickEvent>(_ => Application.OpenURL(M3CardsUrl));
+            }
 
             // Theme switch button
             var switchBtn = root.Q<M3Button>("btn-switch-theme");

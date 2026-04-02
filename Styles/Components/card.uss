@@ -18,7 +18,9 @@
     /* Sizing: cards grow to fit their content */
     flex-direction: column;
     flex-shrink: 0;
-    overflow: hidden;
+    /* overflow NOT set: ripple clipping is handled inside SDFRectElement's
+       own border-radius + overflow:hidden; leaving the outer element open
+       allows the Elevated card's Painter2D shadow to extend past its bounds. */
 
     /* M3 spec: minimum touch target for clickable cards */
     min-width: 100px;
@@ -29,9 +31,11 @@
 /*  Variants                                                     */
 /* ============================================================ */
 
-/* Elevated — Surface color + elevation 1 shadow (applied via C# on SDFRectElement) */
+/* Elevated — SurfaceContainerLow + elevation 1 shadow (applied via C# on SDFRectElement)
+ * M3 spec: "Elevated cards use surface container low as their container color"
+ * This makes the card visually distinct from the page background (--m3-background = surface). */
 .m3-card--elevated {
-    background-color: var(--m3-surface, rgb(255, 251, 254));
+    background-color: var(--m3-surface-container-low, rgb(247, 242, 250));
 }
 
 /* Filled — SurfaceContainerHighest, no shadow */
