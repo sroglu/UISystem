@@ -21,6 +21,7 @@
     -unity-font: url("../Assets/Typography/Fonts/Roboto/Roboto-Regular.ttf");
     -unity-font-style: normal;
     white-space: normal;
+    color: var(--m3-on-surface, rgb(28, 27, 31));
 }
 
 /* ------------------------------------------------------------------ */
@@ -31,6 +32,7 @@
     -unity-font: url("../Assets/Typography/Fonts/Roboto/Roboto-Regular.ttf");
     -unity-font-style: normal;
     white-space: normal;
+    color: var(--m3-on-surface, rgb(28, 27, 31));
 }
 
 /* ------------------------------------------------------------------ */
@@ -41,6 +43,7 @@
     -unity-font: url("../Assets/Typography/Fonts/Roboto/Roboto-Medium.ttf");
     -unity-font-style: normal;
     white-space: normal;
+    color: var(--m3-on-surface, rgb(28, 27, 31));
 }
 
 /* ------------------------------------------------------------------ */
@@ -51,6 +54,7 @@
     -unity-font: url("../Assets/Typography/Fonts/Roboto/Roboto-Regular.ttf");
     -unity-font-style: normal;
     white-space: normal;
+    color: var(--m3-on-surface, rgb(28, 27, 31));
 }
 
 /* ------------------------------------------------------------------ */
@@ -61,6 +65,7 @@
     -unity-font: url("../Assets/Typography/Fonts/Roboto/Roboto-Medium.ttf");
     -unity-font-style: normal;
     white-space: normal;
+    color: var(--m3-on-surface, rgb(28, 27, 31));
 }
 
 /* ------------------------------------------------------------------ */
@@ -71,4 +76,27 @@
     -unity-font: url("../Assets/Typography/Fonts/Roboto/Roboto-Regular.ttf");
     -unity-font-style: normal;
     white-space: normal;
+    color: var(--m3-on-surface, rgb(28, 27, 31));
+}
+
+/* ------------------------------------------------------------------ */
+/*  Icon — 24px Material Symbols Filled icon font                      */
+/*  Usage: <Label class="m3-icon" text="&#xe5ca;" />  (check icon)    */
+/*  Codepoints: Assets/Typography/Fonts/MaterialSymbols/codepoints     */
+/* ------------------------------------------------------------------ */
+.m3-icon {
+    -unity-font-definition: url("../Assets/Typography/Fonts/MaterialSymbols/MaterialSymbols-Filled.ttf");
+    font-size: 24px;
+    -unity-font-style: normal;
+    -unity-text-align: middle-center;
+    white-space: nowrap;
+}
+
+/* Outlined variant of Material Symbols */
+.m3-icon-outlined {
+    -unity-font-definition: url("../Assets/Typography/Fonts/MaterialSymbols/MaterialSymbols-Standard.ttf");
+    font-size: 24px;
+    -unity-font-style: normal;
+    -unity-text-align: middle-center;
+    white-space: nowrap;
 }

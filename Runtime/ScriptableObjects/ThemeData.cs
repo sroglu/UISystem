@@ -69,6 +69,9 @@ namespace mehmetsrl.UISystem
                 case ColorRole.Outline:               return _colors.Outline;
                 case ColorRole.OutlineVariant:        return _colors.OutlineVariant;
                 case ColorRole.Background:            return _colors.Background;
+                case ColorRole.InverseSurface:        return _colors.InverseSurface;
+                case ColorRole.InverseOnSurface:      return _colors.InverseOnSurface;
+                case ColorRole.InversePrimary:        return _colors.InversePrimary;
                 default:                              return Color.magenta; // indicates missing mapping
             }
         }

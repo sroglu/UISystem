@@ -46,5 +46,12 @@ namespace mehmetsrl.UISystem.Data
 
         [BoxGroup("Background")]
         public Color Background;
+
+        [BoxGroup("Inverse")]
+        public Color InverseSurface;
+        [BoxGroup("Inverse")]
+        public Color InverseOnSurface;
+        [BoxGroup("Inverse")]
+        public Color InversePrimary;
     }
 }

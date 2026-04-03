@@ -15,7 +15,7 @@
 /* Applied by StateLayerController when Disabled = true.
    Dims the entire element subtree to M3's disabled opacity (38%). */
 .m3-disabled {
-    opacity: 0.38;
+    opacity: 0.80;
 }
 
 /* ------------------------------------------------------------------ */

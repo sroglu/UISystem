@@ -1,0 +1,71 @@
+/*
+ * toggle.uss — M3 Toggle (Switch) Component Styles
+ * WP-7: UISystem Toggle (007-uisystem-toggle)
+ *
+ * All colors via var(--m3-*) tokens. Dimensions set in C# (M3Toggle.cs).
+ * Track shape is set in C# via SDFRectElement.CornerRadius.
+ *
+ * M3 Switch spec:
+ *   Track: 52x32dp, pill shape (16dp corners)
+ *   Thumb: 16dp (off) -> 24dp (on) -> 28dp (pressed)
+ *   Animation: ~200ms ease-in-out on position + size
+ */
+
+/* ============================================================ */
+/*  Touch target wrapper                                        */
+/* ============================================================ */
+
+.m3-toggle {
+    /* 48dp minimum touch target per M3 */
+    min-width: 52px;
+    min-height: 48px;
+    justify-content: center;
+    align-items: center;
+}
+
+/* ============================================================ */
+/*  Track                                                       */
+/* ============================================================ */
+
+.m3-toggle__track {
+    width: 52px;
+    height: 32px;
+    /* Transitions for smooth color change */
+    transition: background-color 200ms ease-in-out;
+}
+
+/* Track unchecked: surface-container-highest + outline border */
+.m3-toggle__track.m3-toggle--unchecked {
+    background-color: var(--m3-surface-container-highest, rgb(230, 224, 233));
+}
+
+/* Track checked: primary */
+.m3-toggle__track.m3-toggle--checked {
+    background-color: var(--m3-primary, rgb(103, 80, 164));
+}
+
+/* ============================================================ */
+/*  Thumb (handle)                                              */
+/* ============================================================ */
+
+.m3-toggle__thumb {
+    position: absolute;
+    /* Transitions for smooth animation */
+    transition: left 200ms ease-in-out, top 200ms ease-in-out,
+                width 200ms ease-in-out, height 200ms ease-in-out;
+}
+
+/* Thumb unchecked: outline color */
+.m3-toggle--unchecked > .m3-toggle__thumb {
+    background-color: var(--m3-outline, rgb(121, 116, 126));
+}
+
+/* Thumb checked: on-primary */
+.m3-toggle--checked > .m3-toggle__thumb {
+    background-color: var(--m3-on-primary, rgb(255, 255, 255));
+}
+
+/* Checkmark icon inside thumb — display controlled via C# inline style */
+.m3-toggle--checked > .m3-toggle__thumb > .m3-icon {
+    color: var(--m3-primary, rgb(103, 80, 164));
+}

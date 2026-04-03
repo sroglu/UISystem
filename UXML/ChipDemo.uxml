@@ -1,0 +1,90 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements"
+         xmlns:components="mehmetsrl.UISystem.Components"
+         xsi="http://www.w3.org/2001/XMLSchema-instance"
+         engine="UnityEngine.UIElements"
+         editor-extension-mode="False">
+
+    <Style src="../Styles/typography.uss" />
+    <Style src="../Styles/state-layer.uss" />
+    <Style src="../Styles/Components/chip.uss" />
+    <Style src="../Styles/Components/button.uss" />
+    <Style src="../Styles/Components/showcase.uss" />
+
+    <ui:VisualElement name="root" class="showcase-root">
+
+        <ui:ScrollView class="showcase-scroll"
+                       mode="Vertical"
+                       horizontal-scroller-visibility="Hidden"
+                       vertical-scroller-visibility="Auto"
+                       touch-scroll-type="Clamped"
+                       scroll-deceleration-rate="0.135">
+
+            <ui:VisualElement class="showcase-content">
+
+                <ui:Label text="M3 Chip Demo" class="m3-headline showcase-page-title" />
+
+                <!-- Section 1: Assist Chips -->
+                <ui:VisualElement class="showcase-section">
+                    <ui:Label text="Assist Chips" class="m3-title showcase-section__title" />
+                    <ui:VisualElement class="showcase-row" style="align-items: center; flex-wrap: wrap;">
+                        <components:M3Chip name="chip-assist-1" variant="Assist" text="Add to calendar" icon="Calendar" style="margin: 4px;" />
+                        <components:M3Chip name="chip-assist-2" variant="Assist" text="Set a reminder" icon="Star" style="margin: 4px;" />
+                        <components:M3Chip name="chip-assist-3" variant="Assist" text="Share" icon="Person" style="margin: 4px;" />
+                    </ui:VisualElement>
+                </ui:VisualElement>
+
+                <!-- Section 2: Filter Chips -->
+                <ui:VisualElement class="showcase-section">
+                    <ui:Label text="Filter Chips" class="m3-title showcase-section__title" />
+                    <ui:VisualElement class="showcase-row" style="align-items: center; flex-wrap: wrap;">
+                        <components:M3Chip name="chip-filter-1" variant="Filter" text="Elevator" selected="true" style="margin: 4px;" />
+                        <components:M3Chip name="chip-filter-2" variant="Filter" text="Washer / dryer" style="margin: 4px;" />
+                        <components:M3Chip name="chip-filter-3" variant="Filter" text="Fireplace" style="margin: 4px;" />
+                        <components:M3Chip name="chip-filter-4" variant="Filter" text="Wheelchair access" style="margin: 4px;" />
+                    </ui:VisualElement>
+                </ui:VisualElement>
+
+                <!-- Section 3: Input Chips -->
+                <ui:VisualElement class="showcase-section">
+                    <ui:Label text="Input Chips" class="m3-title showcase-section__title" />
+                    <ui:VisualElement class="showcase-row" style="align-items: center; flex-wrap: wrap;">
+                        <components:M3Chip name="chip-input-1" variant="Input" text="Kotlin" style="margin: 4px;" />
+                        <components:M3Chip name="chip-input-2" variant="Input" text="Swift" style="margin: 4px;" />
+                        <components:M3Chip name="chip-input-3" variant="Input" text="Dart" style="margin: 4px;" />
+                    </ui:VisualElement>
+                    <ui:Label name="chip-remove-label" text="" class="m3-body" style="margin-top: 4px;" />
+                </ui:VisualElement>
+
+                <!-- Section 4: Suggestion Chips -->
+                <ui:VisualElement class="showcase-section">
+                    <ui:Label text="Suggestion Chips" class="m3-title showcase-section__title" />
+                    <ui:VisualElement class="showcase-row" style="align-items: center; flex-wrap: wrap;">
+                        <components:M3Chip name="chip-sugg-1" variant="Suggestion" text="Reply" style="margin: 4px;" />
+                        <components:M3Chip name="chip-sugg-2" variant="Suggestion" text="Thanks!" style="margin: 4px;" />
+                        <components:M3Chip name="chip-sugg-3" variant="Suggestion" text="On my way" style="margin: 4px;" />
+                    </ui:VisualElement>
+                </ui:VisualElement>
+
+                <!-- Section 5: Disabled -->
+                <ui:VisualElement class="showcase-section">
+                    <ui:Label text="Disabled" class="m3-title showcase-section__title" />
+                    <ui:VisualElement class="showcase-row" style="align-items: center; flex-wrap: wrap;">
+                        <components:M3Chip name="chip-disabled-1" variant="Assist" text="Assist (Disabled)" disabled="true" style="margin: 4px;" />
+                        <components:M3Chip name="chip-disabled-2" variant="Filter" text="Filter (Disabled)" disabled="true" selected="true" style="margin: 4px;" />
+                        <components:M3Chip name="chip-disabled-3" variant="Input" text="Input (Disabled)" disabled="true" style="margin: 4px;" />
+                    </ui:VisualElement>
+                </ui:VisualElement>
+
+                <!-- Theme Switch -->
+                <components:M3Button name="btn-switch-theme" variant="Filled" text="Switch Theme" style="margin-top: 8px;" />
+
+            </ui:VisualElement>
+        </ui:ScrollView>
+
+        <ui:VisualElement name="m3-reference" class="m3-reference-panel">
+            <ui:Label text="M3 Chip Spec →" class="m3-caption m3-reference-label" />
+        </ui:VisualElement>
+
+    </ui:VisualElement>
+
+</ui:UXML>

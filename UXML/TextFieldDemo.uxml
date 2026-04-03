@@ -1,0 +1,60 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements"
+         xmlns:components="mehmetsrl.UISystem.Components"
+         xsi="http://www.w3.org/2001/XMLSchema-instance"
+         engine="UnityEngine.UIElements"
+         editor-extension-mode="False">
+
+    <Style src="../Styles/typography.uss" />
+    <Style src="../Styles/state-layer.uss" />
+    <Style src="../Styles/Components/textfield.uss" />
+    <Style src="../Styles/Components/button.uss" />
+    <Style src="../Styles/Components/showcase.uss" />
+
+    <ui:VisualElement name="root" class="showcase-root">
+
+        <ui:ScrollView class="showcase-scroll"
+                       mode="Vertical"
+                       horizontal-scroller-visibility="Hidden"
+                       vertical-scroller-visibility="Auto"
+                       touch-scroll-type="Clamped"
+                       scroll-deceleration-rate="0.135">
+
+            <ui:VisualElement class="showcase-content">
+
+                <ui:Label text="M3 Text Field Demo" class="m3-headline showcase-page-title" />
+
+                <!-- Section 1: Filled -->
+                <ui:VisualElement class="showcase-section">
+                    <ui:Label text="Filled" class="m3-title showcase-section__title" />
+                    <components:M3TextField name="tf-filled-1" variant="Filled" label="Label" style="margin: 8px 0;" />
+                    <components:M3TextField name="tf-filled-2" variant="Filled" label="Label" helper-text="Supporting text" style="margin: 8px 0;" />
+                    <components:M3TextField name="tf-filled-3" variant="Filled" label="Label" error-text="Error text" has-error="true" style="margin: 8px 0;" />
+                </ui:VisualElement>
+
+                <!-- Section 2: Outlined -->
+                <ui:VisualElement class="showcase-section">
+                    <ui:Label text="Outlined" class="m3-title showcase-section__title" />
+                    <components:M3TextField name="tf-outlined-1" variant="Outlined" label="Label" style="margin: 8px 0;" />
+                    <components:M3TextField name="tf-outlined-2" variant="Outlined" label="Label" helper-text="Supporting text" style="margin: 8px 0;" />
+                    <components:M3TextField name="tf-outlined-3" variant="Outlined" label="Label" error-text="Error text" has-error="true" style="margin: 8px 0;" />
+                </ui:VisualElement>
+
+                <!-- Section 3: Disabled -->
+                <ui:VisualElement class="showcase-section">
+                    <ui:Label text="Disabled" class="m3-title showcase-section__title" />
+                    <components:M3TextField name="tf-disabled" variant="Filled" label="Disabled" value="Some text" disabled="true" style="margin: 8px 0;" />
+                </ui:VisualElement>
+
+                <!-- Theme Switch -->
+                <components:M3Button name="btn-switch-theme" variant="Filled" text="Switch Theme" style="margin-top: 8px;" />
+
+            </ui:VisualElement>
+        </ui:ScrollView>
+
+        <ui:VisualElement name="m3-reference" class="m3-reference-panel">
+            <ui:Label text="M3 Text Field Spec →" class="m3-caption m3-reference-label" />
+        </ui:VisualElement>
+
+    </ui:VisualElement>
+
+</ui:UXML>

@@ -1,0 +1,78 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements"
+         xmlns:components="mehmetsrl.UISystem.Components"
+         xsi="http://www.w3.org/2001/XMLSchema-instance"
+         engine="UnityEngine.UIElements"
+         editor-extension-mode="False">
+
+    <Style src="../Styles/typography.uss" />
+    <Style src="../Styles/state-layer.uss" />
+    <Style src="../Styles/Components/fab.uss" />
+    <Style src="../Styles/Components/button.uss" />
+    <Style src="../Styles/Components/showcase.uss" />
+
+    <ui:VisualElement name="root" class="showcase-root">
+
+        <ui:ScrollView class="showcase-scroll"
+                       mode="Vertical"
+                       horizontal-scroller-visibility="Hidden"
+                       vertical-scroller-visibility="Auto"
+                       touch-scroll-type="Clamped"
+                       scroll-deceleration-rate="0.135">
+
+            <ui:VisualElement class="showcase-content">
+
+                <ui:Label text="M3 FAB Demo" class="m3-headline showcase-page-title" />
+
+                <!-- Section 1: Sizes -->
+                <ui:VisualElement class="showcase-section">
+                    <ui:Label text="Sizes" class="m3-title showcase-section__title" />
+                    <ui:VisualElement class="showcase-row" style="align-items: center; flex-direction: row;">
+                        <ui:VisualElement style="align-items: center; margin-right: 24px;">
+                            <components:M3FAB name="fab-small" size="Small" icon="Edit" />
+                            <ui:Label text="Small" class="m3-label" style="margin-top: 8px;" />
+                        </ui:VisualElement>
+                        <ui:VisualElement style="align-items: center; margin-right: 24px;">
+                            <components:M3FAB name="fab-regular" size="Regular" icon="Add" />
+                            <ui:Label text="Regular" class="m3-label" style="margin-top: 8px;" />
+                        </ui:VisualElement>
+                        <ui:VisualElement style="align-items: center;">
+                            <components:M3FAB name="fab-large" size="Large" icon="Mail" />
+                            <ui:Label text="Large" class="m3-label" style="margin-top: 8px;" />
+                        </ui:VisualElement>
+                    </ui:VisualElement>
+                </ui:VisualElement>
+
+                <!-- Section 2: Extended -->
+                <ui:VisualElement class="showcase-section">
+                    <ui:Label text="Extended" class="m3-title showcase-section__title" />
+                    <ui:VisualElement class="showcase-row" style="align-items: flex-start; flex-direction: column;">
+                        <components:M3FAB name="fab-extended" extended="true" text="New message" icon="Mail" style="margin-bottom: 16px;" />
+                        <components:M3FAB name="fab-extended-2" extended="true" text="Compose" icon="Edit" />
+                    </ui:VisualElement>
+                </ui:VisualElement>
+
+                <!-- Section 3: Disabled -->
+                <ui:VisualElement class="showcase-section">
+                    <ui:Label text="Disabled" class="m3-title showcase-section__title" />
+                    <ui:VisualElement class="showcase-row" style="align-items: center; flex-direction: row;">
+                        <components:M3FAB name="fab-disabled" size="Regular" disabled="true" style="margin-right: 24px;" />
+                        <components:M3FAB name="fab-extended-disabled" extended="true" text="Disabled" disabled="true" />
+                    </ui:VisualElement>
+                </ui:VisualElement>
+
+                <!-- Click log -->
+                <ui:Label name="fab-click-label" text="Tap a FAB" class="m3-body" style="margin-top: 8px;" />
+
+                <!-- Theme Switch -->
+                <components:M3Button name="btn-switch-theme" variant="Filled" text="Switch Theme" style="margin-top: 8px;" />
+
+            </ui:VisualElement>
+        </ui:ScrollView>
+
+        <ui:VisualElement name="m3-reference" class="m3-reference-panel">
+            <ui:Label text="M3 FAB Spec →" class="m3-caption m3-reference-label" />
+        </ui:VisualElement>
+
+    </ui:VisualElement>
+
+</ui:UXML>

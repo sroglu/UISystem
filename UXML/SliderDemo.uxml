@@ -1,0 +1,58 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements"
+         xmlns:components="mehmetsrl.UISystem.Components"
+         xsi="http://www.w3.org/2001/XMLSchema-instance"
+         engine="UnityEngine.UIElements"
+         editor-extension-mode="False">
+
+    <Style src="../Styles/typography.uss" />
+    <Style src="../Styles/state-layer.uss" />
+    <Style src="../Styles/Components/slider.uss" />
+    <Style src="../Styles/Components/button.uss" />
+    <Style src="../Styles/Components/showcase.uss" />
+
+    <ui:VisualElement name="root" class="showcase-root">
+
+        <ui:ScrollView class="showcase-scroll"
+                       mode="Vertical"
+                       horizontal-scroller-visibility="Hidden"
+                       vertical-scroller-visibility="Auto"
+                       touch-scroll-type="Clamped"
+                       scroll-deceleration-rate="0.135">
+
+            <ui:VisualElement class="showcase-content">
+
+                <ui:Label text="M3 Slider Demo" class="m3-headline showcase-page-title" />
+
+                <!-- Section 1: Continuous -->
+                <ui:VisualElement class="showcase-section">
+                    <ui:Label text="Continuous" class="m3-title showcase-section__title" />
+                    <components:M3Slider name="slider-continuous" value="0.5" min="0" max="1" style="margin: 8px 0;" />
+                    <ui:Label name="slider-continuous-label" text="Value: 0.50" class="m3-body" />
+                </ui:VisualElement>
+
+                <!-- Section 2: Stepped -->
+                <ui:VisualElement class="showcase-section">
+                    <ui:Label text="Stepped (0–100, step 10)" class="m3-title showcase-section__title" />
+                    <components:M3Slider name="slider-stepped" value="50" min="0" max="100" step="10" show-value-label="true" style="margin: 8px 0;" />
+                    <ui:Label name="slider-stepped-label" text="Value: 50" class="m3-body" />
+                </ui:VisualElement>
+
+                <!-- Section 3: Disabled -->
+                <ui:VisualElement class="showcase-section">
+                    <ui:Label text="Disabled" class="m3-title showcase-section__title" />
+                    <components:M3Slider name="slider-disabled" value="0.3" min="0" max="1" disabled="true" style="margin: 8px 0;" />
+                </ui:VisualElement>
+
+                <!-- Theme Switch -->
+                <components:M3Button name="btn-switch-theme" variant="Filled" text="Switch Theme" style="margin-top: 8px;" />
+
+            </ui:VisualElement>
+        </ui:ScrollView>
+
+        <ui:VisualElement name="m3-reference" class="m3-reference-panel">
+            <ui:Label text="M3 Slider Spec →" class="m3-caption m3-reference-label" />
+        </ui:VisualElement>
+
+    </ui:VisualElement>
+
+</ui:UXML>

@@ -18,6 +18,9 @@ namespace mehmetsrl.UISystem.Enums
         OnError               = 13,
         Outline               = 14,
         OutlineVariant        = 15,
-        Background            = 16
+        Background            = 16,
+        InverseSurface        = 17,
+        InverseOnSurface      = 18,
+        InversePrimary        = 19
     }
 }

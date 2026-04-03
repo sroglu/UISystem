@@ -145,6 +145,21 @@ namespace mehmetsrl.UISystem.Core
         }
 
         // ------------------------------------------------------------------ //
+        //  Direct Fill Color (bypasses resolvedStyle for immediate updates)  //
+        // ------------------------------------------------------------------ //
+        private Color? _fillColorOverride;
+
+        /// <summary>
+        /// When set, Painter2D uses this color directly instead of resolvedStyle.backgroundColor.
+        /// Set to null to fall back to USS/inline style resolution.
+        /// </summary>
+        public Color? FillColorOverride
+        {
+            get => _fillColorOverride;
+            set { _fillColorOverride = value; MarkDirtyRepaint(); }
+        }
+
+        // ------------------------------------------------------------------ //
         //  Tonal Elevation Overlay (persistent primary-tint for dark mode)    //
         // ------------------------------------------------------------------ //
         private float _tonalOverlayOpacity;
@@ -257,7 +272,7 @@ namespace mehmetsrl.UISystem.Core
             }
 
             // --- Main fill ---
-            Color fillColor = resolvedStyle.backgroundColor;
+            Color fillColor = _fillColorOverride ?? resolvedStyle.backgroundColor;
             if (fillColor.a > 0f)
             {
                 painter.fillColor = fillColor;

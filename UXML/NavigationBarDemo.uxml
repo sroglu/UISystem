@@ -1,0 +1,52 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements"
+         xmlns:components="mehmetsrl.UISystem.Components"
+         xsi="http://www.w3.org/2001/XMLSchema-instance"
+         engine="UnityEngine.UIElements"
+         editor-extension-mode="False">
+
+    <Style src="../Styles/typography.uss" />
+    <Style src="../Styles/state-layer.uss" />
+    <Style src="../Styles/Components/navigation-bar.uss" />
+    <Style src="../Styles/Components/button.uss" />
+    <Style src="../Styles/Components/showcase.uss" />
+
+    <ui:VisualElement name="root" class="showcase-root" style="flex-direction: column;">
+
+        <!-- Page content -->
+        <ui:ScrollView class="showcase-scroll"
+                       mode="Vertical"
+                       style="flex-grow: 1;"
+                       horizontal-scroller-visibility="Hidden"
+                       vertical-scroller-visibility="Auto"
+                       touch-scroll-type="Clamped"
+                       scroll-deceleration-rate="0.135">
+
+            <ui:VisualElement class="showcase-content">
+
+                <ui:Label text="M3 Navigation Bar Demo" class="m3-headline showcase-page-title" />
+
+                <ui:VisualElement class="showcase-section">
+                    <ui:Label text="Active Tab" class="m3-title showcase-section__title" />
+                    <ui:Label name="nav-selected-label" text="Home" class="m3-body" />
+                </ui:VisualElement>
+
+                <!-- Theme Switch -->
+                <components:M3Button name="btn-switch-theme" variant="Filled" text="Switch Theme" style="margin-top: 8px;" />
+
+            </ui:VisualElement>
+        </ui:ScrollView>
+
+        <!-- Navigation Bar at bottom -->
+        <components:M3NavigationBar name="nav-bar">
+            <components:M3NavigationItem name="nav-home"     icon="&#xe88a;" label="Home"     active="true" />
+            <components:M3NavigationItem name="nav-search"   icon="&#xe8b6;" label="Search" />
+            <components:M3NavigationItem name="nav-settings" icon="&#xe8b8;" label="Settings" />
+        </components:M3NavigationBar>
+
+        <ui:VisualElement name="m3-reference" class="m3-reference-panel">
+            <ui:Label text="M3 Navigation Bar Spec →" class="m3-caption m3-reference-label" />
+        </ui:VisualElement>
+
+    </ui:VisualElement>
+
+</ui:UXML>

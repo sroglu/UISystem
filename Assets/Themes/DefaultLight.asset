@@ -30,6 +30,9 @@ MonoBehaviour:
     Outline: {r: 0.4745098, g: 0.45490196, b: 0.49411765, a: 1}
     OutlineVariant: {r: 0.7921569, g: 0.76862746, b: 0.8156863, a: 1}
     Background: {r: 1, g: 0.9843137, b: 0.99607843, a: 1}
+    InverseSurface: {r: 0.192, g: 0.188, b: 0.2, a: 1}
+    InverseOnSurface: {r: 0.957, g: 0.937, b: 0.957, a: 1}
+    InversePrimary: {r: 0.816, g: 0.737, b: 1, a: 1}
   _elevationPresets:
   - ShadowOffset: {x: 0, y: 0}
     ShadowBlur: 0

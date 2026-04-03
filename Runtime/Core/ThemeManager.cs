@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -66,6 +67,9 @@ namespace mehmetsrl.UISystem.Core
         /// <summary>Fired on the same frame as SetTheme(). Arg is the new active ThemeData.</summary>
         public event Action<ThemeData> OnThemeChanged;
 
+        /// <summary>Fired one frame after SetTheme(), after USS styles have resolved.</summary>
+        public event Action OnThemeApplied;
+
         /// <summary>
         /// Sets a new active theme, swaps USS stylesheets on all managed panels,
         /// and notifies all subscribers within the same frame.
@@ -79,7 +83,24 @@ namespace mehmetsrl.UISystem.Core
             }
             _activeTheme = theme;
             SyncAllPanels();
-            OnThemeChanged?.Invoke(_activeTheme);
+            // Invoke each subscriber individually so one exception doesn't block the rest
+            if (OnThemeChanged != null)
+            {
+                foreach (var handler in OnThemeChanged.GetInvocationList())
+                {
+                    try { ((Action<ThemeData>)handler)(_activeTheme); }
+                    catch (System.Exception ex) { Debug.LogException(ex); }
+                }
+            }
+            if (OnThemeApplied != null)
+                StartCoroutine(FireThemeAppliedNextFrame());
+        }
+
+        private IEnumerator FireThemeAppliedNextFrame()
+        {
+            yield return new WaitForEndOfFrame();
+            yield return null; // extra frame for USS style resolution
+            OnThemeApplied?.Invoke();
         }
 
         /// <summary>

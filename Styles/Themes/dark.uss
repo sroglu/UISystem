@@ -92,4 +92,11 @@
     --m3-motion-standard-duration:               300ms;
     --m3-motion-emphasized-decelerate-duration:  400ms;
     --m3-motion-standard-decelerate-duration:    250ms;
+
+    /* ------------------------------------------------------------------ */
+    /*  Inverse Tokens (for Snackbar)                                       */
+    /* ------------------------------------------------------------------ */
+    --m3-inverse-surface:            rgb(230, 225, 229);    /* #E6E1E5 */
+    --m3-inverse-on-surface:         rgb(49, 48, 51);       /* #313033 */
+    --m3-inverse-primary:            rgb(103, 80, 164);     /* #6750A4 */
 }

@@ -1,0 +1,49 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements"
+         xmlns:components="mehmetsrl.UISystem.Components"
+         xsi="http://www.w3.org/2001/XMLSchema-instance"
+         engine="UnityEngine.UIElements"
+         editor-extension-mode="False">
+
+    <Style src="../Styles/typography.uss" />
+    <Style src="../Styles/state-layer.uss" />
+    <Style src="../Styles/Components/snackbar.uss" />
+    <Style src="../Styles/Components/button.uss" />
+    <Style src="../Styles/Components/showcase.uss" />
+
+    <ui:VisualElement name="root" class="showcase-root">
+
+        <ui:ScrollView class="showcase-scroll"
+                       mode="Vertical"
+                       horizontal-scroller-visibility="Hidden"
+                       vertical-scroller-visibility="Auto"
+                       touch-scroll-type="Clamped"
+                       scroll-deceleration-rate="0.135">
+
+            <ui:VisualElement class="showcase-content">
+
+                <ui:Label text="M3 Snackbar Demo" class="m3-headline showcase-page-title" />
+
+                <!-- Triggers -->
+                <ui:VisualElement class="showcase-section">
+                    <ui:Label text="Show Snackbars" class="m3-title showcase-section__title" />
+                    <ui:VisualElement class="showcase-row" style="flex-direction: column; align-items: flex-start;">
+                        <components:M3Button name="btn-snack-simple"   variant="Filled" text="Simple message" />
+                        <components:M3Button name="btn-snack-action"   variant="Tonal"  text="With action" style="margin-top: 12px;" />
+                        <components:M3Button name="btn-snack-close"    variant="Outlined" text="With close button" style="margin-top: 12px;" />
+                        <components:M3Button name="btn-snack-queue"    variant="Outlined" text="Queue 3 snackbars" style="margin-top: 12px;" />
+                    </ui:VisualElement>
+                </ui:VisualElement>
+
+                <!-- Theme Switch -->
+                <components:M3Button name="btn-switch-theme" variant="Filled" text="Switch Theme" style="margin-top: 8px;" />
+
+            </ui:VisualElement>
+        </ui:ScrollView>
+
+        <ui:VisualElement name="m3-reference" class="m3-reference-panel">
+            <ui:Label text="M3 Snackbar Spec →" class="m3-caption m3-reference-label" />
+        </ui:VisualElement>
+
+    </ui:VisualElement>
+
+</ui:UXML>

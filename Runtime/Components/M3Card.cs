@@ -58,6 +58,11 @@ namespace mehmetsrl.UISystem.Components
         private const float ElevatedShadowBlur    = 8f;
         private const float ElevatedShadowOffsetY = 3f;
 
+        // Resolved theme colors
+        private Color _themeOnSurface;
+        private Color _themeOutlineVariant;
+        private Color _themePrimary;
+
         // ------------------------------------------------------------------ //
         //  Children                                                             //
         // ------------------------------------------------------------------ //
@@ -163,7 +168,10 @@ namespace mehmetsrl.UISystem.Components
             // this.Add(_root) would route _root into _content → infinite recursion.
             hierarchy.Add(_root);
 
+            RegisterCallback<GeometryChangedEvent>(OnFirstLayout);
+
             // Apply default variant
+            RefreshThemeColors();
             ApplyVariant(CardVariant.Elevated);
         }
 
@@ -192,7 +200,7 @@ namespace mehmetsrl.UISystem.Components
                     // is only 2 units above background.
                     // Primary color is hardcoded to M3 baseline dark primary (#D0BCFF).
                     // A future improvement could read from ThemeManager for per-theme accuracy.
-                    _root.TonalOverlayColor   = new Color(0.816f, 0.737f, 1f); // #D0BCFF
+                    _root.TonalOverlayColor   = _themePrimary;
                     _root.TonalOverlayOpacity = 0.05f;
                     break;
 
@@ -207,15 +215,14 @@ namespace mehmetsrl.UISystem.Components
                     _root.ShadowBlur    = 0f;
                     _root.ShadowOffsetY = 0f;
                     _root.OutlineThickness = 1f;
-                    // M3 OutlineVariant baseline light: #CAC4D0
-                    _root.OutlineColor = new Color(0.792f, 0.769f, 0.816f, 1f);
+                    _root.OutlineColor = _themeOutlineVariant;
                     _root.TonalOverlayOpacity = 0f;
                     break;
             }
 
             // State overlay tint: OnSurface for all card variants
             if (_stateLayer != null)
-                _stateLayer.OverlayColor = new Color(0.11f, 0.106f, 0.122f); // M3 on-surface baseline
+                _stateLayer.OverlayColor = _themeOnSurface;
         }
 
         // ------------------------------------------------------------------ //
@@ -228,7 +235,7 @@ namespace mehmetsrl.UISystem.Components
             {
                 _ripple.style.display = DisplayStyle.Flex;
                 _stateLayer = new StateLayerController(_root, _ripple);
-                _stateLayer.OverlayColor = new Color(0.11f, 0.106f, 0.122f);
+                _stateLayer.OverlayColor = _themeOnSurface;
                 _stateLayer.Attach();
                 _root.RegisterCallback<ClickEvent>(OnRootClicked);
             }
@@ -239,6 +246,32 @@ namespace mehmetsrl.UISystem.Components
                 _ripple.style.display = DisplayStyle.None;
                 _root.UnregisterCallback<ClickEvent>(OnRootClicked);
             }
+        }
+
+        // ------------------------------------------------------------------ //
+        //  Theme-aware color resolution                                         //
+        // ------------------------------------------------------------------ //
+
+        private void OnFirstLayout(GeometryChangedEvent evt)
+        {
+            UnregisterCallback<GeometryChangedEvent>(OnFirstLayout);
+
+            var tm = ThemeManager.Instance;
+            if (tm != null)
+                tm.OnThemeChanged += _ => RefreshThemeColors();
+            RefreshThemeColors();
+        }
+
+        private void RefreshThemeColors()
+        {
+            var theme = ThemeManager.Instance?.ActiveTheme;
+            if (theme == null) return;
+
+            _themeOnSurface      = theme.GetColor(ColorRole.OnSurface);
+            _themeOutlineVariant = theme.GetColor(ColorRole.OutlineVariant);
+            _themePrimary        = theme.GetColor(ColorRole.Primary);
+
+            ApplyVariant(_variant);
         }
 
         // ------------------------------------------------------------------ //

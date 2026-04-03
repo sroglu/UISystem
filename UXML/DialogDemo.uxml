@@ -1,0 +1,50 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements"
+         xmlns:components="mehmetsrl.UISystem.Components"
+         xsi="http://www.w3.org/2001/XMLSchema-instance"
+         engine="UnityEngine.UIElements"
+         editor-extension-mode="False">
+
+    <Style src="../Styles/typography.uss" />
+    <Style src="../Styles/state-layer.uss" />
+    <Style src="../Styles/Components/dialog.uss" />
+    <Style src="../Styles/Components/button.uss" />
+    <Style src="../Styles/Components/showcase.uss" />
+
+    <ui:VisualElement name="root" class="showcase-root">
+
+        <ui:ScrollView class="showcase-scroll"
+                       mode="Vertical"
+                       horizontal-scroller-visibility="Hidden"
+                       vertical-scroller-visibility="Auto"
+                       touch-scroll-type="Clamped"
+                       scroll-deceleration-rate="0.135">
+
+            <ui:VisualElement class="showcase-content">
+
+                <ui:Label text="M3 Dialog Demo" class="m3-headline showcase-page-title" />
+
+                <!-- Trigger buttons -->
+                <ui:VisualElement class="showcase-section">
+                    <ui:Label text="Trigger Dialogs" class="m3-title showcase-section__title" />
+                    <ui:VisualElement class="showcase-row" style="flex-direction: column; align-items: flex-start;">
+                        <components:M3Button name="btn-dialog-basic" variant="Filled" text="Basic Dialog" />
+                        <components:M3Button name="btn-dialog-no-dismiss" variant="Tonal" text="Non-dismissable Dialog" style="margin-top: 12px;" />
+                    </ui:VisualElement>
+                </ui:VisualElement>
+
+                <!-- Result label -->
+                <ui:Label name="dialog-result-label" text="No action yet" class="m3-body" style="margin-top: 8px;" />
+
+                <!-- Theme Switch -->
+                <components:M3Button name="btn-switch-theme" variant="Filled" text="Switch Theme" style="margin-top: 8px;" />
+
+            </ui:VisualElement>
+        </ui:ScrollView>
+
+        <ui:VisualElement name="m3-reference" class="m3-reference-panel">
+            <ui:Label text="M3 Dialog Spec →" class="m3-caption m3-reference-label" />
+        </ui:VisualElement>
+
+    </ui:VisualElement>
+
+</ui:UXML>

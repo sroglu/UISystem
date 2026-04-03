@@ -1,0 +1,95 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements"
+         xmlns:core="mehmetsrl.UISystem.Core"
+         xmlns:components="mehmetsrl.UISystem.Components"
+         xsi="http://www.w3.org/2001/XMLSchema-instance"
+         engine="UnityEngine.UIElements"
+         editor-extension-mode="False">
+
+    <Style src="../Styles/typography.uss" />
+    <Style src="../Styles/state-layer.uss" />
+    <Style src="../Styles/Components/toggle.uss" />
+    <Style src="../Styles/Components/button.uss" />
+    <Style src="../Styles/Components/showcase.uss" />
+
+    <!--
+        ToggleDemo.uxml — M3Toggle Demo Scene
+        Demonstrates M3 Switch component in various states.
+        ThemeManager swaps PanelSettings.themeUss between light.uss and dark.uss.
+    -->
+
+    <ui:VisualElement name="root" class="showcase-root">
+
+        <ui:ScrollView class="showcase-scroll"
+                       mode="Vertical"
+                       horizontal-scroller-visibility="Hidden"
+                       vertical-scroller-visibility="Auto"
+                       touch-scroll-type="Clamped"
+                       scroll-deceleration-rate="0.135">
+
+            <ui:VisualElement class="showcase-content">
+
+                <ui:Label text="M3 Toggle Demo" class="m3-headline showcase-page-title" />
+
+                <!-- ================================================================ -->
+                <!-- Section 1: Basic Toggles                                         -->
+                <!-- ================================================================ -->
+                <ui:VisualElement class="showcase-section">
+                    <ui:Label text="Basic Toggle" class="m3-title showcase-section__title" />
+                    <ui:VisualElement class="showcase-row" style="align-items: center;">
+                        <ui:VisualElement style="flex-direction: row; align-items: center; margin: 8px;">
+                            <ui:Label text="Off" class="m3-body" style="margin-right: 8px;" />
+                            <components:M3Toggle name="toggle-basic-off" value="false" />
+                        </ui:VisualElement>
+                        <ui:VisualElement style="flex-direction: row; align-items: center; margin: 8px;">
+                            <ui:Label text="On" class="m3-body" style="margin-right: 8px;" />
+                            <components:M3Toggle name="toggle-basic-on" value="true" />
+                        </ui:VisualElement>
+                    </ui:VisualElement>
+                </ui:VisualElement>
+
+                <!-- ================================================================ -->
+                <!-- Section 2: Disabled State                                        -->
+                <!-- ================================================================ -->
+                <ui:VisualElement class="showcase-section">
+                    <ui:Label text="Disabled State" class="m3-title showcase-section__title" />
+                    <ui:VisualElement class="showcase-row" style="align-items: center;">
+                        <ui:VisualElement style="flex-direction: row; align-items: center; margin: 8px;">
+                            <ui:Label text="Off (Disabled)" class="m3-body" style="margin-right: 8px;" />
+                            <components:M3Toggle name="toggle-disabled-off" value="false" disabled="true" />
+                        </ui:VisualElement>
+                        <ui:VisualElement style="flex-direction: row; align-items: center; margin: 8px;">
+                            <ui:Label text="On (Disabled)" class="m3-body" style="margin-right: 8px;" />
+                            <components:M3Toggle name="toggle-disabled-on" value="true" disabled="true" />
+                        </ui:VisualElement>
+                    </ui:VisualElement>
+                </ui:VisualElement>
+
+                <!-- ================================================================ -->
+                <!-- Section 3: Interactive Toggle                                    -->
+                <!-- ================================================================ -->
+                <ui:VisualElement class="showcase-section">
+                    <ui:Label text="Interactive Toggle" class="m3-title showcase-section__title" />
+                    <ui:VisualElement class="showcase-row" style="align-items: center;">
+                        <ui:VisualElement style="flex-direction: row; align-items: center; margin: 8px;">
+                            <components:M3Toggle name="toggle-interactive" value="false" />
+                            <ui:Label name="toggle-interactive-label" text="Toggle is OFF" class="m3-body" style="margin-left: 12px;" />
+                        </ui:VisualElement>
+                    </ui:VisualElement>
+                </ui:VisualElement>
+
+                <!-- ================================================================ -->
+                <!-- Theme Switch                                                     -->
+                <!-- ================================================================ -->
+                <components:M3Button name="btn-switch-theme" variant="Filled" text="Switch Theme" style="margin-top: 8px;" />
+
+            </ui:VisualElement>
+        </ui:ScrollView>
+
+        <!-- M3 Reference link — declared AFTER ScrollView for correct hit-testing -->
+        <ui:VisualElement name="m3-reference" class="m3-reference-panel">
+            <ui:Label text="M3 Switch Spec →" class="m3-caption m3-reference-label" />
+        </ui:VisualElement>
+
+    </ui:VisualElement>
+
+</ui:UXML>

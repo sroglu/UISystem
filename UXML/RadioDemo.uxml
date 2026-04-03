@@ -1,0 +1,88 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements"
+         xmlns:components="mehmetsrl.UISystem.Components"
+         xsi="http://www.w3.org/2001/XMLSchema-instance"
+         engine="UnityEngine.UIElements"
+         editor-extension-mode="False">
+
+    <Style src="../Styles/typography.uss" />
+    <Style src="../Styles/state-layer.uss" />
+    <Style src="../Styles/Components/radio.uss" />
+    <Style src="../Styles/Components/button.uss" />
+    <Style src="../Styles/Components/showcase.uss" />
+
+    <ui:VisualElement name="root" class="showcase-root">
+
+        <ui:ScrollView class="showcase-scroll"
+                       mode="Vertical"
+                       horizontal-scroller-visibility="Hidden"
+                       vertical-scroller-visibility="Auto"
+                       touch-scroll-type="Clamped"
+                       scroll-deceleration-rate="0.135">
+
+            <ui:VisualElement class="showcase-content">
+
+                <ui:Label text="M3 Radio Button Demo" class="m3-headline showcase-page-title" />
+
+                <!-- Section 1: Basic States -->
+                <ui:VisualElement class="showcase-section">
+                    <ui:Label text="Basic States" class="m3-title showcase-section__title" />
+                    <ui:VisualElement class="showcase-row" style="align-items: center;">
+                        <ui:VisualElement style="flex-direction: row; align-items: center; margin: 8px;">
+                            <components:M3RadioButton name="rb-unselected" selected="false" />
+                            <ui:Label text="Unselected" class="m3-body" style="margin-left: 8px;" />
+                        </ui:VisualElement>
+                        <ui:VisualElement style="flex-direction: row; align-items: center; margin: 8px;">
+                            <components:M3RadioButton name="rb-selected" selected="true" />
+                            <ui:Label text="Selected" class="m3-body" style="margin-left: 8px;" />
+                        </ui:VisualElement>
+                    </ui:VisualElement>
+                </ui:VisualElement>
+
+                <!-- Section 2: Disabled State -->
+                <ui:VisualElement class="showcase-section">
+                    <ui:Label text="Disabled State" class="m3-title showcase-section__title" />
+                    <ui:VisualElement class="showcase-row" style="align-items: center;">
+                        <ui:VisualElement style="flex-direction: row; align-items: center; margin: 8px;">
+                            <components:M3RadioButton name="rb-disabled-off" selected="false" disabled="true" />
+                            <ui:Label text="Unselected (Disabled)" class="m3-body" style="margin-left: 8px;" />
+                        </ui:VisualElement>
+                        <ui:VisualElement style="flex-direction: row; align-items: center; margin: 8px;">
+                            <components:M3RadioButton name="rb-disabled-on" selected="true" disabled="true" />
+                            <ui:Label text="Selected (Disabled)" class="m3-body" style="margin-left: 8px;" />
+                        </ui:VisualElement>
+                    </ui:VisualElement>
+                </ui:VisualElement>
+
+                <!-- Section 3: Interactive Group -->
+                <ui:VisualElement class="showcase-section">
+                    <ui:Label text="Interactive Group" class="m3-title showcase-section__title" />
+                    <ui:VisualElement class="showcase-row" style="align-items: flex-start; flex-direction: column;">
+                        <ui:VisualElement style="flex-direction: row; align-items: center; margin: 4px;">
+                            <components:M3RadioButton name="rb-group-0" selected="true" />
+                            <ui:Label text="Option A" class="m3-body" style="margin-left: 8px;" />
+                        </ui:VisualElement>
+                        <ui:VisualElement style="flex-direction: row; align-items: center; margin: 4px;">
+                            <components:M3RadioButton name="rb-group-1" selected="false" />
+                            <ui:Label text="Option B" class="m3-body" style="margin-left: 8px;" />
+                        </ui:VisualElement>
+                        <ui:VisualElement style="flex-direction: row; align-items: center; margin: 4px;">
+                            <components:M3RadioButton name="rb-group-2" selected="false" />
+                            <ui:Label text="Option C" class="m3-body" style="margin-left: 8px;" />
+                        </ui:VisualElement>
+                        <ui:Label name="rb-group-label" text="Selected: Option A" class="m3-body" style="margin-top: 8px; margin-left: 4px;" />
+                    </ui:VisualElement>
+                </ui:VisualElement>
+
+                <!-- Theme Switch -->
+                <components:M3Button name="btn-switch-theme" variant="Filled" text="Switch Theme" style="margin-top: 8px;" />
+
+            </ui:VisualElement>
+        </ui:ScrollView>
+
+        <ui:VisualElement name="m3-reference" class="m3-reference-panel">
+            <ui:Label text="M3 Radio Button Spec →" class="m3-caption m3-reference-label" />
+        </ui:VisualElement>
+
+    </ui:VisualElement>
+
+</ui:UXML>

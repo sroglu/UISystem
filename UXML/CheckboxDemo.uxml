@@ -1,0 +1,83 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements"
+         xmlns:components="mehmetsrl.UISystem.Components"
+         xsi="http://www.w3.org/2001/XMLSchema-instance"
+         engine="UnityEngine.UIElements"
+         editor-extension-mode="False">
+
+    <Style src="../Styles/typography.uss" />
+    <Style src="../Styles/state-layer.uss" />
+    <Style src="../Styles/Components/checkbox.uss" />
+    <Style src="../Styles/Components/button.uss" />
+    <Style src="../Styles/Components/showcase.uss" />
+
+    <ui:VisualElement name="root" class="showcase-root">
+
+        <ui:ScrollView class="showcase-scroll"
+                       mode="Vertical"
+                       horizontal-scroller-visibility="Hidden"
+                       vertical-scroller-visibility="Auto"
+                       touch-scroll-type="Clamped"
+                       scroll-deceleration-rate="0.135">
+
+            <ui:VisualElement class="showcase-content">
+
+                <ui:Label text="M3 Checkbox Demo" class="m3-headline showcase-page-title" />
+
+                <!-- Section 1: Basic States -->
+                <ui:VisualElement class="showcase-section">
+                    <ui:Label text="Basic States" class="m3-title showcase-section__title" />
+                    <ui:VisualElement class="showcase-row" style="align-items: center;">
+                        <ui:VisualElement style="flex-direction: row; align-items: center; margin: 8px;">
+                            <components:M3Checkbox name="cb-unchecked" state="Unchecked" />
+                            <ui:Label text="Unchecked" class="m3-body" style="margin-left: 8px;" />
+                        </ui:VisualElement>
+                        <ui:VisualElement style="flex-direction: row; align-items: center; margin: 8px;">
+                            <components:M3Checkbox name="cb-checked" state="Checked" />
+                            <ui:Label text="Checked" class="m3-body" style="margin-left: 8px;" />
+                        </ui:VisualElement>
+                        <ui:VisualElement style="flex-direction: row; align-items: center; margin: 8px;">
+                            <components:M3Checkbox name="cb-indeterminate" state="Indeterminate" />
+                            <ui:Label text="Indeterminate" class="m3-body" style="margin-left: 8px;" />
+                        </ui:VisualElement>
+                    </ui:VisualElement>
+                </ui:VisualElement>
+
+                <!-- Section 2: Disabled State -->
+                <ui:VisualElement class="showcase-section">
+                    <ui:Label text="Disabled State" class="m3-title showcase-section__title" />
+                    <ui:VisualElement class="showcase-row" style="align-items: center;">
+                        <ui:VisualElement style="flex-direction: row; align-items: center; margin: 8px;">
+                            <components:M3Checkbox name="cb-disabled-off" state="Unchecked" disabled="true" />
+                            <ui:Label text="Unchecked (Disabled)" class="m3-body" style="margin-left: 8px;" />
+                        </ui:VisualElement>
+                        <ui:VisualElement style="flex-direction: row; align-items: center; margin: 8px;">
+                            <components:M3Checkbox name="cb-disabled-on" state="Checked" disabled="true" />
+                            <ui:Label text="Checked (Disabled)" class="m3-body" style="margin-left: 8px;" />
+                        </ui:VisualElement>
+                    </ui:VisualElement>
+                </ui:VisualElement>
+
+                <!-- Section 3: Interactive -->
+                <ui:VisualElement class="showcase-section">
+                    <ui:Label text="Interactive" class="m3-title showcase-section__title" />
+                    <ui:VisualElement class="showcase-row" style="align-items: center;">
+                        <ui:VisualElement style="flex-direction: row; align-items: center; margin: 8px;">
+                            <components:M3Checkbox name="cb-interactive" state="Unchecked" />
+                            <ui:Label name="cb-interactive-label" text="Unchecked" class="m3-body" style="margin-left: 8px;" />
+                        </ui:VisualElement>
+                    </ui:VisualElement>
+                </ui:VisualElement>
+
+                <!-- Theme Switch -->
+                <components:M3Button name="btn-switch-theme" variant="Filled" text="Switch Theme" style="margin-top: 8px;" />
+
+            </ui:VisualElement>
+        </ui:ScrollView>
+
+        <ui:VisualElement name="m3-reference" class="m3-reference-panel">
+            <ui:Label text="M3 Checkbox Spec →" class="m3-caption m3-reference-label" />
+        </ui:VisualElement>
+
+    </ui:VisualElement>
+
+</ui:UXML>
