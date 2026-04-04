@@ -16,7 +16,7 @@ namespace mehmetsrl.UISystem.Components
             var doc  = GetComponent<UIDocument>();
             var root = doc.rootVisualElement;
 
-            ThemeManager.Instance?.RegisterPanel(doc);
+            ThemeManager.RegisterPanel(doc);
 
             var refPanel = root.Q<VisualElement>("m3-reference");
             if (refPanel != null)
@@ -29,7 +29,7 @@ namespace mehmetsrl.UISystem.Components
 
             var switchBtn = root.Q<M3Button>("btn-switch-theme");
             if (switchBtn != null)
-                switchBtn.OnClick += () => ThemeManager.Instance?.ToggleLightDark();
+                switchBtn.OnClick += () => ThemeManager.ToggleLightDark();
 
             var navBar       = root.Q<M3NavigationBar>("nav-bar");
             var selectedLabel = root.Q<Label>("nav-selected-label");

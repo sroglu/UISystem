@@ -15,7 +15,7 @@ namespace mehmetsrl.UISystem.Components
             var doc  = GetComponent<UIDocument>();
             var root = doc.rootVisualElement;
 
-            ThemeManager.Instance?.RegisterPanel(doc);
+            ThemeManager.RegisterPanel(doc);
 
             // M3 reference link
             var refPanel = root.Q<VisualElement>("m3-reference");
@@ -30,7 +30,7 @@ namespace mehmetsrl.UISystem.Components
             // Theme switch
             var switchBtn = root.Q<M3Button>("btn-switch-theme");
             if (switchBtn != null)
-                switchBtn.OnClick += () => ThemeManager.Instance?.ToggleLightDark();
+                switchBtn.OnClick += () => ThemeManager.ToggleLightDark();
 
             // Interactive checkbox
             var cb    = root.Q<M3Checkbox>("cb-interactive");

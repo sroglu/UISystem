@@ -8,9 +8,14 @@ namespace mehmetsrl.UISystem.Editor
     /// Adds UISystem component creation shortcuts to the Unity Project context menu.
     /// Assets > Create > UISystem > Button (Filled / Outlined)
     /// Assets > Create > UISystem > Card (Elevated / Filled / Outlined)
+    /// Assets > UISystem > Open UISystem Editor
     /// </summary>
     internal static class UISystemMenuItems
     {
+        [MenuItem("Assets/UISystem/Open UISystem Editor", priority = 290)]
+        public static void OpenUISystemEditor()
+            => UISystemEditorWindow.ShowWindow();
+
         private const string StylePathButton     = "../../Styles/Components/button.uss";
         private const string StylePathCard       = "../../Styles/Components/card.uss";
         private const string StylePathStateLayer = "../../Styles/state-layer.uss";

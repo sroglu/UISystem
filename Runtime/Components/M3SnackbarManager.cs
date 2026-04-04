@@ -1,53 +1,33 @@
 using System;
 using System.Collections.Generic;
-using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace mehmetsrl.UISystem.Components
 {
     /// <summary>
-    /// MonoBehaviour singleton that manages a queue of M3Snackbar instances.
-    /// Shows one at a time; queues subsequent requests.
+    /// Static manager that queues M3Snackbar instances and shows one at a time.
     ///
     /// Usage:
-    ///   M3SnackbarManager.Instance.Show(root, "Message", "Undo", OnUndo);
+    ///   M3SnackbarManager.SetRoot(rootVisualElement);
+    ///   M3SnackbarManager.Show("Message", "Undo", OnUndo);
     /// </summary>
-    public class M3SnackbarManager : MonoBehaviour
+    public static class M3SnackbarManager
     {
-        public static M3SnackbarManager Instance { get; private set; }
-
-        private readonly Queue<SnackbarRequest> _queue = new();
-        private M3Snackbar _current;
-        private VisualElement _root;
-
-        private void Awake()
-        {
-            if (Instance != null && Instance != this)
-            {
-                Destroy(gameObject);
-                return;
-            }
-            Instance = this;
-            DontDestroyOnLoad(gameObject);
-        }
-
-        private void OnDestroy()
-        {
-            if (Instance == this)
-                Instance = null;
-        }
+        private static readonly Queue<SnackbarRequest> _queue = new();
+        private static M3Snackbar _current;
+        private static VisualElement _root;
 
         /// <summary>Register the root VisualElement to show snackbars in.</summary>
-        public void SetRoot(VisualElement root) => _root = root;
+        public static void SetRoot(VisualElement root) => _root = root;
 
         /// <summary>Enqueue a snackbar.</summary>
-        public void Show(string text, string actionText = null, Action onAction = null, int durationMs = 4000)
+        public static void Show(string text, string actionText = null, Action onAction = null, int durationMs = 4000)
         {
             _queue.Enqueue(new SnackbarRequest(text, actionText, onAction, durationMs));
             TryShowNext();
         }
 
-        private void TryShowNext()
+        private static void TryShowNext()
         {
             if (_current != null || _queue.Count == 0 || _root == null) return;
 
@@ -86,5 +66,15 @@ namespace mehmetsrl.UISystem.Components
                 DurationMs = durationMs;
             }
         }
+
+#if UNITY_EDITOR
+        [UnityEditor.InitializeOnLoadMethod]
+        private static void EditorDomainReload()
+        {
+            _current = null;
+            _root = null;
+            _queue.Clear();
+        }
+#endif
     }
 }

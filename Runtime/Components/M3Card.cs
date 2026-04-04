@@ -31,7 +31,7 @@ namespace mehmetsrl.UISystem.Components
     ///   &lt;/mehmetsrl.UISystem.Components.M3Card&gt;
     /// </summary>
     [UxmlElement]
-    public partial class M3Card : VisualElement
+    public partial class M3Card : M3ComponentBase
     {
         // ------------------------------------------------------------------ //
         //  USS class constants                                                  //
@@ -52,11 +52,14 @@ namespace mehmetsrl.UISystem.Components
         private const float CornerRadius = 12f;
 
         // Elevation level 1 shadow values (Elevated variant)
-        // M3 token: blur 2dp, offset-y 1dp, but at card scale this is invisible.
-        // Using blur=8, offset=3, alpha=0.22 — visually matches M3 card elevation 1
-        // appearance on mobile (shadow is more prominent than on button).
-        private const float ElevatedShadowBlur    = 8f;
-        private const float ElevatedShadowOffsetY = 3f;
+        // M3 uses two combined shadows (key + ambient) for elevation 1.
+        // Painter2D approximates this with a single layered shadow.
+        // blur=12 / offset-y=4 / alpha=0.40 gives visible shadow matching M3 reference.
+        // ShadowPadding insets the visual rect so the shadow fits within element bounds
+        // (Painter2D content is clipped to element layout rect).
+        private const float ElevatedShadowBlur    = 12f;
+        private const float ElevatedShadowOffsetY = 4f;
+        private const float ElevatedShadowPadding = 10f;
 
         // Resolved theme colors
         private Color _themeOnSurface;
@@ -69,14 +72,12 @@ namespace mehmetsrl.UISystem.Components
         private readonly SDFRectElement  _root;
         private readonly RippleElement   _ripple;
         private readonly VisualElement   _content;
-        private          StateLayerController _stateLayer;
 
         // ------------------------------------------------------------------ //
         //  Backing fields                                                       //
         // ------------------------------------------------------------------ //
         private CardVariant _variant   = CardVariant.Elevated;
         private bool        _clickable;
-        private bool        _disabled;
 
         // ------------------------------------------------------------------ //
         //  contentContainer override                                            //
@@ -119,15 +120,10 @@ namespace mehmetsrl.UISystem.Components
         /// Only effective when Clickable is also true.
         /// </summary>
         [UxmlAttribute("disabled")]
-        public bool Disabled
+        public new bool Disabled
         {
-            get => _disabled;
-            set
-            {
-                _disabled = value;
-                if (_stateLayer != null)
-                    _stateLayer.Disabled = value;
-            }
+            get => base.Disabled;
+            set => base.Disabled = value;
         }
 
         // ------------------------------------------------------------------ //
@@ -168,10 +164,7 @@ namespace mehmetsrl.UISystem.Components
             // this.Add(_root) would route _root into _content → infinite recursion.
             hierarchy.Add(_root);
 
-            RegisterCallback<GeometryChangedEvent>(OnFirstLayout);
-
             // Apply default variant
-            RefreshThemeColors();
             ApplyVariant(CardVariant.Elevated);
         }
 
@@ -193,36 +186,87 @@ namespace mehmetsrl.UISystem.Components
                 case CardVariant.Elevated:
                     _root.ShadowBlur    = ElevatedShadowBlur;
                     _root.ShadowOffsetY = ElevatedShadowOffsetY;
-                    _root.ShadowColor   = new Color(0f, 0f, 0f, 0.22f);
+                    _root.ShadowColor   = new Color(0f, 0f, 0f, 0.40f);
+                    _root.ShadowPadding = ElevatedShadowPadding;
                     _root.OutlineThickness = 0f;
+                    // CSS padding gives the element extra space for the shadow.
+                    // Negative margin pulls _root back so the visual card aligns
+                    // with Filled/Outlined variants (net layout impact = 0).
+                    _root.style.paddingLeft   = ElevatedShadowPadding;
+                    _root.style.paddingRight  = ElevatedShadowPadding;
+                    _root.style.paddingTop    = ElevatedShadowPadding;
+                    _root.style.paddingBottom = ElevatedShadowPadding;
+                    _root.style.marginLeft    = -ElevatedShadowPadding;
+                    _root.style.marginRight   = -ElevatedShadowPadding;
+                    _root.style.marginTop     = -ElevatedShadowPadding;
+                    _root.style.marginBottom  = -ElevatedShadowPadding;
                     // M3 tonal elevation — primary tint at level-1 opacity (5%).
-                    // Makes Elevated cards visible in dark mode where surface-container-low
-                    // is only 2 units above background.
-                    // Primary color is hardcoded to M3 baseline dark primary (#D0BCFF).
-                    // A future improvement could read from ThemeManager for per-theme accuracy.
                     _root.TonalOverlayColor   = _themePrimary;
                     _root.TonalOverlayOpacity = 0.05f;
+                    // Transfer USS background-color to FillColorOverride so it only fills
+                    // the inset rect (not the shadow padding area). Reset inline style first
+                    // so USS class value resolves, then defer the transfer.
+                    _root.style.backgroundColor = StyleKeyword.Null;
+                    _root.schedule.Execute(TransferBackgroundToFill);
                     break;
 
                 case CardVariant.Filled:
                     _root.ShadowBlur    = 0f;
                     _root.ShadowOffsetY = 0f;
+                    _root.ShadowPadding = 0f;
                     _root.OutlineThickness = 0f;
                     _root.TonalOverlayOpacity = 0f;
+                    _root.FillColorOverride = null;
+                    _root.style.backgroundColor = StyleKeyword.Null;
+                    _root.style.paddingLeft   = 0f;
+                    _root.style.paddingRight  = 0f;
+                    _root.style.paddingTop    = 0f;
+                    _root.style.paddingBottom = 0f;
+                    _root.style.marginLeft    = 0f;
+                    _root.style.marginRight   = 0f;
+                    _root.style.marginTop     = 0f;
+                    _root.style.marginBottom  = 0f;
                     break;
 
                 case CardVariant.Outlined:
                     _root.ShadowBlur    = 0f;
                     _root.ShadowOffsetY = 0f;
+                    _root.ShadowPadding = 0f;
                     _root.OutlineThickness = 1f;
                     _root.OutlineColor = _themeOutlineVariant;
                     _root.TonalOverlayOpacity = 0f;
+                    _root.FillColorOverride = null;
+                    _root.style.backgroundColor = StyleKeyword.Null;
+                    _root.style.paddingLeft   = 0f;
+                    _root.style.paddingRight  = 0f;
+                    _root.style.paddingTop    = 0f;
+                    _root.style.paddingBottom = 0f;
+                    _root.style.marginLeft    = 0f;
+                    _root.style.marginRight   = 0f;
+                    _root.style.marginTop     = 0f;
+                    _root.style.marginBottom  = 0f;
                     break;
             }
 
             // State overlay tint: OnSurface for all card variants
-            if (_stateLayer != null)
-                _stateLayer.OverlayColor = _themeOnSurface;
+            if (StateLayer != null)
+                StateLayer.OverlayColor = _themeOnSurface;
+        }
+
+        /// <summary>
+        /// Deferred callback: reads the USS-resolved background-color, stores it as
+        /// FillColorOverride (drawn on inset rect by Painter2D), then clears the USS
+        /// background so it doesn't fill the shadow padding area.
+        /// </summary>
+        private void TransferBackgroundToFill()
+        {
+            if (_variant != CardVariant.Elevated) return;
+            var bg = _root.resolvedStyle.backgroundColor;
+            if (bg.a > 0f)
+            {
+                _root.FillColorOverride = bg;
+                _root.style.backgroundColor = Color.clear;
+            }
         }
 
         // ------------------------------------------------------------------ //
@@ -231,20 +275,18 @@ namespace mehmetsrl.UISystem.Components
 
         private void ApplyClickable(bool clickable)
         {
-            if (clickable && _stateLayer == null)
+            if (clickable && StateLayer == null)
             {
                 _ripple.style.display = DisplayStyle.Flex;
-                _stateLayer = new StateLayerController(_root, _ripple);
-                _stateLayer.OverlayColor = _themeOnSurface;
-                _stateLayer.Attach();
+                InitStateLayer(_root, _ripple);
+                StateLayer.OverlayColor = _themeOnSurface;
                 _root.RegisterCallback<ClickEvent>(OnRootClicked);
             }
-            else if (!clickable && _stateLayer != null)
+            else if (!clickable && StateLayer != null)
             {
-                _stateLayer.Detach();
-                _stateLayer = null;
-                _ripple.style.display = DisplayStyle.None;
+                StateLayer.Detach();
                 _root.UnregisterCallback<ClickEvent>(OnRootClicked);
+                _ripple.style.display = DisplayStyle.None;
             }
         }
 
@@ -252,19 +294,9 @@ namespace mehmetsrl.UISystem.Components
         //  Theme-aware color resolution                                         //
         // ------------------------------------------------------------------ //
 
-        private void OnFirstLayout(GeometryChangedEvent evt)
+        protected override void RefreshThemeColors()
         {
-            UnregisterCallback<GeometryChangedEvent>(OnFirstLayout);
-
-            var tm = ThemeManager.Instance;
-            if (tm != null)
-                tm.OnThemeChanged += _ => RefreshThemeColors();
-            RefreshThemeColors();
-        }
-
-        private void RefreshThemeColors()
-        {
-            var theme = ThemeManager.Instance?.ActiveTheme;
+            var theme = ThemeManager.ActiveTheme;
             if (theme == null) return;
 
             _themeOnSurface      = theme.GetColor(ColorRole.OnSurface);
@@ -280,7 +312,7 @@ namespace mehmetsrl.UISystem.Components
 
         private void OnRootClicked(ClickEvent evt)
         {
-            if (_disabled) return;
+            if (base.Disabled) return;
             OnClick?.Invoke();
         }
     }

@@ -59,6 +59,10 @@ namespace mehmetsrl.UISystem.Core
 
         // ------------------------------------------------------------------ //
         //  Shadow                                                              //
+        // TODO(006): GPU SDF Shader deferred — Painter2D accepted per research R2
+        //   Current: CPU Painter2D concentric fill loop for soft shadow approximation.
+        //   Future: per-element GPU SDF pass once UI Toolkit supports batching-friendly
+        //   custom mesh injection without breaking draw-call batching on mobile.
         // ------------------------------------------------------------------ //
         private float _shadowBlur;
         private float _shadowOffsetX;
@@ -122,6 +126,24 @@ namespace mehmetsrl.UISystem.Core
         {
             get => _shadowColor;
             set { _shadowColor = value; MarkDirtyRepaint(); }
+        }
+
+        // ------------------------------------------------------------------ //
+        //  Shadow Padding — insets the visual rect so shadow fits in element  //
+        // ------------------------------------------------------------------ //
+        private float _shadowPadding;
+
+        /// <summary>
+        /// Insets the fill/outline/overlay drawing rect by this amount on all sides.
+        /// The shadow is drawn around the inset rect, giving it room to expand
+        /// outward without being clipped by the element bounds.
+        /// Pair with matching CSS padding on the element so children are also inset.
+        /// Default 0 (no inset — legacy behavior).
+        /// </summary>
+        public float ShadowPadding
+        {
+            get => _shadowPadding;
+            set { _shadowPadding = Mathf.Max(0f, value); MarkDirtyRepaint(); }
         }
 
         // ------------------------------------------------------------------ //
@@ -247,7 +269,15 @@ namespace mehmetsrl.UISystem.Core
             // Use full element bounds (padding box) so Painter2D fill matches the
             // CSS background-color area. contentRect excludes padding, which causes
             // heavily-padded elements (e.g. buttons) to render as ovals instead of pills.
-            Rect rect = new Rect(0f, 0f, layout.width, layout.height);
+            Rect fullRect = new Rect(0f, 0f, layout.width, layout.height);
+            if (fullRect.width < 1f || fullRect.height < 1f) return;
+
+            // When ShadowPadding > 0, inset the visual rect so the shadow has room
+            // to expand outward without being clipped by the element bounds.
+            float sp = _shadowPadding;
+            Rect rect = sp > 0f
+                ? new Rect(sp, sp, fullRect.width - sp * 2f, fullRect.height - sp * 2f)
+                : fullRect;
             if (rect.width < 1f || rect.height < 1f) return;
 
             var painter = ctx.painter2D;

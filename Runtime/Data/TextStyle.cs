@@ -20,5 +20,8 @@ namespace mehmetsrl.UISystem.Data
 
         /// <summary>TMP character spacing in TMP units. Informational only.</summary>
         public float CharSpacing;
+
+        /// <summary>M3 letter spacing in em units (e.g. 0.1). Applied via USS letter-spacing.</summary>
+        public float LetterSpacing;
     }
 }

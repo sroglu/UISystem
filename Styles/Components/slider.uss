@@ -33,7 +33,15 @@
 .m3-slider__thumb {
     width: 20px;
     height: 20px;
-    background-color: var(--m3-primary, rgb(103, 80, 164));
+    background-color: transparent; /* visual painted by SDFRectElement child */
+}
+
+.m3-slider__stop-dot {
+    background-color: var(--m3-on-surface-variant, rgb(73, 69, 79));
+}
+
+.m3-slider__stop-dot--active {
+    background-color: var(--m3-on-primary, rgb(255, 255, 255));
 }
 
 .m3-slider__value-label {
@@ -46,6 +54,9 @@
     -unity-text-align: middle-center;
 }
 
-.m3-slider.m3-disabled {
+/* SDFRectElement disabled colors handled in C# (Painter2D can't read USS vars).
+   This rule covers non-SDF children (labels, stop dots). */
+.m3-slider.m3-disabled .m3-slider__value-label,
+.m3-slider.m3-disabled .m3-slider__stop-dot {
     opacity: 0.38;
 }

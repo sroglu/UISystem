@@ -21,7 +21,7 @@ namespace mehmetsrl.UISystem.Components
     ///   Stop indicators on active: --m3-on-primary, on inactive: --m3-on-surface-variant
     /// </summary>
     [UxmlElement]
-    public partial class M3Slider : VisualElement
+    public partial class M3Slider : M3ComponentBase
     {
         // ------------------------------------------------------------------ //
         //  USS class constants                                                 //
@@ -48,9 +48,8 @@ namespace mehmetsrl.UISystem.Components
 
         // Resolved theme colors
         private Color _themePrimary;
-        private Color _themeOnPrimary;
         private Color _themeSurfaceVariant;
-        private Color _themeOnSurfaceVariant;
+        private Color _themeOnSurface;
 
         // ------------------------------------------------------------------ //
         //  Children                                                            //
@@ -62,7 +61,6 @@ namespace mehmetsrl.UISystem.Components
         private readonly VisualElement        _stopIndicatorContainer;
         private readonly Label                _valueLabel;
         private readonly RippleElement        _ripple;
-        private readonly StateLayerController _stateLayer;
 
         // ------------------------------------------------------------------ //
         //  Backing fields                                                      //
@@ -72,7 +70,6 @@ namespace mehmetsrl.UISystem.Components
         private float _max      = 1f;
         private float _step     = 0f;   // 0 = continuous
         private bool  _showValueLabel = false;
-        private bool  _disabled = false;
         private bool  _dragging = false;
         private int   _pointerId = -1;
 
@@ -132,14 +129,13 @@ namespace mehmetsrl.UISystem.Components
         }
 
         [UxmlAttribute("disabled")]
-        public bool Disabled
+        public new bool Disabled
         {
-            get => _disabled;
+            get => base.Disabled;
             set
             {
-                _disabled = value;
-                _stateLayer.Disabled = value;
-                EnableInClassList("m3-disabled", value);
+                base.Disabled = value;
+                UpdateTrackLayout();
             }
         }
 
@@ -186,7 +182,6 @@ namespace mehmetsrl.UISystem.Components
             _thumb.style.width    = ThumbWidth;
             _thumb.style.height   = ThumbHeight;
             _thumb.style.position = Position.Absolute;
-            _thumb.style.backgroundColor = Color.clear; // painted by SDFRect child
             _thumb.pickingMode   = PickingMode.Position;
 
             // Thumb visual (SDFRect for rounded capsule)
@@ -202,8 +197,7 @@ namespace mehmetsrl.UISystem.Components
             // --- Ripple + StateLayer on thumb ---
             _ripple = new RippleElement();
             _thumb.Add(_ripple);
-            _stateLayer = new StateLayerController(_thumb, _ripple);
-            _stateLayer.Attach();
+            InitStateLayer(_thumb, _ripple);
 
             // --- Stop indicator container (for discrete sliders) ---
             _stopIndicatorContainer = new VisualElement();
@@ -236,9 +230,6 @@ namespace mehmetsrl.UISystem.Components
             _trackWrap.RegisterCallback<PointerUpEvent>(OnPointerUp);
             _trackWrap.RegisterCallback<PointerCancelEvent>(OnPointerCancel);
 
-            RegisterCallback<GeometryChangedEvent>(OnFirstLayout);
-
-            RefreshThemeColors();
         }
 
         // ------------------------------------------------------------------ //
@@ -313,21 +304,42 @@ namespace mehmetsrl.UISystem.Components
             _trackInactive.style.top = trackTop;
             _stopIndicatorContainer.style.top = trackTop;
 
-            // Value label: above thumb
+            // Value label: centered above thumb using translate for width-independent centering
             if (_showValueLabel)
             {
                 _valueLabel.text = _step > 0 ? _value.ToString("F0") : _value.ToString("F2");
-                _valueLabel.style.left = thumbCenter - 20f;
-                _valueLabel.style.top  = thumbTop - 20f;
+                _valueLabel.style.left = thumbCenter;
+                _valueLabel.style.top  = thumbTop - 28f;
+                _valueLabel.style.translate = new Translate(Length.Percent(-50), 0);
             }
 
-            // Colors
-            _trackActive.FillColorOverride   = _themePrimary;
-            _trackInactive.FillColorOverride = _themeSurfaceVariant;
-            // Thumb visual color
-            if (_thumb.childCount > 0 && _thumb[0] is SDFRectElement thumbVis)
-                thumbVis.FillColorOverride = _themePrimary;
-            _stateLayer.OverlayColor = _themePrimary;
+            // Colors — M3 spec: disabled uses onSurface blended with surface
+            if (base.Disabled)
+            {
+                // Blend onSurface with surface at given ratio for opaque disabled colors
+                Color s = _themeSurfaceVariant; // approximate surface
+                Color o = _themeOnSurface;
+                Color disabledActive   = new Color(
+                    Mathf.Lerp(s.r, o.r, 0.38f),
+                    Mathf.Lerp(s.g, o.g, 0.38f),
+                    Mathf.Lerp(s.b, o.b, 0.38f), 1f);
+                Color disabledInactive = new Color(
+                    Mathf.Lerp(s.r, o.r, 0.12f),
+                    Mathf.Lerp(s.g, o.g, 0.12f),
+                    Mathf.Lerp(s.b, o.b, 0.12f), 1f);
+                _trackActive.FillColorOverride   = disabledActive;
+                _trackInactive.FillColorOverride = disabledInactive;
+                if (_thumb.childCount > 0 && _thumb[0] is SDFRectElement dThumb)
+                    dThumb.FillColorOverride = disabledActive;
+            }
+            else
+            {
+                _trackActive.FillColorOverride   = _themePrimary;
+                _trackInactive.FillColorOverride = _themeSurfaceVariant;
+                if (_thumb.childCount > 0 && _thumb[0] is SDFRectElement thumbVis)
+                    thumbVis.FillColorOverride = _themePrimary;
+            }
+            StateLayer.OverlayColor = _themePrimary;
 
             // Update stop indicator colors
             UpdateStopIndicatorColors(thumbCenter);
@@ -349,6 +361,7 @@ namespace mehmetsrl.UISystem.Components
             for (int i = 0; i <= steps; i++)
             {
                 var dot = new VisualElement();
+                dot.AddToClassList("m3-slider__stop-dot");
                 dot.style.width    = StopIndicatorSize;
                 dot.style.height   = StopIndicatorSize;
                 dot.style.position = Position.Absolute;
@@ -390,9 +403,9 @@ namespace mehmetsrl.UISystem.Components
                 bool underThumb = Mathf.Abs(cx - thumbCenter) < (halfThumb + ThumbTrackGap + 1f);
                 dot.style.display = underThumb ? DisplayStyle.None : DisplayStyle.Flex;
 
-                // Color: on active track = onPrimary, on inactive = onSurfaceVariant
+                // Color: on active track = onPrimary, on inactive = onSurfaceVariant (via USS classes)
                 bool onActive = cx < thumbCenter;
-                dot.style.backgroundColor = new StyleColor(onActive ? _themeOnPrimary : _themeOnSurfaceVariant);
+                dot.EnableInClassList("m3-slider__stop-dot--active", onActive);
             }
         }
 
@@ -400,28 +413,14 @@ namespace mehmetsrl.UISystem.Components
         //  Theme-aware color resolution                                        //
         // ------------------------------------------------------------------ //
 
-        private void OnFirstLayout(GeometryChangedEvent evt)
+        protected override void RefreshThemeColors()
         {
-            UnregisterCallback<GeometryChangedEvent>(OnFirstLayout);
-
-            var tm = ThemeManager.Instance;
-            if (tm != null)
-                tm.OnThemeChanged += _ => RefreshThemeColors();
-
-            RefreshThemeColors();
-            RebuildStopIndicators();
-            UpdateTrackLayout();
-        }
-
-        private void RefreshThemeColors()
-        {
-            var theme = ThemeManager.Instance?.ActiveTheme;
+            var theme = ThemeManager.ActiveTheme;
             if (theme == null) return;
 
-            _themePrimary          = theme.GetColor(ColorRole.Primary);
-            _themeOnPrimary        = theme.GetColor(ColorRole.OnPrimary);
-            _themeSurfaceVariant   = theme.GetColor(ColorRole.SurfaceVariant);
-            _themeOnSurfaceVariant = theme.GetColor(ColorRole.OnSurfaceVariant);
+            _themePrimary        = theme.GetColor(ColorRole.Primary);
+            _themeSurfaceVariant = theme.GetColor(ColorRole.SurfaceVariant);
+            _themeOnSurface      = theme.GetColor(ColorRole.OnSurface);
 
             UpdateTrackLayout();
         }
@@ -432,7 +431,7 @@ namespace mehmetsrl.UISystem.Components
 
         private void OnPointerDown(PointerDownEvent evt)
         {
-            if (_disabled) return;
+            if (base.Disabled) return;
             _dragging   = true;
             _pointerId  = evt.pointerId;
             _trackWrap.CapturePointer(_pointerId);

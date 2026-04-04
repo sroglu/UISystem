@@ -19,11 +19,8 @@ namespace mehmetsrl.UISystem.Core
 
         private void Start()
         {
-            // Register this panel with ThemeManager so light/dark USS is applied to rootVisualElement.
-            if (ThemeManager.Instance != null)
-                ThemeManager.Instance.RegisterPanel(_doc);
+            ThemeManager.RegisterPanel(_doc);
 
-            // rootVisualElement is guaranteed to be ready by Start() — not by OnEnable().
             var root = _doc?.rootVisualElement;
             if (root == null)
             {
@@ -52,17 +49,12 @@ namespace mehmetsrl.UISystem.Core
 
         private void OnDestroy()
         {
-            ThemeManager.Instance?.UnregisterPanel(_doc);
+            ThemeManager.UnregisterPanel(_doc);
         }
 
         private void OnClick(ClickEvent _)
         {
-            if (ThemeManager.Instance == null)
-            {
-                Debug.LogWarning("[UISystem] ThemeSwitchButton: ThemeManager.Instance is null.", this);
-                return;
-            }
-            ThemeManager.Instance.ToggleLightDark();
+            ThemeManager.ToggleLightDark();
         }
     }
 }

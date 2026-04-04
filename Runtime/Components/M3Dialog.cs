@@ -26,7 +26,7 @@ namespace mehmetsrl.UISystem.Components
     ///   dialog.OnConfirm += () => ...;
     ///   dialog.Show(root);
     /// </summary>
-    public class M3Dialog : VisualElement
+    public class M3Dialog : M3ComponentBase
     {
         // ------------------------------------------------------------------ //
         //  USS class constants                                                 //
@@ -108,7 +108,6 @@ namespace mehmetsrl.UISystem.Components
             _scrim.style.left            = 0;
             _scrim.style.right           = 0;
             _scrim.style.bottom          = 0;
-            _scrim.style.backgroundColor = new StyleColor(new Color(0f, 0f, 0f, 0.32f));
             _scrim.style.justifyContent  = Justify.Center;
             _scrim.style.alignItems      = Align.Center;
             _scrim.pickingMode           = PickingMode.Position;
@@ -188,7 +187,6 @@ namespace mehmetsrl.UISystem.Components
         {
             if (_scrim.parent != null)
                 _scrim.RemoveFromHierarchy();
-            RefreshThemeColors();
             parent.Add(_scrim);
         }
 
@@ -209,17 +207,6 @@ namespace mehmetsrl.UISystem.Components
             Close();
         }
 
-        // ------------------------------------------------------------------ //
-        //  Theme-aware color resolution                                        //
-        // ------------------------------------------------------------------ //
 
-        private void RefreshThemeColors()
-        {
-            var theme = ThemeManager.Instance?.ActiveTheme;
-            if (theme == null) return;
-
-            _headlineLabel.style.color = new StyleColor(theme.GetColor(ColorRole.OnSurface));
-            _bodyLabel.style.color     = new StyleColor(theme.GetColor(ColorRole.OnSurfaceVariant));
-        }
     }
 }

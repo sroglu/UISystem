@@ -21,13 +21,13 @@
     transition: background-color 100ms ease-in-out;
 }
 
-/* Filled variant */
+/* Filled variant — background via SDFRectElement.FillColorOverride for rounded corners */
 .m3-textfield__container.m3-textfield--filled {
-    background-color: var(--m3-surface-container-highest, rgb(230, 224, 233));
+    background-color: transparent;
 }
 
 .m3-textfield__container.m3-textfield--filled.m3-textfield--focused {
-    background-color: var(--m3-surface-container-highest, rgb(230, 224, 233));
+    background-color: transparent;
 }
 
 /* Outlined variant */
@@ -83,8 +83,12 @@
 /* ============================================================ */
 
 .m3-textfield__indicator {
-    background-color: var(--m3-on-surface-variant, rgb(73, 69, 79));
+    background-color: var(--m3-outline, rgb(121, 116, 126));
     transition: height 100ms ease-in-out, background-color 100ms ease-in-out;
+}
+
+.m3-textfield--focused .m3-textfield__indicator {
+    background-color: var(--m3-primary, rgb(103, 80, 164));
 }
 
 .m3-textfield--error .m3-textfield__indicator {
@@ -99,6 +103,10 @@
 .m3-textfield__helper {
     font-size: 12px;
     color: var(--m3-on-surface-variant, rgb(73, 69, 79));
+}
+
+.m3-textfield--error .m3-textfield__helper {
+    color: var(--m3-error, rgb(184, 38, 33));
 }
 
 /* ============================================================ */

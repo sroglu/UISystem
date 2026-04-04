@@ -33,7 +33,7 @@ namespace mehmetsrl.UISystem.Components
     ///   &lt;components:M3Toggle value="true" /&gt;
     /// </summary>
     [UxmlElement]
-    public partial class M3Toggle : VisualElement
+    public partial class M3Toggle : M3ComponentBase
     {
         // ------------------------------------------------------------------ //
         //  USS class constants                                                 //
@@ -48,6 +48,8 @@ namespace mehmetsrl.UISystem.Components
         private Color _themeOutline;
         private Color _themeOnSurface;
         private Color _themePrimary;
+        private Color _themeOnPrimary;
+        private Color _themeSurfaceContainerHighest;
 
         // ------------------------------------------------------------------ //
         //  Dimensions (M3 spec)                                                //
@@ -73,13 +75,11 @@ namespace mehmetsrl.UISystem.Components
         private readonly SDFRectElement  _thumb;
         private readonly VisualElement   _checkIcon;
         private readonly RippleElement   _ripple;
-        private readonly StateLayerController _stateLayer;
 
         // ------------------------------------------------------------------ //
         //  Backing fields                                                      //
         // ------------------------------------------------------------------ //
         private bool _value;
-        private bool _disabled;
         private bool _pressed;
 
         // ------------------------------------------------------------------ //
@@ -105,14 +105,10 @@ namespace mehmetsrl.UISystem.Components
 
         /// <summary>When true, dims the toggle and ignores input.</summary>
         [UxmlAttribute("disabled")]
-        public bool Disabled
+        public new bool Disabled
         {
-            get => _disabled;
-            set
-            {
-                _disabled = value;
-                _stateLayer.Disabled = value;
-            }
+            get => base.Disabled;
+            set => base.Disabled = value;
         }
 
         // ------------------------------------------------------------------ //
@@ -193,20 +189,15 @@ namespace mehmetsrl.UISystem.Components
             _track.Add(_thumb);
 
             // --- State layer on track (covers thumb area) ---
-            _stateLayer = new StateLayerController(_track, _ripple);
-            _stateLayer.Attach();
+            InitStateLayer(_track, _ripple);
 
             // --- Events ---
             _track.RegisterCallback<ClickEvent>(OnTrackClicked);
             _track.RegisterCallback<PointerDownEvent>(OnPointerDown);
             _track.RegisterCallback<PointerUpEvent>(OnPointerUp);
             _track.RegisterCallback<PointerLeaveEvent>(OnPointerLeave);
-            RegisterCallback<GeometryChangedEvent>(OnFirstLayout);
 
             Add(_track);
-
-            // Apply initial state
-            RefreshThemeColors();
             ApplyVisualState();
         }
 
@@ -231,6 +222,10 @@ namespace mehmetsrl.UISystem.Components
                 _track.AddToClassList(UncheckedClass);
             }
 
+            // Track & thumb colors via inline styles (USS class toggle doesn't repaint during :hover)
+            _track.style.backgroundColor = _value ? _themePrimary : _themeSurfaceContainerHighest;
+            _thumb.style.backgroundColor = _value ? _themeOnPrimary : _themeOutline;
+
             // Track outline: 2dp when off, 0 when on
             _track.OutlineThickness = _value ? 0f : TrackOutline;
             _track.OutlineColor = _themeOutline;
@@ -240,14 +235,13 @@ namespace mehmetsrl.UISystem.Components
             float thumbRadius = thumbSize / 2f;
             _thumb.style.width  = thumbSize;
             _thumb.style.height = thumbSize;
-            _thumb.CornerRadius = thumbRadius; // circular: radius = size/2
-            // USS border-radius so background-color is also rounded
+            _thumb.CornerRadius = thumbRadius;
             _thumb.style.borderTopLeftRadius     = thumbRadius;
             _thumb.style.borderTopRightRadius    = thumbRadius;
             _thumb.style.borderBottomLeftRadius  = thumbRadius;
             _thumb.style.borderBottomRightRadius = thumbRadius;
 
-            // Thumb position (centered vertically, animated horizontally via USS transition)
+            // Thumb position
             float thumbX = _value ? ThumbOnX : ThumbOffX;
             _thumb.style.left = thumbX - thumbSize / 2f;
             _thumb.style.top  = (TrackHeight - thumbSize) / 2f;
@@ -255,28 +249,23 @@ namespace mehmetsrl.UISystem.Components
             // Checkmark: visible only when on (M3 Switch spec)
             _checkIcon.style.opacity = _value ? 1f : 0f;
             _checkIcon.MarkDirtyRepaint();
+            _track.MarkDirtyRepaint();
+            _thumb.MarkDirtyRepaint();
 
             // State layer overlay color: on-surface for both states (per M3 spec)
-            _stateLayer.OverlayColor = _themeOnSurface;
+            StateLayer.OverlayColor = _themeOnSurface;
         }
 
-        private void OnFirstLayout(GeometryChangedEvent evt)
+        protected override void RefreshThemeColors()
         {
-            UnregisterCallback<GeometryChangedEvent>(OnFirstLayout);
-            var tm = ThemeManager.Instance;
-            if (tm != null)
-                tm.OnThemeChanged += _ => RefreshThemeColors();
-            RefreshThemeColors();
-        }
-
-        private void RefreshThemeColors()
-        {
-            var theme = ThemeManager.Instance?.ActiveTheme;
+            var theme = ThemeManager.ActiveTheme;
             if (theme == null) return;
 
             _themeOutline   = theme.GetColor(Enums.ColorRole.Outline);
             _themeOnSurface = theme.GetColor(Enums.ColorRole.OnSurface);
             _themePrimary   = theme.GetColor(Enums.ColorRole.Primary);
+            _themeOnPrimary = theme.GetColor(Enums.ColorRole.OnPrimary);
+            _themeSurfaceContainerHighest = theme.GetColor(Enums.ColorRole.SurfaceContainerHighest);
 
             ApplyVisualState();
             _checkIcon.MarkDirtyRepaint();
@@ -288,20 +277,20 @@ namespace mehmetsrl.UISystem.Components
 
         private void OnTrackClicked(ClickEvent evt)
         {
-            if (_disabled) return;
+            if (base.Disabled) return;
             Value = !_value;
         }
 
         private void OnPointerDown(PointerDownEvent evt)
         {
-            if (_disabled) return;
+            if (base.Disabled) return;
             _pressed = true;
             ApplyThumbSize();
         }
 
         private void OnPointerUp(PointerUpEvent evt)
         {
-            if (_disabled) return;
+            if (base.Disabled) return;
             _pressed = false;
             ApplyThumbSize();
         }

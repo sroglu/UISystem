@@ -8,7 +8,7 @@ namespace mehmetsrl.UISystem
     /// <summary>
     /// Single ScriptableObject holding the full M3 token set for one theme variant
     /// (light or dark). All UISystem components read from the active ThemeData via
-    /// ThemeManager.Instance.ActiveTheme.
+    /// ThemeManager.ActiveTheme.
     /// </summary>
     [CreateAssetMenu(menuName = "UISystem/Theme Data", fileName = "ThemeData")]
     public class ThemeData : ScriptableObject
@@ -32,6 +32,14 @@ namespace mehmetsrl.UISystem
         // ------------------------------------------------------------------ //
         [BoxGroup("Shape")]
         [SerializeField] private ShapePresets _shapes = ShapePresets.Default;
+
+        // ------------------------------------------------------------------ //
+        //  Dynamic Color Seed (informational — records generation source)      //
+        // ------------------------------------------------------------------ //
+        [BoxGroup("Dynamic Color")]
+        [Tooltip("Seed color used to generate this theme via DynamicColorGenerator. Informational only — does not affect runtime.")]
+        [ShowIf("@_seedColor != default(UnityEngine.Color)")]
+        [SerializeField] private Color _seedColor;
 
         // ------------------------------------------------------------------ //
         //  Motion Presets (Emphasized, Standard, EmphasizedDecelerate,        //
@@ -69,10 +77,38 @@ namespace mehmetsrl.UISystem
                 case ColorRole.Outline:               return _colors.Outline;
                 case ColorRole.OutlineVariant:        return _colors.OutlineVariant;
                 case ColorRole.Background:            return _colors.Background;
-                case ColorRole.InverseSurface:        return _colors.InverseSurface;
-                case ColorRole.InverseOnSurface:      return _colors.InverseOnSurface;
-                case ColorRole.InversePrimary:        return _colors.InversePrimary;
-                default:                              return Color.magenta; // indicates missing mapping
+                case ColorRole.InverseSurface:         return _colors.InverseSurface;
+                case ColorRole.InverseOnSurface:       return _colors.InverseOnSurface;
+                case ColorRole.InversePrimary:         return _colors.InversePrimary;
+                case ColorRole.Tertiary:               return _colors.Tertiary;
+                case ColorRole.OnTertiary:             return _colors.OnTertiary;
+                case ColorRole.TertiaryContainer:      return _colors.TertiaryContainer;
+                case ColorRole.OnTertiaryContainer:    return _colors.OnTertiaryContainer;
+                case ColorRole.SurfaceContainerLowest:  return _colors.SurfaceContainerLowest;
+                case ColorRole.SurfaceContainer:        return _colors.SurfaceContainer;
+                case ColorRole.SurfaceContainerLow:     return _colors.SurfaceContainerLow;
+                case ColorRole.SurfaceContainerHigh:    return _colors.SurfaceContainerHigh;
+                case ColorRole.SurfaceContainerHighest: return _colors.SurfaceContainerHighest;
+                case ColorRole.Scrim:                   return _colors.Scrim;
+                case ColorRole.SurfaceTint:             return _colors.SurfaceTint;
+                case ColorRole.PrimaryFixed:            return _colors.PrimaryFixed;
+                case ColorRole.PrimaryFixedDim:         return _colors.PrimaryFixedDim;
+                case ColorRole.OnPrimaryFixed:          return _colors.OnPrimaryFixed;
+                case ColorRole.OnPrimaryFixedVariant:   return _colors.OnPrimaryFixedVariant;
+                case ColorRole.SecondaryFixed:          return _colors.SecondaryFixed;
+                case ColorRole.SecondaryFixedDim:       return _colors.SecondaryFixedDim;
+                case ColorRole.OnSecondaryFixed:        return _colors.OnSecondaryFixed;
+                case ColorRole.OnSecondaryFixedVariant: return _colors.OnSecondaryFixedVariant;
+                case ColorRole.TertiaryFixed:           return _colors.TertiaryFixed;
+                case ColorRole.TertiaryFixedDim:        return _colors.TertiaryFixedDim;
+                case ColorRole.OnTertiaryFixed:         return _colors.OnTertiaryFixed;
+                case ColorRole.OnTertiaryFixedVariant:  return _colors.OnTertiaryFixedVariant;
+                case ColorRole.ErrorContainer:          return _colors.ErrorContainer;
+                case ColorRole.OnErrorContainer:        return _colors.OnErrorContainer;
+                case ColorRole.SurfaceDim:              return _colors.SurfaceDim;
+                case ColorRole.SurfaceBright:           return _colors.SurfaceBright;
+                case ColorRole.Shadow:                  return _colors.Shadow;
+                default:                               return Color.magenta; // indicates missing mapping
             }
         }
 

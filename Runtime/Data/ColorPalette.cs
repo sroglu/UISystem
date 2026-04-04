@@ -53,5 +53,69 @@ namespace mehmetsrl.UISystem.Data
         public Color InverseOnSurface;
         [BoxGroup("Inverse")]
         public Color InversePrimary;
+
+        [BoxGroup("Tertiary")]
+        public Color Tertiary;
+        [BoxGroup("Tertiary")]
+        public Color OnTertiary;
+        [BoxGroup("Tertiary")]
+        public Color TertiaryContainer;
+        [BoxGroup("Tertiary")]
+        public Color OnTertiaryContainer;
+
+        [BoxGroup("Surface Containers")]
+        public Color SurfaceContainerLowest;
+        [BoxGroup("Surface Containers")]
+        public Color SurfaceContainerLow;
+        [BoxGroup("Surface Containers")]
+        public Color SurfaceContainer;
+        [BoxGroup("Surface Containers")]
+        public Color SurfaceContainerHigh;
+        [BoxGroup("Surface Containers")]
+        public Color SurfaceContainerHighest;
+
+        [BoxGroup("Primary Fixed")]
+        public Color PrimaryFixed;
+        [BoxGroup("Primary Fixed")]
+        public Color PrimaryFixedDim;
+        [BoxGroup("Primary Fixed")]
+        public Color OnPrimaryFixed;
+        [BoxGroup("Primary Fixed")]
+        public Color OnPrimaryFixedVariant;
+
+        [BoxGroup("Secondary Fixed")]
+        public Color SecondaryFixed;
+        [BoxGroup("Secondary Fixed")]
+        public Color SecondaryFixedDim;
+        [BoxGroup("Secondary Fixed")]
+        public Color OnSecondaryFixed;
+        [BoxGroup("Secondary Fixed")]
+        public Color OnSecondaryFixedVariant;
+
+        [BoxGroup("Tertiary Fixed")]
+        public Color TertiaryFixed;
+        [BoxGroup("Tertiary Fixed")]
+        public Color TertiaryFixedDim;
+        [BoxGroup("Tertiary Fixed")]
+        public Color OnTertiaryFixed;
+        [BoxGroup("Tertiary Fixed")]
+        public Color OnTertiaryFixedVariant;
+
+        [BoxGroup("Error")]
+        public Color ErrorContainer;
+        [BoxGroup("Error")]
+        public Color OnErrorContainer;
+
+        [BoxGroup("Surface")]
+        public Color SurfaceDim;
+        [BoxGroup("Surface")]
+        public Color SurfaceBright;
+
+        [BoxGroup("Utility")]
+        public Color Scrim;
+        [BoxGroup("Utility")]
+        public Color SurfaceTint;
+        [BoxGroup("Utility")]
+        public Color Shadow;
     }
 }

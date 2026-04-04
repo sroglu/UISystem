@@ -596,13 +596,26 @@ UISystem/
 
 ## Out of Scope (For Now)
 
-- **Dynamic Color generation:** Automatic palette generation from seed color (HCT). Manual definition sufficient initially.
+- **GPU SDF Shader (WP-1 deferred):** The planned GPU-based SDF shadow shader is deferred. CPU `Painter2D` concentric fill loop in `SDFRectElement` is the accepted shadow implementation. See `COMPONENT-GUIDE.md § Performance Baseline — SDFRectElement Rendering` for the benchmark results that justified this decision. The GPU shader may be revisited if elevated-component scene counts exceed the documented envelope (~50 components).
 - **Screen/Page management:** Navigation components are visual only.
 - **Localization integration:** Typography manages fonts/sizes; string management is external.
 - **Accessibility:** M3 contrast and touch target requirements followed in principle; WCAG testing out of scope.
-- **Complex components:** Chip, Slider, Date Picker, Bottom Sheet, Drawer, Menu, Progress Indicator — added as needed.
 - **Asset Store release:** Documentation and packaging deferred.
 - **Built-in Render Pipeline support:** UISystem requires URP for Shader Graph UI support.
+
+## Implemented (v0.3.0 — 006-m3-uisystem-overhaul)
+
+- **USS-Only Theming:** All 14 original components migrated to pure USS `var(--m3-*)` — no inline C# color assignments.
+- **M3ComponentBase:** Abstract base class eliminates boilerplate (ThemeManager subscription, StateLayerController lifecycle).
+- **ThemeManager static API:** No MonoBehaviour dependency.
+- **Typography 15-Role Scale:** Full M3 Display/Headline/Title/Body/Label L/M/S scale in USS and TypographyConfig SO.
+- **TextCore FontAsset:** Migrated from TMP_FontAsset to TextCore.Text.FontAsset.
+- **USS Transitions:** Motion duration tokens (`--m3-motion-duration-*`) replace hardcoded `ms` values in all component USS files.
+- **MaterialSymbols:** Font-based icon rendering via `MaterialSymbols` static class; FAB and Chip migrated from Painter2D.
+- **Dynamic Color / Material You:** `DynamicColorGenerator` Editor tool generates ThemeData from seed color using HCT math.
+- **27 Color Tokens:** Added Tertiary family, SurfaceContainerLowest, Scrim, SurfaceTint.
+- **Unified Showcase Scene:** Single scene with per-component Overview/Specs/Guidelines tabs and M3 design principles.
+- **New Components (16 total):** ProgressIndicator, TopAppBar, Tabs, Menu, Divider, Badge, NavigationDrawer, BottomSheet, SearchBar, ListItem/List, SegmentedButton, NavigationRail, BottomAppBar, Tooltip, DatePicker, TimePicker.
 
 ---
 

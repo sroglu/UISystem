@@ -30,7 +30,7 @@ namespace mehmetsrl.UISystem.Components
     ///   &lt;components:M3RadioButton selected="true" /&gt;
     /// </summary>
     [UxmlElement]
-    public partial class M3RadioButton : VisualElement
+    public partial class M3RadioButton : M3ComponentBase
     {
         // ------------------------------------------------------------------ //
         //  USS class constants                                                 //
@@ -61,13 +61,11 @@ namespace mehmetsrl.UISystem.Components
         private readonly SDFRectElement       _outer;
         private readonly SDFRectElement       _inner;
         private readonly RippleElement        _ripple;
-        private readonly StateLayerController _stateLayer;
 
         // ------------------------------------------------------------------ //
         //  Backing fields                                                      //
         // ------------------------------------------------------------------ //
         private bool   _selected;
-        private bool   _disabled;
         private string _groupName;
 
         // ------------------------------------------------------------------ //
@@ -96,15 +94,10 @@ namespace mehmetsrl.UISystem.Components
 
         /// <summary>When true, dims the radio button and ignores input.</summary>
         [UxmlAttribute("disabled")]
-        public bool Disabled
+        public new bool Disabled
         {
-            get => _disabled;
-            set
-            {
-                _disabled = value;
-                _stateLayer.Disabled = value;
-                EnableInClassList("m3-disabled", value);
-            }
+            get => base.Disabled;
+            set => base.Disabled = value;
         }
 
         /// <summary>Group name for mutual exclusion (optional; use M3RadioGroup for code-based grouping).</summary>
@@ -166,16 +159,12 @@ namespace mehmetsrl.UISystem.Components
             _outer.Add(_inner);
 
             // --- State layer ---
-            _stateLayer = new StateLayerController(_outer, _ripple);
-            _stateLayer.Attach();
+            InitStateLayer(_outer, _ripple);
 
             // --- Events ---
             _outer.RegisterCallback<ClickEvent>(OnOuterClicked);
 
-            RegisterCallback<GeometryChangedEvent>(OnFirstLayout);
-
             Add(_outer);
-            RefreshThemeColors();
             ApplyVisualState();
         }
 
@@ -203,26 +192,16 @@ namespace mehmetsrl.UISystem.Components
                 _inner.style.display    = DisplayStyle.None;
             }
 
-            _stateLayer.OverlayColor = _themeOnSurface;
+            StateLayer.OverlayColor = _themeOnSurface;
         }
 
         // ------------------------------------------------------------------ //
         //  Theme-aware color resolution                                        //
         // ------------------------------------------------------------------ //
 
-        private void OnFirstLayout(GeometryChangedEvent evt)
+        protected override void RefreshThemeColors()
         {
-            UnregisterCallback<GeometryChangedEvent>(OnFirstLayout);
-
-            var tm = ThemeManager.Instance;
-            if (tm != null)
-                tm.OnThemeChanged += _ => RefreshThemeColors();
-            RefreshThemeColors();
-        }
-
-        private void RefreshThemeColors()
-        {
-            var theme = ThemeManager.Instance?.ActiveTheme;
+            var theme = ThemeManager.ActiveTheme;
             if (theme == null) return;
 
             _themePrimary   = theme.GetColor(ColorRole.Primary);
@@ -258,7 +237,7 @@ namespace mehmetsrl.UISystem.Components
 
         private void OnOuterClicked(ClickEvent evt)
         {
-            if (_disabled || _selected) return;
+            if (base.Disabled || _selected) return;
             GroupSelectionRequested?.Invoke(this);
             if (GroupSelectionRequested == null)
             {

@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -7,125 +6,125 @@ using UnityEngine.UIElements;
 namespace mehmetsrl.UISystem.Core
 {
     /// <summary>
-    /// MonoBehaviour singleton that holds the active ThemeData and broadcasts
-    /// OnThemeChanged when the active theme is swapped. Survives scene loads via
-    /// DontDestroyOnLoad. Only one instance is allowed per application lifetime.
+    /// Static theme manager that holds the active ThemeData and broadcasts
+    /// OnThemeChanged when the active theme is swapped.
     ///
     /// USS sync: On SetTheme(), ThemeManager swaps the light/dark USS StyleSheet on
     /// each managed panel's rootVisualElement. The stylesheets define all --m3-*
     /// custom properties in a :root { } block, which cascade to all descendants.
     /// Elements using var(--m3-*) update automatically when the stylesheet is swapped.
+    ///
+    /// Initialization: Call Initialize() from ThemeBootstrapper or manually before
+    /// any UI is created. See ThemeBootstrapper for automatic setup from Resources.
     /// </summary>
-    public class ThemeManager : MonoBehaviour
+    public static class ThemeManager
     {
         // ------------------------------------------------------------------ //
-        //  Singleton                                                           //
+        //  State                                                              //
         // ------------------------------------------------------------------ //
-        private static ThemeManager _instance;
-
-        /// <summary>
-        /// Active singleton instance. Searches the scene if the static reference was cleared
-        /// (e.g. after an Editor domain reload), so it is safe to call at any time.
-        /// Returns null if no ThemeManager exists in any loaded scene.
-        /// </summary>
-        public static ThemeManager Instance
-        {
-            get
-            {
-                if (_instance == null)
-                    _instance = FindObjectOfType<ThemeManager>();
-                return _instance;
-            }
-        }
+        private static ThemeData       _lightTheme;
+        private static ThemeData       _darkTheme;
+        private static ThemeData       _activeTheme;
+        private static TypographyConfig _typographyConfig;
+        private static StyleSheet      _lightSheet;
+        private static StyleSheet      _darkSheet;
+        private static readonly List<WeakReference<UIDocument>> _managedPanels = new();
+        private static bool            _initialized;
 
         // ------------------------------------------------------------------ //
-        //  Serialized Fields                                                   //
+        //  Public API                                                         //
         // ------------------------------------------------------------------ //
-        [SerializeField] private ThemeData _lightTheme;
-        [SerializeField] private ThemeData _darkTheme;
-        [SerializeField] private ThemeData _activeTheme;
-        [SerializeField] private TypographyConfig _typographyConfig;
 
-        [Tooltip("USS stylesheet for the light theme — defines all --m3-* CSS custom properties.")]
-        [SerializeField] private StyleSheet _lightSheet;
+        /// <summary>Whether Initialize() has been called with valid data.</summary>
+        public static bool IsInitialized => _initialized;
 
-        [Tooltip("USS stylesheet for the dark theme — defines all --m3-* CSS custom properties.")]
-        [SerializeField] private StyleSheet _darkSheet;
+        /// <summary>Currently active theme. Null before Initialize.</summary>
+        public static ThemeData ActiveTheme => _activeTheme;
 
-        [Tooltip("UIDocument panels that will receive theme USS stylesheet swaps on theme change.")]
-        [SerializeField] private List<UIDocument> _managedPanels = new List<UIDocument>();
-
-        // ------------------------------------------------------------------ //
-        //  Public API                                                          //
-        // ------------------------------------------------------------------ //
-        /// <summary>Currently active theme. Never null after Awake if themes are assigned.</summary>
-        public ThemeData ActiveTheme => _activeTheme;
-
-        /// <summary>Typography configuration used by TypographyResolver when no local override is set.</summary>
-        public TypographyConfig TypographyConfig => _typographyConfig;
+        /// <summary>Typography configuration. Null if not set.</summary>
+        public static TypographyConfig TypographyConfig => _typographyConfig;
 
         /// <summary>Fired on the same frame as SetTheme(). Arg is the new active ThemeData.</summary>
-        public event Action<ThemeData> OnThemeChanged;
+        public static event Action<ThemeData> OnThemeChanged;
 
-        /// <summary>Fired one frame after SetTheme(), after USS styles have resolved.</summary>
-        public event Action OnThemeApplied;
+        /// <summary>
+        /// One-time setup. Call before any UI is created. Safe to call multiple times —
+        /// subsequent calls update the references and re-sync all panels.
+        /// </summary>
+        public static void Initialize(
+            ThemeData lightTheme,
+            ThemeData darkTheme,
+            StyleSheet lightSheet,
+            StyleSheet darkSheet,
+            TypographyConfig typographyConfig = null)
+        {
+            _lightTheme      = lightTheme;
+            _darkTheme       = darkTheme;
+            _lightSheet      = lightSheet;
+            _darkSheet       = darkSheet;
+            _typographyConfig = typographyConfig;
+            _initialized     = true;
+
+            if (_activeTheme == null && _lightTheme != null)
+                _activeTheme = _lightTheme;
+
+            SyncAllPanels();
+        }
 
         /// <summary>
         /// Sets a new active theme, swaps USS stylesheets on all managed panels,
         /// and notifies all subscribers within the same frame.
         /// </summary>
-        public void SetTheme(ThemeData theme)
+        public static void SetTheme(ThemeData theme)
         {
             if (theme == null)
             {
-                Debug.LogError("[UISystem] ThemeManager.SetTheme: null theme provided — ignoring.", this);
+                Debug.LogError("[UISystem] ThemeManager.SetTheme: null theme provided — ignoring.");
                 return;
             }
             _activeTheme = theme;
             SyncAllPanels();
-            // Invoke each subscriber individually so one exception doesn't block the rest
+
             if (OnThemeChanged != null)
             {
                 foreach (var handler in OnThemeChanged.GetInvocationList())
                 {
                     try { ((Action<ThemeData>)handler)(_activeTheme); }
-                    catch (System.Exception ex) { Debug.LogException(ex); }
+                    catch (Exception ex) { Debug.LogException(ex); }
                 }
             }
-            if (OnThemeApplied != null)
-                StartCoroutine(FireThemeAppliedNextFrame());
-        }
-
-        private IEnumerator FireThemeAppliedNextFrame()
-        {
-            yield return new WaitForEndOfFrame();
-            yield return null; // extra frame for USS style resolution
-            OnThemeApplied?.Invoke();
         }
 
         /// <summary>
         /// Toggles between the assigned light and dark theme variants.
-        /// Logs a warning if either theme asset is unassigned.
         /// </summary>
-        public void ToggleLightDark()
+        public static void ToggleLightDark()
         {
             if (_lightTheme == null || _darkTheme == null)
             {
-                Debug.LogWarning("[UISystem] ThemeManager.ToggleLightDark: LightTheme or DarkTheme is not assigned.", this);
+                Debug.LogWarning("[UISystem] ThemeManager.ToggleLightDark: LightTheme or DarkTheme is not assigned.");
                 return;
             }
             SetTheme(_activeTheme == _lightTheme ? _darkTheme : _lightTheme);
         }
 
         /// <summary>
-        /// Register a UIDocument to receive theme USS sync. Call from Awake/OnEnable
-        /// on any panel spawned at runtime after ThemeManager already exists.
+        /// Register a UIDocument to receive theme USS sync. Call from Start()
+        /// on any panel spawned at runtime.
         /// </summary>
-        public void RegisterPanel(UIDocument doc)
+        public static void RegisterPanel(UIDocument doc)
         {
             if (doc == null) return;
-            if (!_managedPanels.Contains(doc))
-                _managedPanels.Add(doc);
+
+            // Check for duplicates
+            foreach (var wr in _managedPanels)
+            {
+                if (wr.TryGetTarget(out var existing) && existing == doc)
+                    return;
+            }
+
+            _managedPanels.Add(new WeakReference<UIDocument>(doc));
+
             if (_activeTheme != null)
                 SyncToPanel(doc);
         }
@@ -133,16 +132,15 @@ namespace mehmetsrl.UISystem.Core
         /// <summary>
         /// Unregister a UIDocument (e.g., before it is destroyed).
         /// </summary>
-        public void UnregisterPanel(UIDocument doc)
+        public static void UnregisterPanel(UIDocument doc)
         {
-            _managedPanels.Remove(doc);
+            _managedPanels.RemoveAll(wr => !wr.TryGetTarget(out var d) || d == doc);
         }
 
         /// <summary>
         /// Swap the active theme USS stylesheet on a single panel's rootVisualElement.
-        /// Removes the inactive sheet (if present) and adds the active sheet.
         /// </summary>
-        public void SyncToPanel(UIDocument doc)
+        public static void SyncToPanel(UIDocument doc)
         {
             if (doc == null || _activeTheme == null) return;
             var root = doc.rootVisualElement;
@@ -160,42 +158,38 @@ namespace mehmetsrl.UISystem.Core
         }
 
         // ------------------------------------------------------------------ //
-        //  Private                                                             //
+        //  Private                                                            //
         // ------------------------------------------------------------------ //
-        private void SyncAllPanels()
+        private static void SyncAllPanels()
         {
-            _managedPanels.RemoveAll(p => p == null);
-            foreach (var doc in _managedPanels)
-                SyncToPanel(doc);
-        }
+            // Remove dead references
+            _managedPanels.RemoveAll(wr => !wr.TryGetTarget(out _));
 
-        // ------------------------------------------------------------------ //
-        //  Lifecycle                                                           //
-        // ------------------------------------------------------------------ //
-        private void Awake()
-        {
-            if (_instance != null && _instance != this)
+            foreach (var wr in _managedPanels)
             {
-                Debug.LogWarning("[UISystem] ThemeManager: duplicate instance detected — destroying this one.", this);
-                Destroy(gameObject);
-                return;
+                if (wr.TryGetTarget(out var doc))
+                    SyncToPanel(doc);
             }
-            _instance = this;
-            DontDestroyOnLoad(gameObject);
-
-            if (_activeTheme == null && _lightTheme != null)
-            {
-                _activeTheme = _lightTheme;
-                Debug.Log("[UISystem] ThemeManager: ActiveTheme defaulted to LightTheme.", this);
-            }
-
-            SyncAllPanels();
         }
 
-        private void OnDestroy()
+        // ------------------------------------------------------------------ //
+        //  Domain Reload Support (Editor)                                     //
+        // ------------------------------------------------------------------ //
+#if UNITY_EDITOR
+        [UnityEditor.InitializeOnLoadMethod]
+        private static void EditorDomainReload()
         {
-            if (_instance == this)
-                _instance = null;
+            // Reset state on domain reload so ThemeBootstrapper re-initializes
+            _initialized = false;
+            _activeTheme = null;
+            _lightTheme  = null;
+            _darkTheme   = null;
+            _lightSheet  = null;
+            _darkSheet   = null;
+            _typographyConfig = null;
+            _managedPanels.Clear();
+            OnThemeChanged = null;
         }
+#endif
     }
 }

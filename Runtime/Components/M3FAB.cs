@@ -1,6 +1,7 @@
 using System;
 using mehmetsrl.UISystem.Core;
 using mehmetsrl.UISystem.Enums;
+using mehmetsrl.UISystem.Utils;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -23,7 +24,7 @@ namespace mehmetsrl.UISystem.Components
     /// USS: fab.uss
     /// </summary>
     [UxmlElement]
-    public partial class M3FAB : VisualElement
+    public partial class M3FAB : M3ComponentBase
     {
         // ------------------------------------------------------------------ //
         //  USS class constants                                                 //
@@ -35,8 +36,6 @@ namespace mehmetsrl.UISystem.Components
         private const string ExtendedClass = "m3-fab--extended";
         private const string IconClass     = "m3-fab__icon";
         private const string LabelClass    = "m3-fab__label";
-
-        private const string DefaultIconText = "\ue145";
 
         // ------------------------------------------------------------------ //
         //  Size config                                                         //
@@ -55,11 +54,10 @@ namespace mehmetsrl.UISystem.Components
         // ------------------------------------------------------------------ //
         //  Children                                                            //
         // ------------------------------------------------------------------ //
-        private readonly SDFRectElement       _container;
-        private readonly VisualElement       _iconEl;
-        private readonly Label                _labelEl;
-        private readonly RippleElement        _ripple;
-        private readonly StateLayerController _stateLayer;
+        private readonly SDFRectElement _container;
+        private readonly Label          _iconEl;
+        private readonly Label          _labelEl;
+        private readonly RippleElement  _ripple;
 
         // ------------------------------------------------------------------ //
         //  Backing fields                                                      //
@@ -68,7 +66,6 @@ namespace mehmetsrl.UISystem.Components
         private bool    _extended = false;
         private string  _text     = string.Empty;
         private FABIcon _fabIcon  = FABIcon.Add;
-        private bool    _disabled = false;
 
         // ------------------------------------------------------------------ //
         //  Public API                                                          //
@@ -101,25 +98,20 @@ namespace mehmetsrl.UISystem.Components
             set { _text = value; _labelEl.text = value ?? string.Empty; }
         }
 
-        /// <summary>Painter2D icon type.</summary>
+        /// <summary>Icon type (mapped to Material Symbols font glyph).</summary>
         [UxmlAttribute("icon")]
         public FABIcon Icon
         {
             get => _fabIcon;
-            set { _fabIcon = value; _iconEl.MarkDirtyRepaint(); }
+            set { _fabIcon = value; _iconEl.text = GetIconText(value); }
         }
 
         /// <summary>When true, dims and ignores input.</summary>
         [UxmlAttribute("disabled")]
-        public bool Disabled
+        public new bool Disabled
         {
-            get => _disabled;
-            set
-            {
-                _disabled = value;
-                _stateLayer.Disabled = value;
-                EnableInClassList("m3-disabled", value);
-            }
+            get => base.Disabled;
+            set => base.Disabled = value;
         }
 
         // ------------------------------------------------------------------ //
@@ -142,13 +134,11 @@ namespace mehmetsrl.UISystem.Components
             _ripple = new RippleElement();
             _container.Add(_ripple);
 
-            // --- Icon (Painter2D) ---
-            _iconEl = new VisualElement();
+            // --- Icon (Material Symbols font) ---
+            _iconEl = new Label(GetIconText(_fabIcon));
+            _iconEl.AddToClassList("m3-icon");
             _iconEl.AddToClassList(IconClass);
             _iconEl.pickingMode = PickingMode.Ignore;
-            _iconEl.style.width  = 24f;
-            _iconEl.style.height = 24f;
-            _iconEl.generateVisualContent += OnDrawIcon;
             _container.Add(_iconEl);
 
             // --- Label (extended mode only) ---
@@ -160,16 +150,12 @@ namespace mehmetsrl.UISystem.Components
             _container.Add(_labelEl);
 
             // --- State layer ---
-            _stateLayer = new StateLayerController(_container, _ripple);
-            _stateLayer.Attach();
+            InitStateLayer(_container, _ripple);
 
             // --- Events ---
             _container.RegisterCallback<ClickEvent>(OnContainerClicked);
 
-            RegisterCallback<GeometryChangedEvent>(OnFirstLayout);
-
             Add(_container);
-            RefreshThemeColors();
             ApplySize();
         }
 
@@ -199,8 +185,7 @@ namespace mehmetsrl.UISystem.Components
                 _container.style.minWidth = 80f;
                 _container.style.paddingLeft  = 16f;
                 _container.style.paddingRight = 20f;
-                _iconEl.style.width  = 24f;
-                _iconEl.style.height = 24f;
+                _iconEl.style.fontSize    = 24f;
                 _iconEl.style.marginRight = 8f;
                 _labelEl.style.display = DisplayStyle.Flex;
             }
@@ -225,42 +210,27 @@ namespace mehmetsrl.UISystem.Components
                 _container.style.paddingLeft  = 0f;
                 _container.style.paddingRight = 0f;
 
-                float iconSize = _size == FABSize.Large ? 36f : 24f;
-                _iconEl.style.width  = iconSize;
-                _iconEl.style.height = iconSize;
+                _iconEl.style.fontSize    = _size == FABSize.Large ? 36f : 24f;
                 _iconEl.style.marginRight = 0f;
                 _labelEl.style.display = DisplayStyle.None;
             }
 
-            _stateLayer.OverlayColor = _themeOnPrimaryContainer;
+            StateLayer.OverlayColor = _themeOnPrimaryContainer;
         }
 
         // ------------------------------------------------------------------ //
         //  Theme-aware color resolution                                        //
         // ------------------------------------------------------------------ //
 
-        private void OnFirstLayout(GeometryChangedEvent evt)
+        protected override void RefreshThemeColors()
         {
-            UnregisterCallback<GeometryChangedEvent>(OnFirstLayout);
-
-            var tm = ThemeManager.Instance;
-            if (tm != null)
-                tm.OnThemeChanged += _ => RefreshThemeColors();
-            RefreshThemeColors();
-        }
-
-        private void RefreshThemeColors()
-        {
-            var theme = ThemeManager.Instance?.ActiveTheme;
+            var theme = ThemeManager.ActiveTheme;
             if (theme == null) return;
 
             _themePrimaryContainer   = theme.GetColor(ColorRole.PrimaryContainer);
             _themeOnPrimaryContainer = theme.GetColor(ColorRole.OnPrimaryContainer);
 
             _container.FillColorOverride = _themePrimaryContainer;
-            _labelEl.style.color  = new StyleColor(_themeOnPrimaryContainer);
-            _iconEl.MarkDirtyRepaint();
-
             ApplySize();
         }
 
@@ -270,134 +240,22 @@ namespace mehmetsrl.UISystem.Components
 
         private void OnContainerClicked(ClickEvent evt)
         {
-            if (_disabled) return;
+            if (base.Disabled) return;
             OnClick?.Invoke();
         }
 
         // ------------------------------------------------------------------ //
-        //  Painter2D Icon Drawing                                              //
+        //  Icon Text Mapping                                                   //
         // ------------------------------------------------------------------ //
 
-        private void OnDrawIcon(MeshGenerationContext ctx)
+        private static string GetIconText(FABIcon icon) => icon switch
         {
-            float w = _iconEl.layout.width;
-            float h = _iconEl.layout.height;
-            if (w < 1f || h < 1f) return;
-
-            var p = ctx.painter2D;
-            Color iconColor = _themeOnPrimaryContainer;
-            p.strokeColor = iconColor;
-            float strokeW = Mathf.Max(1.5f, Mathf.Min(w, h) * 0.10f);
-            p.lineWidth   = strokeW;
-            p.lineCap     = LineCap.Round;
-            p.lineJoin    = LineJoin.Round;
-
-            float s  = Mathf.Min(w, h);
-            float cx = w / 2f, cy = h / 2f;
-
-            switch (_fabIcon)
-            {
-                case FABIcon.Add:
-                    // Plus sign
-                    float half = s * 0.30f;
-                    p.BeginPath();
-                    p.MoveTo(new Vector2(cx - half, cy));
-                    p.LineTo(new Vector2(cx + half, cy));
-                    p.Stroke();
-                    p.BeginPath();
-                    p.MoveTo(new Vector2(cx, cy - half));
-                    p.LineTo(new Vector2(cx, cy + half));
-                    p.Stroke();
-                    break;
-
-                case FABIcon.Edit:
-                    // Pencil icon
-                    float penLen = s * 0.55f;
-                    float penW2  = s * 0.08f;
-                    // Pen body (diagonal)
-                    float dx = penLen * 0.707f;  // cos(45)
-                    float tipX = cx - dx / 2f, tipY = cy + dx / 2f;
-                    float endX = cx + dx / 2f, endY = cy - dx / 2f;
-                    // Shaft
-                    p.BeginPath();
-                    p.MoveTo(new Vector2(tipX, tipY));
-                    p.LineTo(new Vector2(endX, endY));
-                    p.Stroke();
-                    // Tip
-                    p.BeginPath();
-                    p.MoveTo(new Vector2(tipX - penW2 * 0.707f, tipY - penW2 * 0.707f));
-                    p.LineTo(new Vector2(tipX, tipY + penW2 * 0.5f));
-                    p.LineTo(new Vector2(tipX - penW2 * 1.2f, tipY));
-                    p.ClosePath();
-                    p.fillColor = iconColor;
-                    p.Fill();
-                    // Top cap
-                    float capOff = penW2 * 0.707f;
-                    p.BeginPath();
-                    p.MoveTo(new Vector2(endX - capOff, endY - capOff));
-                    p.LineTo(new Vector2(endX + capOff, endY - capOff));
-                    p.LineTo(new Vector2(endX + capOff, endY + capOff));
-                    p.LineTo(new Vector2(endX - capOff, endY + capOff));
-                    p.ClosePath();
-                    p.Stroke();
-                    break;
-
-                case FABIcon.Mail:
-                    // Envelope
-                    float envW = s * 0.65f, envH = s * 0.45f;
-                    float ex = cx - envW / 2f, ey = cy - envH / 2f;
-                    float er = s * 0.04f;
-                    // Rect body
-                    p.BeginPath();
-                    p.MoveTo(new Vector2(ex + er, ey));
-                    p.LineTo(new Vector2(ex + envW - er, ey));
-                    p.ArcTo(new Vector2(ex + envW, ey), new Vector2(ex + envW, ey + er), er);
-                    p.LineTo(new Vector2(ex + envW, ey + envH - er));
-                    p.ArcTo(new Vector2(ex + envW, ey + envH), new Vector2(ex + envW - er, ey + envH), er);
-                    p.LineTo(new Vector2(ex + er, ey + envH));
-                    p.ArcTo(new Vector2(ex, ey + envH), new Vector2(ex, ey + envH - er), er);
-                    p.LineTo(new Vector2(ex, ey + er));
-                    p.ArcTo(new Vector2(ex, ey), new Vector2(ex + er, ey), er);
-                    p.ClosePath();
-                    p.Stroke();
-                    // V flap
-                    p.BeginPath();
-                    p.MoveTo(new Vector2(ex, ey));
-                    p.LineTo(new Vector2(cx, cy + envH * 0.05f));
-                    p.LineTo(new Vector2(ex + envW, ey));
-                    p.Stroke();
-                    break;
-
-                case FABIcon.Search:
-                    // Magnifying glass
-                    float sr = s * 0.25f;
-                    float scx = cx - s * 0.06f, scy = cy - s * 0.06f;
-                    p.BeginPath();
-                    p.Arc(new Vector2(scx, scy), sr, 0f, 360f);
-                    p.Stroke();
-                    p.BeginPath();
-                    float sdx = sr * 0.7f;
-                    p.MoveTo(new Vector2(scx + sdx, scy + sdx));
-                    p.LineTo(new Vector2(scx + sdx + s * 0.2f, scy + sdx + s * 0.2f));
-                    p.Stroke();
-                    break;
-
-                case FABIcon.Star:
-                    // 5-point star
-                    p.BeginPath();
-                    float starR = s * 0.35f;
-                    float innerR = starR * 0.4f;
-                    for (int i = 0; i < 10; i++)
-                    {
-                        float angle = Mathf.PI / 2f + i * Mathf.PI / 5f;
-                        float rad = (i % 2 == 0) ? starR : innerR;
-                        var pt = new Vector2(cx + Mathf.Cos(angle) * rad, cy - Mathf.Sin(angle) * rad);
-                        if (i == 0) p.MoveTo(pt); else p.LineTo(pt);
-                    }
-                    p.ClosePath();
-                    p.Stroke();
-                    break;
-            }
-        }
+            FABIcon.Add    => MaterialSymbols.Add,
+            FABIcon.Edit   => MaterialSymbols.Edit,
+            FABIcon.Mail   => MaterialSymbols.Email,
+            FABIcon.Search => MaterialSymbols.Search,
+            FABIcon.Star   => MaterialSymbols.Star,
+            _              => MaterialSymbols.Add,
+        };
     }
 }

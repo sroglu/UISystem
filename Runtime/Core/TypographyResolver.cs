@@ -72,14 +72,12 @@ namespace mehmetsrl.UISystem.Core
 
         private void OnEnable()
         {
-            if (ThemeManager.Instance != null)
-                ThemeManager.Instance.OnThemeChanged += OnThemeChanged;
+            ThemeManager.OnThemeChanged += OnThemeChanged;
         }
 
         private void OnDisable()
         {
-            if (ThemeManager.Instance != null)
-                ThemeManager.Instance.OnThemeChanged -= OnThemeChanged;
+            ThemeManager.OnThemeChanged -= OnThemeChanged;
         }
 
         // ------------------------------------------------------------------ //

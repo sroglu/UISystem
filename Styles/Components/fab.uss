@@ -26,7 +26,7 @@
     background-color: var(--m3-primary-container, rgb(234, 221, 255));
     /* Elevation Level 3 */
     --unity-slice-left: 0;
-    transition: background-color 100ms ease-in-out;
+    transition: background-color 150ms ease-in-out;
 }
 
 /* ============================================================ */

@@ -35,7 +35,7 @@ namespace mehmetsrl.UISystem.Editor
             {
                 AssetDatabase.SaveAssets();
                 AssetDatabase.Refresh();
-                Debug.Log("[UISystem] Default assets created. Assign them to ThemeManager in your scene.");
+                Debug.Log("[UISystem] Default assets created. ThemeBootstrapper will load them from Resources/UISystem/ automatically.");
             }
         }
 
@@ -91,17 +91,26 @@ namespace mehmetsrl.UISystem.Editor
 
             var asset = ScriptableObject.CreateInstance<TypographyConfig>();
 
-            // Font sizes in reference-resolution pixels (1080x1920 at 420 dpi ≈ 2.625× scale)
-            // M3 sp * 2.625 ≈ ref-px
-            SetField(asset, "_display",  BuildTextStyle(size: 96f));
-            SetField(asset, "_headline", BuildTextStyle(size: 73f));
-            SetField(asset, "_title",    BuildTextStyle(size: 58f));
-            SetField(asset, "_body",     BuildTextStyle(size: 42f));
-            SetField(asset, "_label",    BuildTextStyle(size: 37f));
-            SetField(asset, "_caption",  BuildTextStyle(size: 32f));
+            // M3 type scale: font sizes in sp (UI Toolkit uses dp ≈ sp at 1:1 scale)
+            // Letter spacing values from M3 spec (in em units)
+            SetField(asset, "_displayLarge",   BuildTextStyle("m3-display-large",   57f, -0.25f));
+            SetField(asset, "_displayMedium",  BuildTextStyle("m3-display-medium",  45f,  0f));
+            SetField(asset, "_displaySmall",   BuildTextStyle("m3-display-small",   36f,  0f));
+            SetField(asset, "_headlineLarge",  BuildTextStyle("m3-headline-large",  32f,  0f));
+            SetField(asset, "_headlineMedium", BuildTextStyle("m3-headline-medium", 28f,  0f));
+            SetField(asset, "_headlineSmall",  BuildTextStyle("m3-headline-small",  24f,  0f));
+            SetField(asset, "_titleLarge",     BuildTextStyle("m3-title-large",     22f,  0f));
+            SetField(asset, "_titleMedium",    BuildTextStyle("m3-title-medium",    16f,  0.15f));
+            SetField(asset, "_titleSmall",     BuildTextStyle("m3-title-small",     14f,  0.1f));
+            SetField(asset, "_bodyLarge",      BuildTextStyle("m3-body-large",      16f,  0.5f));
+            SetField(asset, "_bodyMedium",     BuildTextStyle("m3-body-medium",     14f,  0.25f));
+            SetField(asset, "_bodySmall",      BuildTextStyle("m3-body-small",      12f,  0.4f));
+            SetField(asset, "_labelLarge",     BuildTextStyle("m3-label-large",     14f,  0.1f));
+            SetField(asset, "_labelMedium",    BuildTextStyle("m3-label-medium",    12f,  0.5f));
+            SetField(asset, "_labelSmall",     BuildTextStyle("m3-label-small",     11f,  0.5f));
 
             AssetDatabase.CreateAsset(asset, TypoPath);
-            Debug.Log("[UISystem] Created DefaultTypography.asset. Assign TMP font assets from Assets/UISystem/Assets/Typography/Fonts/");
+            Debug.Log("[UISystem] Created DefaultTypography.asset. Assign font assets from Assets/UISystem/Assets/Typography/Fonts/");
             return true;
         }
 
@@ -127,6 +136,37 @@ namespace mehmetsrl.UISystem.Editor
             Outline              = Hex("#79747E"),
             OutlineVariant       = Hex("#CAC4D0"),
             Background           = Hex("#FFFBFE"),
+            InverseSurface       = Hex("#313033"),
+            InverseOnSurface     = Hex("#F4EFF4"),
+            InversePrimary       = Hex("#D0BCFF"),
+            Tertiary             = Hex("#7D5260"),
+            OnTertiary           = Hex("#FFFFFF"),
+            TertiaryContainer    = Hex("#FFD8E4"),
+            OnTertiaryContainer  = Hex("#31111D"),
+            SurfaceContainerLowest  = Hex("#FFFFFF"),
+            SurfaceContainerLow     = Hex("#F7F2FA"),
+            SurfaceContainer        = Hex("#F3EDF7"),
+            SurfaceContainerHigh    = Hex("#ECE6F0"),
+            SurfaceContainerHighest = Hex("#E6E0E9"),
+            Scrim                = new Color(0f, 0f, 0f, 0.32f),
+            SurfaceTint          = Hex("#6750A4"),
+            PrimaryFixed            = Hex("#F2DAFF"),
+            PrimaryFixedDim         = Hex("#D9B9FF"),
+            OnPrimaryFixed          = Hex("#21005D"),
+            OnPrimaryFixedVariant   = Hex("#4F378B"),
+            SecondaryFixed          = Hex("#E8DEF8"),
+            SecondaryFixedDim       = Hex("#D0C4E8"),
+            OnSecondaryFixed        = Hex("#1D192B"),
+            OnSecondaryFixedVariant = Hex("#4A4458"),
+            TertiaryFixed           = Hex("#FFD8E4"),
+            TertiaryFixedDim        = Hex("#EFB8C8"),
+            OnTertiaryFixed         = Hex("#31111D"),
+            OnTertiaryFixedVariant  = Hex("#633B48"),
+            ErrorContainer          = Hex("#F9DEDC"),
+            OnErrorContainer        = Hex("#410E0B"),
+            SurfaceDim              = Hex("#DED8E1"),
+            SurfaceBright           = Hex("#FFF7FF"),
+            Shadow                  = new Color(0f, 0f, 0f, 1f),
         };
 
         private static ColorPalette DarkPalette() => new ColorPalette
@@ -148,6 +188,37 @@ namespace mehmetsrl.UISystem.Editor
             Outline              = Hex("#938F99"),
             OutlineVariant       = Hex("#49454F"),
             Background           = Hex("#1C1B1F"),
+            InverseSurface       = Hex("#E6E1E5"),
+            InverseOnSurface     = Hex("#313033"),
+            InversePrimary       = Hex("#6750A4"),
+            Tertiary             = Hex("#EFB8C8"),
+            OnTertiary           = Hex("#492532"),
+            TertiaryContainer    = Hex("#633B48"),
+            OnTertiaryContainer  = Hex("#FFD8E4"),
+            SurfaceContainerLowest  = Hex("#0F0E13"),
+            SurfaceContainerLow     = Hex("#1E1D22"),
+            SurfaceContainer        = Hex("#221F26"),
+            SurfaceContainerHigh    = Hex("#27262B"),
+            SurfaceContainerHighest = Hex("#2C2B31"),
+            Scrim                = new Color(0f, 0f, 0f, 0.32f),
+            SurfaceTint          = Hex("#D0BCFF"),
+            PrimaryFixed            = Hex("#F2DAFF"),
+            PrimaryFixedDim         = Hex("#D9B9FF"),
+            OnPrimaryFixed          = Hex("#21005D"),
+            OnPrimaryFixedVariant   = Hex("#4F378B"),
+            SecondaryFixed          = Hex("#E8DEF8"),
+            SecondaryFixedDim       = Hex("#D0C4E8"),
+            OnSecondaryFixed        = Hex("#1D192B"),
+            OnSecondaryFixedVariant = Hex("#4A4458"),
+            TertiaryFixed           = Hex("#FFD8E4"),
+            TertiaryFixedDim        = Hex("#EFB8C8"),
+            OnTertiaryFixed         = Hex("#31111D"),
+            OnTertiaryFixedVariant  = Hex("#633B48"),
+            ErrorContainer          = Hex("#8C1D18"),
+            OnErrorContainer        = Hex("#F2B8B5"),
+            SurfaceDim              = Hex("#141218"),
+            SurfaceBright           = Hex("#3B383E"),
+            Shadow                  = new Color(0f, 0f, 0f, 1f),
         };
 
         private static ElevationPreset[] BuildElevationPresets() => new[]
@@ -174,11 +245,13 @@ namespace mehmetsrl.UISystem.Editor
             };
         }
 
-        private static TextStyle BuildTextStyle(float size) => new TextStyle
+        private static TextStyle BuildTextStyle(string ussClass, float size, float letterSpacing = 0f) => new TextStyle
         {
-            FontSize    = size,
-            LineSpacing = 0f,
-            CharSpacing = 0f,
+            UssClassName  = ussClass,
+            FontSize      = size,
+            LineSpacing   = 0f,
+            CharSpacing   = 0f,
+            LetterSpacing = letterSpacing,
         };
 
         // ------------------------------------------------------------------ //

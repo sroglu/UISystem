@@ -21,7 +21,7 @@ namespace mehmetsrl.UISystem.Components
             var root = doc.rootVisualElement;
 
             // Register panel with ThemeManager for light/dark switching
-            ThemeManager.Instance?.RegisterPanel(doc);
+            ThemeManager.RegisterPanel(doc);
 
             // M3 reference link — pointer-up on label opens spec in browser.
             // PointerUpEvent is used instead of ClickEvent because ClickEvent synthesis
@@ -42,7 +42,7 @@ namespace mehmetsrl.UISystem.Components
             // Theme switch button
             var switchBtn = root.Q<M3Button>("btn-switch-theme");
             if (switchBtn != null)
-                switchBtn.OnClick += () => ThemeManager.Instance?.ToggleLightDark();
+                switchBtn.OnClick += () => ThemeManager.ToggleLightDark();
 
             // Clickable cards — log feedback
             WireClickableCard(root, "card-clickable-elevated", "Elevated Card clicked");

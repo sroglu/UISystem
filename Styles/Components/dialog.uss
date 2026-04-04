@@ -6,6 +6,10 @@
  *   Colors: surface-container-high bg
  */
 
+.m3-dialog__scrim {
+    background-color: var(--m3-scrim, rgba(0, 0, 0, 0.32));
+}
+
 .m3-dialog {
     background-color: var(--m3-surface-container-high, rgb(236, 230, 240));
     min-width: 280px;

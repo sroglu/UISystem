@@ -41,6 +41,40 @@
     --m3-background:               rgb(28, 27, 31);      /* #1C1B1F */
     --m3-on-background:            rgb(230, 225, 229);   /* #E6E1E5 — same as on-surface per M3 */
 
+    --m3-tertiary:                 rgb(239, 184, 200);   /* #EFB8C8 */
+    --m3-on-tertiary:              rgb(73, 37, 50);      /* #492532 */
+    --m3-tertiary-container:       rgb(99, 59, 72);      /* #633B48 */
+    --m3-on-tertiary-container:    rgb(255, 216, 228);   /* #FFD8E4 */
+
+    --m3-surface-container-lowest: rgb(15, 14, 19);      /* #0F0E13 */
+    --m3-scrim:                    rgba(0, 0, 0, 0.32);  /* M3 scrim overlay */
+    --m3-surface-tint:             rgb(208, 188, 255);   /* same as primary (dark) */
+
+    /* Fixed colors — theme-invariant (same in light and dark) */
+    --m3-primary-fixed:              rgb(242, 218, 255);   /* #F2DAFF */
+    --m3-primary-fixed-dim:          rgb(217, 185, 255);   /* #D9B9FF */
+    --m3-on-primary-fixed:           rgb(33, 0, 93);       /* #21005D */
+    --m3-on-primary-fixed-variant:   rgb(79, 55, 139);     /* #4F378B */
+    --m3-secondary-fixed:            rgb(232, 222, 248);   /* #E8DEF8 */
+    --m3-secondary-fixed-dim:        rgb(208, 196, 232);   /* #D0C4E8 */
+    --m3-on-secondary-fixed:         rgb(28, 25, 35);      /* #1D192B */
+    --m3-on-secondary-fixed-variant: rgb(74, 68, 88);      /* #4A4458 */
+    --m3-tertiary-fixed:             rgb(255, 216, 228);   /* #FFD8E4 */
+    --m3-tertiary-fixed-dim:         rgb(239, 184, 200);   /* #EFB8C8 */
+    --m3-on-tertiary-fixed:          rgb(49, 17, 29);      /* #31111D */
+    --m3-on-tertiary-fixed-variant:  rgb(99, 59, 72);      /* #633B48 */
+
+    /* Error container */
+    --m3-error-container:            rgb(140, 29, 24);     /* #8C1D18 */
+    --m3-on-error-container:         rgb(242, 184, 181);   /* #F2B8B5 */
+
+    /* Surface dim / bright */
+    --m3-surface-dim:                rgb(20, 18, 24);      /* #141218 */
+    --m3-surface-bright:             rgb(59, 56, 62);      /* #3B383E */
+
+    /* Shadow */
+    --m3-shadow:                     rgba(0, 0, 0, 1);     /* opaque black */
+
     /* ------------------------------------------------------------------ */
     /*  Shape Presets (same values — shape is not theme-dependent)         */
     /* ------------------------------------------------------------------ */
@@ -92,6 +126,12 @@
     --m3-motion-standard-duration:               300ms;
     --m3-motion-emphasized-decelerate-duration:  400ms;
     --m3-motion-standard-decelerate-duration:    250ms;
+
+    /* Component-level motion tokens — use these in component transition declarations */
+    --m3-motion-duration-short:    100ms;  /* checkbox, chip, fab, radio, textfield bg/indicator */
+    --m3-motion-duration-float:    150ms;  /* textfield floating label font-size only */
+    --m3-motion-duration-standard: 200ms;  /* toggle track/thumb, navigation bar */
+    --m3-motion-duration-long:     300ms;  /* ripple, complex animations */
 
     /* ------------------------------------------------------------------ */
     /*  Inverse Tokens (for Snackbar)                                       */

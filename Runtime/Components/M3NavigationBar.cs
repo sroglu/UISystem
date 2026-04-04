@@ -28,7 +28,7 @@ namespace mehmetsrl.UISystem.Components
     ///   &lt;/components:M3NavigationBar&gt;
     /// </summary>
     [UxmlElement]
-    public partial class M3NavigationBar : VisualElement
+    public partial class M3NavigationBar : M3ComponentBase
     {
         private const string BaseClass = "m3-nav-bar";
 

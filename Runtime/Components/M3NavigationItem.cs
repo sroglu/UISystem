@@ -23,7 +23,7 @@ namespace mehmetsrl.UISystem.Components
     ///   Inactive: transparent indicator, on-surface-variant icon, on-surface-variant label
     /// </summary>
     [UxmlElement]
-    public partial class M3NavigationItem : VisualElement
+    public partial class M3NavigationItem : M3ComponentBase
     {
         private const string BaseClass         = "m3-nav-item";
         private const string IndicatorWrapClass = "m3-nav-item__indicator-wrap";
@@ -38,9 +38,6 @@ namespace mehmetsrl.UISystem.Components
 
         // Resolved theme colors
         private Color _themeSecondaryContainer;
-        private Color _themeOnSecondaryContainer;
-        private Color _themeOnSurface;
-        private Color _themeOnSurfaceVariant;
 
         private readonly VisualElement  _indicatorWrap;
         private readonly SDFRectElement _indicator;
@@ -132,8 +129,6 @@ namespace mehmetsrl.UISystem.Components
             Add(_labelEl);
 
             RegisterCallback<ClickEvent>(OnItemClicked);
-            RegisterCallback<GeometryChangedEvent>(OnFirstLayout);
-            RefreshThemeColors();
             ApplyActiveState();
         }
 
@@ -144,15 +139,11 @@ namespace mehmetsrl.UISystem.Components
             if (_active)
             {
                 _indicator.FillColorOverride = _themeSecondaryContainer;
-                _iconLabel.style.color = new StyleColor(_themeOnSecondaryContainer);
-                _labelEl.style.color   = new StyleColor(_themeOnSurface);
                 _labelEl.style.unityFontStyleAndWeight = FontStyle.Bold;
             }
             else
             {
                 _indicator.FillColorOverride = Color.clear;
-                _iconLabel.style.color = new StyleColor(_themeOnSurfaceVariant);
-                _labelEl.style.color   = new StyleColor(_themeOnSurfaceVariant);
                 _labelEl.style.unityFontStyleAndWeight = FontStyle.Normal;
             }
         }
@@ -161,25 +152,12 @@ namespace mehmetsrl.UISystem.Components
         //  Theme-aware color resolution                                        //
         // ------------------------------------------------------------------ //
 
-        private void OnFirstLayout(GeometryChangedEvent evt)
+        protected override void RefreshThemeColors()
         {
-            UnregisterCallback<GeometryChangedEvent>(OnFirstLayout);
-
-            var tm = ThemeManager.Instance;
-            if (tm != null)
-                tm.OnThemeChanged += _ => RefreshThemeColors();
-            RefreshThemeColors();
-        }
-
-        private void RefreshThemeColors()
-        {
-            var theme = ThemeManager.Instance?.ActiveTheme;
+            var theme = ThemeManager.ActiveTheme;
             if (theme == null) return;
 
-            _themeSecondaryContainer   = theme.GetColor(ColorRole.SecondaryContainer);
-            _themeOnSecondaryContainer = theme.GetColor(ColorRole.OnSecondaryContainer);
-            _themeOnSurface            = theme.GetColor(ColorRole.OnSurface);
-            _themeOnSurfaceVariant     = theme.GetColor(ColorRole.OnSurfaceVariant);
+            _themeSecondaryContainer = theme.GetColor(ColorRole.SecondaryContainer);
 
             ApplyActiveState();
         }

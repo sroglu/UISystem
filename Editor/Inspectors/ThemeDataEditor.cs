@@ -9,7 +9,7 @@ namespace mehmetsrl.UISystem.Editor
     /// <summary>
     /// Custom inspector for ThemeData ScriptableObjects.
     /// Draws the default Odin inspector plus a visual color-swatch preview of the
-    /// full 17-role color palette in a 3-column grid.
+    /// full 27-role color palette in a 3-column grid, organized into semantic groups.
     /// </summary>
     [CustomEditor(typeof(ThemeData))]
     public class ThemeDataEditor : OdinEditor

@@ -29,7 +29,7 @@ namespace mehmetsrl.UISystem.Components
     ///   &lt;mehmetsrl.UISystem.Components.M3Button variant="Filled" size="Large" shape="Square" text="Button" /&gt;
     /// </summary>
     [UxmlElement]
-    public partial class M3Button : VisualElement
+    public partial class M3Button : M3ComponentBase
     {
         // ------------------------------------------------------------------ //
         //  USS class constants                                                  //
@@ -91,7 +91,6 @@ namespace mehmetsrl.UISystem.Components
         // Resolved theme colors
         private Color _themePrimary;
         private Color _themeOnPrimary;
-        private Color _themeOnSurface;
         private Color _themeOutline;
         private Color _themeSecondaryContainer;
         private Color _themeOnSecondaryContainer;
@@ -103,7 +102,6 @@ namespace mehmetsrl.UISystem.Components
         private readonly RippleElement        _ripple;
         private readonly Label                _label;
         private readonly VisualElement        _iconSlot;
-        private readonly StateLayerController _stateLayer;
 
         // ------------------------------------------------------------------ //
         //  Backing fields                                                       //
@@ -113,7 +111,6 @@ namespace mehmetsrl.UISystem.Components
         private ButtonSize    _size    = ButtonSize.Medium;
         private ButtonShape   _shape   = ButtonShape.Round;
         private bool          _compact;
-        private bool          _disabled;
 
         // ------------------------------------------------------------------ //
         //  Public API                                                           //
@@ -180,10 +177,10 @@ namespace mehmetsrl.UISystem.Components
         /// Delegates to <see cref="StateLayerController.Disabled"/>.
         /// </summary>
         [UxmlAttribute("disabled")]
-        public bool Disabled
+        public new bool Disabled
         {
-            get => _disabled;
-            set { _disabled = value; _stateLayer.Disabled = value; }
+            get => base.Disabled;
+            set => base.Disabled = value;
         }
 
         // ------------------------------------------------------------------ //
@@ -226,8 +223,7 @@ namespace mehmetsrl.UISystem.Components
             _root.Add(_label);
 
             // --- state layer ---
-            _stateLayer = new StateLayerController(_root, _ripple);
-            _stateLayer.Attach();
+            InitStateLayer(_root, _ripple);
 
             // --- click ---
             _root.RegisterCallback<ClickEvent>(OnRootClicked);
@@ -235,11 +231,7 @@ namespace mehmetsrl.UISystem.Components
             // --- add root as sole child of this element ---
             Add(_root);
 
-            // Subscribe to theme
-            RegisterCallback<GeometryChangedEvent>(OnFirstLayout);
-
             // --- apply defaults ---
-            RefreshThemeColors();
             ApplyVariant(ButtonVariant.Filled);
 
             // Default: Medium (40px) + Round → CSS border-radius = 20px (= height/2).
@@ -290,31 +282,27 @@ namespace mehmetsrl.UISystem.Components
             {
                 case ButtonVariant.Filled:
                     _root.FillColorOverride = _themePrimary;
-                    _label.style.color      = new StyleColor(_themeOnPrimary);
                     _root.OutlineColor      = Color.clear;
                     break;
                 case ButtonVariant.Outlined:
                     _root.FillColorOverride = Color.clear;
-                    _label.style.color      = new StyleColor(_themePrimary);
                     _root.OutlineColor      = _themeOutline;
                     break;
                 case ButtonVariant.Text:
                     _root.FillColorOverride = Color.clear;
-                    _label.style.color      = new StyleColor(_themePrimary);
                     _root.OutlineColor      = Color.clear;
                     break;
                 case ButtonVariant.Tonal:
                     _root.FillColorOverride = _themeSecondaryContainer;
-                    _label.style.color      = new StyleColor(_themeOnSecondaryContainer);
                     _root.OutlineColor      = Color.clear;
                     break;
             }
 
             // State overlay tint
             if (v == ButtonVariant.Filled || v == ButtonVariant.Tonal)
-                _stateLayer.OverlayColor = _themeOnPrimary;
+                StateLayer.OverlayColor = _themeOnPrimary;
             else
-                _stateLayer.OverlayColor = _themePrimary;
+                StateLayer.OverlayColor = _themePrimary;
         }
 
         // ------------------------------------------------------------------ //
@@ -382,24 +370,13 @@ namespace mehmetsrl.UISystem.Components
         //  Theme-aware color resolution                                         //
         // ------------------------------------------------------------------ //
 
-        private void OnFirstLayout(GeometryChangedEvent evt)
+        protected override void RefreshThemeColors()
         {
-            UnregisterCallback<GeometryChangedEvent>(OnFirstLayout);
-
-            var tm = ThemeManager.Instance;
-            if (tm != null)
-                tm.OnThemeChanged += _ => RefreshThemeColors();
-            RefreshThemeColors();
-        }
-
-        private void RefreshThemeColors()
-        {
-            var theme = ThemeManager.Instance?.ActiveTheme;
+            var theme = ThemeManager.ActiveTheme;
             if (theme == null) return;
 
             _themePrimary              = theme.GetColor(ColorRole.Primary);
             _themeOnPrimary            = theme.GetColor(ColorRole.OnPrimary);
-            _themeOnSurface            = theme.GetColor(ColorRole.OnSurface);
             _themeOutline              = theme.GetColor(ColorRole.Outline);
             _themeSecondaryContainer   = theme.GetColor(ColorRole.SecondaryContainer);
             _themeOnSecondaryContainer = theme.GetColor(ColorRole.OnSecondaryContainer);
@@ -413,7 +390,7 @@ namespace mehmetsrl.UISystem.Components
 
         private void OnRootClicked(ClickEvent evt)
         {
-            if (_disabled) return;
+            if (base.Disabled) return;
             OnClick?.Invoke();
         }
     }

@@ -10,9 +10,11 @@ Built on **UI Toolkit** (UXML + USS + C#) with **URP Shader Graph** for custom v
 
 **SDFRectElement** — The visual foundation of all components. A custom `VisualElement` renders rounded rectangles, soft shadows, and outlines using SDF math via `Painter2D` (CPU vector drawing). `[UxmlElement]` with `[UxmlAttribute]` properties for corner-radius, shadow-blur, shadow-offset, shadow-color, and outline-thickness. Shares the element tree with `RippleElement` for M3 ripple touch feedback.
 
-**Theme System** — USS custom properties powered by ScriptableObject data. `ThemeData` SO holds the color palette, elevation presets, shape tokens, and motion presets. `ThemeManager` applies `light.uss` or `dark.uss` stylesheets to managed panels at runtime — all `var(--m3-*)` variables resolve automatically. Light/dark toggle via `ThemeManager.Instance.ToggleLightDark()`.
+**Theme System** — USS custom properties powered by ScriptableObject data. `ThemeData` SO holds a 27-role color palette, elevation presets, shape tokens, and motion presets. `ThemeManager` (static class, no MonoBehaviour required) applies `light.uss` or `dark.uss` stylesheets to managed panels at runtime — all `var(--m3-*)` variables resolve automatically. Light/dark toggle via `ThemeManager.ToggleLightDark()`.
 
-**Typography** — TextMeshPro-based type scale inspired by M3. Display, Headline, Title, Body, Label, and Caption roles defined as USS classes.
+**M3ComponentBase** — Abstract base class for all M3 components. Handles `ThemeManager` subscription, `StateLayerController` attach/detach lifecycle, and disabled state management. Extend it to build new components with zero boilerplate. See `COMPONENT-GUIDE.md` for the mandatory USS-only theming rule.
+
+**Typography** — Full M3 15-role type scale (Display L/M/S, Headline L/M/S, Title L/M/S, Body L/M/S, Label L/M/S). Roles defined as USS classes (`m3-display-large`, `m3-body-medium`, etc.) using TextCore SDF fonts.
 
 **StateLayerController** — Plain C# interaction feedback controller (not MonoBehaviour). Manages hover (0.08), pressed (0.10), focused (0.10), and disabled (0.38) state overlays by setting `SDFRectElement.StateOverlayOpacity` directly — clipped to the rounded rect boundary. Integrates with `RippleElement` for M3 press ripple. Attach/Detach lifecycle for safe callback management.
 
@@ -20,18 +22,46 @@ Built on **UI Toolkit** (UXML + USS + C#) with **URP Shader Graph** for custom v
 
 **Component Builder Wizard** — Editor tools for rapidly creating components and layouts, with context menu shortcuts.
 
+**MaterialSymbols** — Static class (`mehmetsrl.UISystem.Utils.MaterialSymbols`) providing 60+ Unicode codepoint constants for Material Symbols font glyphs. Use with `.m3-icon` USS class — no Painter2D drawing needed for icons.
+
+**Dynamic Color / Material You** — Generate M3 color schemes from any seed color via `Assets > UISystem > Generate Theme from Seed Color`. Uses pure C# HCT color math (no external dependencies) to produce light + dark `ThemeData` ScriptableObject assets.
+
+**Unified Showcase** — A single `Showcase.unity` scene demonstrates all components with Overview/Specs/Guidelines tabs and M3 design principles documentation.
+
 ## Components
 
-| Component | Styles | Status | Description |
-|-----------|--------|--------|-------------|
-| Button | Filled, Outlined, Text, Tonal | ✅ Implemented | Primary and secondary actions |
-| Card | Elevated, Filled, Outlined | — | Content grouping |
-| Toggle | — | — | Binary selection (switch) |
-| TextField | Filled, Outlined | — | Text input, floating label |
-| Dialog | — | — | Modal notification and confirmation |
-| Snackbar | — | — | Temporary notification, queue system |
-| BottomNav | — | — | Bottom navigation bar, 3–5 items |
-| TabBar | Fixed, Scrollable | — | Top tab navigation |
+### Implemented (v0.3.0)
+
+| Component | Variants | Description |
+|-----------|----------|-------------|
+| M3Button | Filled, Outlined, Text, Tonal, Elevated | Primary and secondary actions |
+| M3Card | Elevated, Filled, Outlined | Content grouping |
+| M3Checkbox | Unchecked, Checked, Indeterminate | Multi-value selection |
+| M3Chip | Assist, Filter, Input, Suggestion | Compact choice input |
+| M3Dialog | — | Modal notification and confirmation |
+| M3FAB | Small, Regular, Large, Extended | Prominent floating action |
+| M3NavigationBar | 3–5 items | Bottom navigation |
+| M3RadioButton / M3RadioGroup | — | Single-choice selection |
+| M3Slider | Continuous, Stepped | Value range input |
+| M3Snackbar | Message, WithAction, WithClose | Temporary notification |
+| M3TextField | Filled, Outlined | Text input with floating label |
+| M3Toggle | Off, On | Binary switch |
+| M3ProgressIndicator | Linear, Circular | Determinate + indeterminate |
+| M3TopAppBar | Small, CenterAligned | Screen title + actions bar |
+| M3Tabs / M3TabItem | Primary, Secondary | Tab navigation |
+| M3Menu / M3MenuItem | — | Contextual action menu |
+| M3Divider | Horizontal, Vertical | Visual separator |
+| M3Badge | Small (dot), Large (count) | Status indicator overlay |
+| M3NavigationDrawer | Modal, Standard | Side navigation panel |
+| M3BottomSheet | Modal | Slide-up action sheet |
+| M3SearchBar | — | Full-width search input |
+| M3ListItem / M3List | OneLine, TwoLine, ThreeLine | List rows |
+| M3SegmentedButton / M3SegmentedItem | Single, Multi | Button group toggle |
+| M3NavigationRail | 3–7 items + FAB slot | Vertical side navigation |
+| M3BottomAppBar | With/without FAB | Bottom action bar |
+| M3Tooltip | Plain, Rich | Hover informational overlay |
+| M3DatePicker | Modal | Calendar date selection |
+| M3TimePicker | Modal | Clock-face time selection |
 
 ## Requirements
 
@@ -67,7 +97,7 @@ Use `Assets > Create > UISystem > Theme Data` to create a new theme asset. Set t
 
 ### 2. Set Up ThemeManager
 
-Add a `ThemeManager` component to a GameObject in your scene. Assign your active ThemeData reference. ThemeManager syncs ScriptableObject values to USS custom properties, making them available to all UISystem components.
+Call `ThemeManager.Initialize(lightTheme, darkTheme, panelSettings)` from your game's bootstrap code (no MonoBehaviour required). ThemeManager syncs ScriptableObject values to USS custom properties, making them available to all UISystem components.
 
 ### 3. Add Components
 

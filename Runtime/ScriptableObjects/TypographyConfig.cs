@@ -13,29 +13,80 @@ namespace mehmetsrl.UISystem
     [CreateAssetMenu(menuName = "UISystem/Typography Config", fileName = "TypographyConfig")]
     public class TypographyConfig : ScriptableObject
     {
-        [BoxGroup("Scale")]
-        [Tooltip("36+ sp — splash screen, large numbers (Regular weight).")]
-        [SerializeField] private TextStyle _display;
+        // ------------------------------------------------------------------ //
+        //  Display                                                             //
+        // ------------------------------------------------------------------ //
+        [BoxGroup("Display")]
+        [Tooltip("57sp — hero text, splash screens (Regular weight).")]
+        [SerializeField] private TextStyle _displayLarge;
 
-        [BoxGroup("Scale")]
-        [Tooltip("28 sp — section headings (Regular weight).")]
-        [SerializeField] private TextStyle _headline;
+        [BoxGroup("Display")]
+        [Tooltip("45sp — large promotional text (Regular weight).")]
+        [SerializeField] private TextStyle _displayMedium;
 
-        [BoxGroup("Scale")]
-        [Tooltip("22 sp — card and dialog titles (Medium weight).")]
-        [SerializeField] private TextStyle _title;
+        [BoxGroup("Display")]
+        [Tooltip("36sp — prominent display text (Regular weight).")]
+        [SerializeField] private TextStyle _displaySmall;
 
-        [BoxGroup("Scale")]
-        [Tooltip("16 sp — general body text (Regular weight).")]
-        [SerializeField] private TextStyle _body;
+        // ------------------------------------------------------------------ //
+        //  Headline                                                            //
+        // ------------------------------------------------------------------ //
+        [BoxGroup("Headline")]
+        [Tooltip("32sp — page headings (Regular weight).")]
+        [SerializeField] private TextStyle _headlineLarge;
 
-        [BoxGroup("Scale")]
-        [Tooltip("14 sp — button labels and captions (Medium weight).")]
-        [SerializeField] private TextStyle _label;
+        [BoxGroup("Headline")]
+        [Tooltip("28sp — section headings (Regular weight).")]
+        [SerializeField] private TextStyle _headlineMedium;
 
-        [BoxGroup("Scale")]
-        [Tooltip("12 sp — helper text and timestamps (Regular weight).")]
-        [SerializeField] private TextStyle _caption;
+        [BoxGroup("Headline")]
+        [Tooltip("24sp — sub-section headings (Regular weight).")]
+        [SerializeField] private TextStyle _headlineSmall;
+
+        // ------------------------------------------------------------------ //
+        //  Title                                                               //
+        // ------------------------------------------------------------------ //
+        [BoxGroup("Title")]
+        [Tooltip("22sp — card and dialog titles (Regular weight).")]
+        [SerializeField] private TextStyle _titleLarge;
+
+        [BoxGroup("Title")]
+        [Tooltip("16sp — list titles (Medium weight).")]
+        [SerializeField] private TextStyle _titleMedium;
+
+        [BoxGroup("Title")]
+        [Tooltip("14sp — component titles (Medium weight).")]
+        [SerializeField] private TextStyle _titleSmall;
+
+        // ------------------------------------------------------------------ //
+        //  Body                                                                //
+        // ------------------------------------------------------------------ //
+        [BoxGroup("Body")]
+        [Tooltip("16sp — primary body text (Regular weight).")]
+        [SerializeField] private TextStyle _bodyLarge;
+
+        [BoxGroup("Body")]
+        [Tooltip("14sp — secondary body text (Regular weight).")]
+        [SerializeField] private TextStyle _bodyMedium;
+
+        [BoxGroup("Body")]
+        [Tooltip("12sp — helper text, captions (Regular weight).")]
+        [SerializeField] private TextStyle _bodySmall;
+
+        // ------------------------------------------------------------------ //
+        //  Label                                                               //
+        // ------------------------------------------------------------------ //
+        [BoxGroup("Label")]
+        [Tooltip("14sp — button labels (Medium weight).")]
+        [SerializeField] private TextStyle _labelLarge;
+
+        [BoxGroup("Label")]
+        [Tooltip("12sp — chip labels, tab labels (Medium weight).")]
+        [SerializeField] private TextStyle _labelMedium;
+
+        [BoxGroup("Label")]
+        [Tooltip("11sp — overlines, timestamps (Medium weight).")]
+        [SerializeField] private TextStyle _labelSmall;
 
         // ------------------------------------------------------------------ //
         //  API                                                                 //
@@ -43,13 +94,22 @@ namespace mehmetsrl.UISystem
         /// <summary>Returns the TextStyle for the given role.</summary>
         public TextStyle GetStyle(TextRole role) => role switch
         {
-            TextRole.Display  => _display,
-            TextRole.Headline => _headline,
-            TextRole.Title    => _title,
-            TextRole.Body     => _body,
-            TextRole.Label    => _label,
-            TextRole.Caption  => _caption,
-            _                 => _body
+            TextRole.DisplayLarge   => _displayLarge,
+            TextRole.DisplayMedium  => _displayMedium,
+            TextRole.DisplaySmall   => _displaySmall,
+            TextRole.HeadlineLarge  => _headlineLarge,
+            TextRole.HeadlineMedium => _headlineMedium,
+            TextRole.HeadlineSmall  => _headlineSmall,
+            TextRole.TitleLarge     => _titleLarge,
+            TextRole.TitleMedium    => _titleMedium,
+            TextRole.TitleSmall     => _titleSmall,
+            TextRole.BodyLarge      => _bodyLarge,
+            TextRole.BodyMedium     => _bodyMedium,
+            TextRole.BodySmall      => _bodySmall,
+            TextRole.LabelLarge     => _labelLarge,
+            TextRole.LabelMedium    => _labelMedium,
+            TextRole.LabelSmall     => _labelSmall,
+            _                       => _bodyLarge
         };
     }
 }

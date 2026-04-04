@@ -30,7 +30,7 @@ namespace mehmetsrl.UISystem.Components
     ///   var sb = new M3Snackbar { Text = "Done", ActionText = "Undo" };
     ///   sb.Show(root);
     /// </summary>
-    public class M3Snackbar : VisualElement
+    public class M3Snackbar : M3ComponentBase
     {
         // ------------------------------------------------------------------ //
         //  USS class constants                                                 //
@@ -155,29 +155,12 @@ namespace mehmetsrl.UISystem.Components
 
             parent.Add(this);
 
-            // Force inverse colors from ThemeData after attaching to tree
-            ApplyInverseColors();
-
             // Cancel any previous auto-dismiss
             _dismissSchedule?.Pause();
             if (_durationMs > 0)
                 _dismissSchedule = schedule.Execute(Dismiss).StartingIn(_durationMs);
         }
 
-        private void ApplyInverseColors()
-        {
-            var theme = ThemeManager.Instance?.ActiveTheme;
-            if (theme == null) return;
-
-            var bg     = theme.GetColor(ColorRole.InverseSurface);
-            var text   = theme.GetColor(ColorRole.InverseOnSurface);
-            var action = theme.GetColor(ColorRole.InversePrimary);
-
-            style.backgroundColor     = new StyleColor(bg);
-            _messageLabel.style.color = new StyleColor(text);
-            _actionBtn.style.color    = new StyleColor(action);
-            _closeIcon.style.color    = new StyleColor(text);
-        }
 
         /// <summary>Dismiss and fire OnDismissed.</summary>
         public void Dismiss()

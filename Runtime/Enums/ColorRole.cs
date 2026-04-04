@@ -21,6 +21,38 @@ namespace mehmetsrl.UISystem.Enums
         Background            = 16,
         InverseSurface        = 17,
         InverseOnSurface      = 18,
-        InversePrimary        = 19
+        InversePrimary        = 19,
+
+        Tertiary              = 20,
+        OnTertiary            = 21,
+        TertiaryContainer     = 22,
+        OnTertiaryContainer   = 23,
+
+        SurfaceContainerLowest  = 24,
+        Scrim                   = 25,
+        SurfaceTint             = 26,
+
+        SurfaceContainer        = 27,
+        SurfaceContainerLow     = 28,
+        SurfaceContainerHigh    = 29,
+        SurfaceContainerHighest = 30,
+
+        PrimaryFixed            = 31,
+        PrimaryFixedDim         = 32,
+        OnPrimaryFixed          = 33,
+        OnPrimaryFixedVariant   = 34,
+        SecondaryFixed          = 35,
+        SecondaryFixedDim       = 36,
+        OnSecondaryFixed        = 37,
+        OnSecondaryFixedVariant = 38,
+        TertiaryFixed           = 39,
+        TertiaryFixedDim        = 40,
+        OnTertiaryFixed         = 41,
+        OnTertiaryFixedVariant  = 42,
+        ErrorContainer          = 43,
+        OnErrorContainer        = 44,
+        SurfaceDim              = 45,
+        SurfaceBright           = 46,
+        Shadow                  = 47,
     }
 }

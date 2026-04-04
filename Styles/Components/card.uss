@@ -19,8 +19,9 @@
     flex-shrink: 0;
     overflow: hidden;
     /* Clips ripple/state-layer to card bounds (same as .m3-button).
-       Painter2D shadows are rendered inside the element mesh so they are
-       NOT affected by overflow:hidden — only CSS box-shadow would be. */
+       Note: Painter2D content IS clipped to element layout rect.
+       Shadow visibility is handled via SDFRectElement.ShadowPadding
+       which insets the visual rect so shadow fits within bounds. */
 
     /* M3 spec: minimum touch target for clickable cards */
     min-width: 100px;

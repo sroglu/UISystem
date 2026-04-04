@@ -30,8 +30,7 @@
 .m3-toggle__track {
     width: 52px;
     height: 32px;
-    /* Transitions for smooth color change */
-    transition: background-color 200ms ease-in-out;
+    /* No USS transition — colors set via USS class toggle + MarkDirtyRepaint */
 }
 
 /* Track unchecked: surface-container-highest + outline border */
@@ -50,9 +49,7 @@
 
 .m3-toggle__thumb {
     position: absolute;
-    /* Transitions for smooth animation */
-    transition: left 200ms ease-in-out, top 200ms ease-in-out,
-                width 200ms ease-in-out, height 200ms ease-in-out;
+    /* No USS transition — position/size animated via C# schedule for reliability */
 }
 
 /* Thumb unchecked: outline color */

@@ -29,7 +29,7 @@ namespace mehmetsrl.UISystem.Components
     ///   &lt;components:M3Checkbox state="Checked" /&gt;
     /// </summary>
     [UxmlElement]
-    public partial class M3Checkbox : VisualElement
+    public partial class M3Checkbox : M3ComponentBase
     {
         // ------------------------------------------------------------------ //
         //  USS class constants                                                 //
@@ -58,13 +58,11 @@ namespace mehmetsrl.UISystem.Components
         private readonly SDFRectElement       _box;
         private readonly VisualElement        _icon;
         private readonly RippleElement        _ripple;
-        private readonly StateLayerController _stateLayer;
 
         // ------------------------------------------------------------------ //
         //  Backing fields                                                      //
         // ------------------------------------------------------------------ //
         private CheckboxState _state;
-        private bool          _disabled;
 
         // ------------------------------------------------------------------ //
         //  Public API                                                          //
@@ -89,15 +87,10 @@ namespace mehmetsrl.UISystem.Components
 
         /// <summary>When true, dims the checkbox and ignores input.</summary>
         [UxmlAttribute("disabled")]
-        public bool Disabled
+        public new bool Disabled
         {
-            get => _disabled;
-            set
-            {
-                _disabled = value;
-                _stateLayer.Disabled = value;
-                EnableInClassList("m3-disabled", value);
-            }
+            get => base.Disabled;
+            set => base.Disabled = value;
         }
 
         // ------------------------------------------------------------------ //
@@ -147,15 +140,12 @@ namespace mehmetsrl.UISystem.Components
             _box.Add(_icon);
 
             // --- State layer ---
-            _stateLayer = new StateLayerController(_box, _ripple);
-            _stateLayer.Attach();
+            InitStateLayer(_box, _ripple);
 
             // --- Events ---
             _box.RegisterCallback<ClickEvent>(OnBoxClicked);
-            RegisterCallback<GeometryChangedEvent>(OnFirstLayout);
 
             Add(_box);
-            RefreshThemeColors();
             ApplyVisualState();
         }
 
@@ -194,21 +184,12 @@ namespace mehmetsrl.UISystem.Components
                     break;
             }
 
-            _stateLayer.OverlayColor = _themeOnSurface;
+            StateLayer.OverlayColor = _themeOnSurface;
         }
 
-        private void OnFirstLayout(GeometryChangedEvent evt)
+        protected override void RefreshThemeColors()
         {
-            UnregisterCallback<GeometryChangedEvent>(OnFirstLayout);
-            var tm = ThemeManager.Instance;
-            if (tm != null)
-                tm.OnThemeChanged += _ => RefreshThemeColors();
-            RefreshThemeColors();
-        }
-
-        private void RefreshThemeColors()
-        {
-            var theme = ThemeManager.Instance?.ActiveTheme;
+            var theme = ThemeManager.ActiveTheme;
             if (theme == null) return;
 
             _themeOutline   = theme.GetColor(Enums.ColorRole.Outline);
@@ -261,7 +242,7 @@ namespace mehmetsrl.UISystem.Components
 
         private void OnBoxClicked(ClickEvent evt)
         {
-            if (_disabled) return;
+            if (base.Disabled) return;
             // Unchecked <-> Checked toggle (Indeterminate set programmatically only)
             State = _state == CheckboxState.Checked ? CheckboxState.Unchecked : CheckboxState.Checked;
         }

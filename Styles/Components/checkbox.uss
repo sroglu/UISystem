@@ -14,10 +14,11 @@
 /* ============================================================ */
 
 .m3-checkbox {
-    min-width: 48px;
+    width: 18px;
     min-height: 48px;
     justify-content: center;
     align-items: center;
+    overflow: visible;
 }
 
 /* ============================================================ */
@@ -27,7 +28,7 @@
 .m3-checkbox__box {
     width: 18px;
     height: 18px;
-    transition: background-color 100ms ease-in-out;
+    transition: background-color 150ms ease-in-out;
 }
 
 /* Unchecked: transparent fill, outline border (set via C# OutlineThickness) */

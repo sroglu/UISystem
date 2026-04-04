@@ -25,7 +25,7 @@ namespace mehmetsrl.UISystem.Components
     /// USS: textfield.uss
     /// </summary>
     [UxmlElement]
-    public partial class M3TextField : VisualElement
+    public partial class M3TextField : M3ComponentBase
     {
         // ------------------------------------------------------------------ //
         //  USS class constants                                                 //
@@ -45,11 +45,8 @@ namespace mehmetsrl.UISystem.Components
         // Resolved theme colors
         private Color _themePrimary;
         private Color _themeOutline;
-        private Color _themeOnSurface;
-        private Color _themeOnSurfaceVariant;
-        private Color _themeSurfaceVariant;
+        private Color _themeSurfaceContainerHighest;
         private Color _themeSurface;
-        private Color _themeError;
 
         // ------------------------------------------------------------------ //
         //  Children                                                            //
@@ -68,7 +65,6 @@ namespace mehmetsrl.UISystem.Components
         private string           _helperMsg   = string.Empty;
         private string           _errorMsg    = string.Empty;
         private bool             _hasError    = false;
-        private bool             _disabled    = false;
         private int              _maxLength   = -1;
 
         // ------------------------------------------------------------------ //
@@ -135,14 +131,13 @@ namespace mehmetsrl.UISystem.Components
         }
 
         [UxmlAttribute("disabled")]
-        public bool Disabled
+        public new bool Disabled
         {
-            get => _disabled;
+            get => base.Disabled;
             set
             {
-                _disabled = value;
+                base.Disabled = value;
                 _input.SetEnabled(!value);
-                EnableInClassList("m3-disabled", value);
             }
         }
 
@@ -181,6 +176,7 @@ namespace mehmetsrl.UISystem.Components
             _container.style.paddingRight  = 16f;
             _container.style.paddingTop    = 16f;
             _container.style.paddingBottom = 16f;
+            _container.style.overflow      = Overflow.Hidden;
 
             // --- Floating label (in flow — padding controls position) ---
             _floatingLabel = new Label(string.Empty);
@@ -199,14 +195,12 @@ namespace mehmetsrl.UISystem.Components
             _input.AddToClassList(InputClass);
             _input.style.height     = 24f;
             _input.style.fontSize   = 16f;
-            _input.style.color      = new StyleColor(_themeOnSurface);
             _input.style.flexShrink = 0;
             // Remove Unity's default border/bg on TextField and its internal TextInput
             _input.style.borderTopWidth    = 0;
             _input.style.borderBottomWidth = 0;
             _input.style.borderLeftWidth   = 0;
             _input.style.borderRightWidth  = 0;
-            _input.style.backgroundColor   = new StyleColor(Color.clear);
             _input.style.paddingLeft   = 0;
             _input.style.paddingRight  = 0;
             _input.style.paddingTop    = 0;
@@ -221,7 +215,6 @@ namespace mehmetsrl.UISystem.Components
                 var textInput = _input.Q(className: "unity-text-field__input");
                 if (textInput != null)
                 {
-                    textInput.style.backgroundColor    = new StyleColor(Color.clear);
                     textInput.style.borderTopWidth      = 0;
                     textInput.style.borderBottomWidth   = 0;
                     textInput.style.borderLeftWidth     = 0;
@@ -242,6 +235,10 @@ namespace mehmetsrl.UISystem.Components
             _indicator.style.left     = 0;
             _indicator.style.right    = 0;
             _indicator.style.height   = 1f;
+            // Clip indicator inside rounded bottom corners
+            _indicator.style.borderBottomLeftRadius  = 4f;
+            _indicator.style.borderBottomRightRadius = 4f;
+            _indicator.style.overflow = Overflow.Hidden;
             _container.Add(_indicator);
 
             Add(_container);
@@ -271,9 +268,6 @@ namespace mehmetsrl.UISystem.Components
             // Click anywhere on the container → focus the input
             _container.RegisterCallback<ClickEvent>(_ => _input.Focus());
 
-            RegisterCallback<GeometryChangedEvent>(OnFirstLayout);
-
-            RefreshThemeColors();
             ApplyVariant();
             UpdateFloatingState();
         }
@@ -287,35 +281,33 @@ namespace mehmetsrl.UISystem.Components
             _container.RemoveFromClassList(FilledClass);
             _container.RemoveFromClassList(OutlinedClass);
 
+            // Both variants: 4dp all corners — SDF + VisualElement border-radius
+            _container.CornerRadius = 4f;
+            _container.CornerRadiusTL = 4f;
+            _container.CornerRadiusTR = 4f;
+            _container.CornerRadiusBL = 4f;
+            _container.CornerRadiusBR = 4f;
+            _container.style.borderTopLeftRadius     = 4f;
+            _container.style.borderTopRightRadius    = 4f;
+            _container.style.borderBottomLeftRadius  = 4f;
+            _container.style.borderBottomRightRadius = 4f;
+
             if (_variant == TextFieldVariant.Filled)
             {
                 _container.AddToClassList(FilledClass);
-                _container.CornerRadius = 0f;
-                _container.style.borderTopLeftRadius     = 4f;
-                _container.style.borderTopRightRadius    = 4f;
-                _container.style.borderBottomLeftRadius  = 0f;
-                _container.style.borderBottomRightRadius = 0f;
                 _container.OutlineThickness = 0f;
-                _container.FillColorOverride = _themeSurfaceVariant;
+                _container.FillColorOverride = _themeSurfaceContainerHighest;
                 _indicator.style.display = DisplayStyle.Flex;
-                _indicator.style.backgroundColor = new StyleColor(_themeOutline);
             }
             else
             {
                 _container.AddToClassList(OutlinedClass);
-                _container.CornerRadius = 4f;
-                _container.style.borderTopLeftRadius     = 4f;
-                _container.style.borderTopRightRadius    = 4f;
-                _container.style.borderBottomLeftRadius  = 4f;
-                _container.style.borderBottomRightRadius = 4f;
                 _container.OutlineThickness = 1f;
                 _container.OutlineColor = _themeOutline;
                 _container.FillColorOverride = Color.clear;
                 _indicator.style.display = DisplayStyle.None;
             }
 
-            // Label colors
-            _floatingLabel.style.color = new StyleColor(_themeOnSurfaceVariant);
         }
 
         private void SetFocused(bool focused)
@@ -326,9 +318,6 @@ namespace mehmetsrl.UISystem.Components
             if (_variant == TextFieldVariant.Filled)
             {
                 _indicator.style.height = focused ? 2f : 1f;
-                _indicator.style.backgroundColor = focused
-                    ? new StyleColor(_themePrimary)
-                    : new StyleColor(_themeOutline);
             }
             else
             {
@@ -413,45 +402,26 @@ namespace mehmetsrl.UISystem.Components
         private void UpdateHelperText()
         {
             if (_hasError && !string.IsNullOrEmpty(_errorMsg))
-            {
                 _helperText.text = _errorMsg;
-                _helperText.style.color = new StyleColor(_themeError);
-            }
             else
-            {
                 _helperText.text = _helperMsg;
-                _helperText.style.color = new StyleColor(_themeOnSurfaceVariant);
-            }
+            // Color resolved by USS: .m3-textfield--error .m3-textfield__helper { color: var(--m3-error) }
         }
 
         // ------------------------------------------------------------------ //
         //  Theme-aware color resolution                                        //
         // ------------------------------------------------------------------ //
 
-        private void OnFirstLayout(GeometryChangedEvent evt)
+        protected override void RefreshThemeColors()
         {
-            UnregisterCallback<GeometryChangedEvent>(OnFirstLayout);
-
-            var tm = ThemeManager.Instance;
-            if (tm != null)
-                tm.OnThemeChanged += _ => RefreshThemeColors();
-            RefreshThemeColors();
-        }
-
-        private void RefreshThemeColors()
-        {
-            var theme = ThemeManager.Instance?.ActiveTheme;
+            var theme = ThemeManager.ActiveTheme;
             if (theme == null) return;
 
-            _themePrimary          = theme.GetColor(ColorRole.Primary);
-            _themeOutline          = theme.GetColor(ColorRole.Outline);
-            _themeOnSurface        = theme.GetColor(ColorRole.OnSurface);
-            _themeOnSurfaceVariant = theme.GetColor(ColorRole.OnSurfaceVariant);
-            _themeSurfaceVariant   = theme.GetColor(ColorRole.SurfaceVariant);
-            _themeSurface          = theme.GetColor(ColorRole.Surface);
-            _themeError            = theme.GetColor(ColorRole.Error);
+            _themePrimary                 = theme.GetColor(ColorRole.Primary);
+            _themeOutline                 = theme.GetColor(ColorRole.Outline);
+            _themeSurfaceContainerHighest = theme.GetColor(ColorRole.SurfaceContainerHighest);
+            _themeSurface                 = theme.GetColor(ColorRole.Surface);
 
-            _input.style.color = new StyleColor(_themeOnSurface);
             ApplyVariant();
             UpdateHelperText();
             UpdateFloatingState();

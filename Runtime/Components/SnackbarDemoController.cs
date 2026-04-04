@@ -14,12 +14,10 @@ namespace mehmetsrl.UISystem.Components
             var doc  = GetComponent<UIDocument>();
             var root = doc.rootVisualElement;
 
-            ThemeManager.Instance?.RegisterPanel(doc);
+            ThemeManager.RegisterPanel(doc);
 
             // Set up snackbar manager root
-            var manager = M3SnackbarManager.Instance;
-            if (manager != null)
-                manager.SetRoot(root);
+            M3SnackbarManager.SetRoot(root);
 
             var refPanel = root.Q<VisualElement>("m3-reference");
             if (refPanel != null)
@@ -32,7 +30,7 @@ namespace mehmetsrl.UISystem.Components
 
             var switchBtn = root.Q<M3Button>("btn-switch-theme");
             if (switchBtn != null)
-                switchBtn.OnClick += () => ThemeManager.Instance?.ToggleLightDark();
+                switchBtn.OnClick += () => ThemeManager.ToggleLightDark();
 
             // Simple message
             var btnSimple = root.Q<M3Button>("btn-snack-simple");
@@ -73,23 +71,7 @@ namespace mehmetsrl.UISystem.Components
 
         private void ShowSnackbar(VisualElement root, string text, string actionText, System.Action onAction, int duration = 4000)
         {
-            if (M3SnackbarManager.Instance != null)
-            {
-                M3SnackbarManager.Instance.Show(text, actionText, onAction, duration);
-            }
-            else
-            {
-                // Fallback: show directly
-                var sb = new M3Snackbar
-                {
-                    Text       = text,
-                    ActionText = actionText ?? string.Empty,
-                    DurationMs = duration,
-                };
-                if (onAction != null)
-                    sb.OnAction += onAction;
-                sb.Show(root);
-            }
+            M3SnackbarManager.Show(text, actionText, onAction, duration);
         }
     }
 }
