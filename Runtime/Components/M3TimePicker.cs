@@ -113,7 +113,10 @@ namespace mehmetsrl.UISystem.Components
             _amBtn.RegisterCallback<ClickEvent>(_ =>
             {
                 if (_pendingTime.Hours >= 12)
-                    _pendingTime = _pendingTime.Subtract(TimeSpan.FromHours(12));
+                {
+                    int h = _pendingTime.Hours - 12;
+                    _pendingTime = new TimeSpan(h, _pendingTime.Minutes, _pendingTime.Seconds);
+                }
                 UpdateDisplay();
             });
 
@@ -122,7 +125,10 @@ namespace mehmetsrl.UISystem.Components
             _pmBtn.RegisterCallback<ClickEvent>(_ =>
             {
                 if (_pendingTime.Hours < 12)
-                    _pendingTime = _pendingTime.Add(TimeSpan.FromHours(12));
+                {
+                    int h = _pendingTime.Hours + 12;
+                    _pendingTime = new TimeSpan(h, _pendingTime.Minutes, _pendingTime.Seconds);
+                }
                 UpdateDisplay();
             });
 

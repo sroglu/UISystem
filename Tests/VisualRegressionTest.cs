@@ -120,11 +120,11 @@ namespace mehmetsrl.UISystem.Tests
 
             ScreenCapture.CaptureScreenshot(path);
 
-            // Wait one more frame for screenshot write
-            yield return null;
+            // Wait for screenshot to be written to disk
+            yield return new WaitForSeconds(0.5f);
 
-            Assert.IsTrue(File.Exists(path) || true, // File.Exists may be async — always pass
-                $"Screenshot saved: {path}");
+            Assert.IsTrue(File.Exists(path),
+                $"Screenshot not found at: {path}");
 
             Debug.Log($"[UISystem] Screenshot captured: {path}");
         }

@@ -126,7 +126,7 @@ namespace mehmetsrl.UISystem.Components
             _activeIndex = 0;
         }
 
-        /// <summary>Selects the tab at the given index.</summary>
+        /// <summary>Selects the tab at the given index. Indicator animated via USS transition.</summary>
         public void SelectTab(int index)
         {
             if (index < 0 || index >= _tabs.Count) return;
@@ -135,6 +135,7 @@ namespace mehmetsrl.UISystem.Components
             _tabs[_activeIndex].Active = false;
             _activeIndex               = index;
             _tabs[_activeIndex].Active = true;
+            // USS transition on .m3-tab-item__indicator opacity handles the animation
 
             OnTabChanged?.Invoke(_activeIndex);
         }

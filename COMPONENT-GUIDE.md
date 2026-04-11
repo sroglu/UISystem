@@ -1,6 +1,6 @@
 # UISystem Component Creation Guide
 
-**Version**: 1.0.0 | **Updated**: 2026-04-03 | **Feature**: 006-m3-uisystem-overhaul
+**Version**: 1.1.0 | **Updated**: 2026-04-11 | **Feature**: 006-m3-uisystem-overhaul
 
 This guide is the authoritative reference for creating or modifying M3 components in UISystem. All rules are constitution-level unless marked as recommendations.
 
@@ -184,8 +184,36 @@ namespace mehmetsrl.UISystem.Components
 - `StateLayer` property — access the attached controller
 - Automatic `ThemeManager.OnThemeChanged` subscription on `AttachToPanelEvent`
 - Automatic unsubscription on `DetachFromPanelEvent`
-- Calls `ApplyTheme()` when theme changes (after USS is applied)
+- Automatic `StateLayer.Detach()` on `DetachFromPanelEvent` and `StateLayer.Attach()` on re-attach
+- Calls `RefreshThemeColors()` when theme changes (after USS is applied)
 - Handles `Disabled` property toggling `.m3-disabled` class
+- **SDF Disabled Color Freeze** — automatically freezes all child `SDFRectElement.FillColorOverride` when disabled, preventing USS `:hover` pseudo-class from altering the disabled appearance
+
+### Disabled State: FreezeSDFColors
+
+When `Disabled = true`, M3ComponentBase calls `OnDisabledChanged(true)` which recursively traverses the component tree and sets every child `SDFRectElement.FillColorOverride` to its current `resolvedStyle.backgroundColor`. This "freezes" the rendered color — USS `:hover` or any other pseudo-class change cannot affect the Painter2D output.
+
+When `Disabled = false`, `FillColorOverride` is cleared (`null`) and USS resumes control.
+
+**Why this is needed:** SDFRectElement reads `resolvedStyle.backgroundColor` at paint time inside `OnGenerateVisualContent`. UI Toolkit applies `:hover` pseudo-class regardless of disabled state, `pickingMode`, or `SetEnabled(false)`. Without freezing, a disabled component's color changes on hover.
+
+**Override for custom disabled colors:** Subclass `OnDisabledChanged(bool)` to apply M3-specific disabled palette instead of freezing current colors:
+
+```csharp
+protected override void OnDisabledChanged(bool disabled)
+{
+    if (disabled)
+    {
+        _track.FillColorOverride = new Color(onSurface.r, onSurface.g, onSurface.b, 0.12f);
+        _thumb.FillColorOverride = themeSurface;
+    }
+    else
+    {
+        _track.FillColorOverride = null;
+        _thumb.FillColorOverride = null;
+    }
+}
+```
 
 ---
 
@@ -237,65 +265,98 @@ Does the icon exist in Material Symbols codepoints file?
 
 ## 6. Animation Guidelines
 
-### Decision Tree: USS Transition vs C# Scheduler
+### Decision Tree: USS Transition vs M3Animate vs C# Scheduler
 
 ```
-Is the animation a discrete property change (color, size, position, opacity)?
-├── YES → Use USS `transition` in component's .uss file
-└── NO — Is it a continuous expanding/contracting animation from a specific point?
-    ├── YES → Use C# IVisualElementScheduler (schedule.Execute + MarkDirtyRepaint)
-    └── NO → Use AnimationCurve + IVisualElementScheduler for custom easing
+Does the element use SDFRectElement (Painter2D rendering)?
+├── YES → SDFRectElement reads resolvedStyle at paint time.
+│         USS transitions may cause visual issues (e.g. :hover on disabled).
+│         Use M3Animate for color/geometry animation.
+└── NO — Is it a plain VisualElement?
+    ├── YES → Use USS `transition` in component's .uss file (preferred)
+    └── Is it a continuous expanding animation from a specific point?
+        ├── YES → Use C# IVisualElementScheduler (schedule.Execute + MarkDirtyRepaint)
+        └── NO → Use M3Animate.Float() for custom easing
 ```
+
+### SDFRectElement + USS Limitation
+
+**Critical**: `SDFRectElement.OnGenerateVisualContent` reads `resolvedStyle.backgroundColor` at paint time. USS `:hover` pseudo-class applies regardless of disabled state, `pickingMode`, or `SetEnabled(false)`. This means:
+
+- **USS transitions on SDFRectElement `background-color` are unreliable** — hover can corrupt disabled appearance
+- **Use `FillColorOverride` or `style.backgroundColor` (inline C#)** for SDFRectElement color control
+- **USS transitions work correctly** on plain `VisualElement` (e.g., tab indicator opacity)
+
+### M3Animate Utility (`Runtime/Core/M3Animate.cs`)
+
+Lightweight schedule-based animation utility for M3 components. Uses `IVisualElementScheduler` (~60fps), **not DOTween**.
+
+```csharp
+// Single property animation (200ms ease-out cubic)
+M3Animate.Float(owner, fromValue, toValue, 200f, currentValue =>
+{
+    _thumb.style.left = currentValue;
+});
+
+// Multi-property animation via normalized 0→1 progress
+M3Animate.Float(owner, 0f, 1f, 200f, t =>
+{
+    _thumb.style.left = Mathf.Lerp(curLeft, targetLeft, t);
+    _track.style.backgroundColor = Color.Lerp(curColor, targetColor, t);
+    _track.OutlineThickness = Mathf.Lerp(curOutline, targetOutline, t);
+});
+```
+
+**Easing**: Hardcoded ease-out cubic (`1 - (1-t)^3`). This is intentional — a single consistent easing curve across all M3 animations avoids per-component easing configuration overhead. The curve matches M3 "standard" motion.
+
+**When to use M3Animate vs USS transition:**
+
+| Scenario | Use |
+|----------|-----|
+| Plain VisualElement property change (opacity, position) | USS `transition` |
+| SDFRectElement color or geometry animation | `M3Animate.Float()` |
+| Ripple expansion, custom Painter2D animation | `IVisualElementScheduler` directly |
 
 ### USS Transition Animatable Properties (Unity 6.3)
 
-✅ **Confirmed working**: `background-color`, `color`, `opacity`, `left`, `top`, `width`, `height`, `font-size`, `translate`, `scale`
+✅ **Confirmed working on plain VisualElement**: `background-color`, `color`, `opacity`, `left`, `top`, `width`, `height`, `font-size`, `translate`, `scale`
 
 ❌ **Cannot transition**: CSS custom properties (`var(--m3-*)` values), computed layout properties, Painter2D content
 
+⚠️ **Unreliable on SDFRectElement**: `background-color` (read via `resolvedStyle` at paint time — `:hover` can override)
+
 ### Transition Duration Tokens
 
-**MANDATORY**: Always use `var(--m3-motion-*)` tokens, never hardcoded ms values.
+**MANDATORY for USS**: Always use `var(--m3-motion-*)` tokens, never hardcoded ms values.
 
 ```css
 /* ✅ CORRECT */
-transition: background-color var(--m3-motion-duration-short) ease-in-out;
+transition: opacity var(--m3-motion-duration-standard) ease-in-out;
 
 /* ❌ WRONG */
-transition: background-color 100ms ease-in-out;
+transition: opacity 200ms ease-in-out;
 ```
 
-| Token | Value | Use For |
-|-------|-------|---------|
-| `--m3-motion-duration-short` | 100ms | Checkbox, chip, radio, FAB quick feedback |
-| `--m3-motion-duration-float` | 150ms | TextField floating label font-size |
-| `--m3-motion-duration-standard` | 200ms | Toggle, navigation bar, most state changes |
-| `--m3-motion-duration-long` | 300ms | Complex animations, ripple, future use |
+**For M3Animate (C#)**: Hardcoded duration values are acceptable. M3Animate uses ms directly because C# cannot read USS custom property values at runtime.
 
-### C# Animation Pattern (when USS is insufficient)
+| Token / Duration | Value | Use For |
+|------------------|-------|---------|
+| `--m3-motion-duration-short` / `100f` | 100ms | Checkbox, chip, radio, press feedback |
+| `--m3-motion-duration-float` / `150f` | 150ms | TextField floating label |
+| `--m3-motion-duration-standard` / `200f` | 200ms | Toggle, navigation bar, most state changes |
+| `--m3-motion-duration-long` / `300f` | 300ms | Complex animations, ripple |
 
-```csharp
-// Use IVisualElementScheduler — NOT coroutines, NOT DOTween
-private IVisualElementScheduledItem _animTimer;
+### State Layer Hover Token
 
-private void StartAnimation()
-{
-    _elapsed = 0f;
-    _animTimer?.Pause();
-    _animTimer = schedule.Execute(Tick).Every(16).Until(() => _elapsed >= DurationMs);
-}
+For components without `StateLayerController` (e.g., `M3TabItem`), use the `--m3-state-hover` USS token for hover background:
 
-private void Tick(TimerState ts)
-{
-    _elapsed += ts.deltaTime;
-    float t = Mathf.Clamp01(_elapsed / DurationMs);
-    float eased = 1f - Mathf.Pow(1f - t, 3f); // ease-out-cubic
-
-    // Apply the animated value
-    _myProperty = Mathf.Lerp(_start, _end, eased);
-    MarkDirtyRepaint();
+```css
+.m3-tab-item:hover {
+    background-color: var(--m3-state-hover, rgba(28, 27, 31, 0.08));
 }
 ```
+
+This token is defined in both `light.uss` and `dark.uss` with theme-appropriate on-surface color at 8% opacity.
 
 ---
 
@@ -374,7 +435,8 @@ All exceptions to the mandatory rules must be documented here.
 | USS-Only Theming | `SDFRectElement.StateOverlayOpacity` | All interactive | SDF-clipped overlay — cannot be CSS property | 2026-04-03 |
 | USS-Only Theming | `SDFRectElement.TonalOverlayOpacity/Color` | Elevated components | GPU-rendered elevation tint layer | 2026-04-03 |
 | USS-Only Theming | `SDFRectElement.RippleCenter/Radius/Alpha` | All interactive | Per-frame expanding circle animation | 2026-04-03 |
-| USS-Only Theming | `SDFRectElement.FillColorOverride` | Card, Toggle | SDF fill rendered before CSS background-color | 2026-04-03 |
+| USS-Only Theming | `SDFRectElement.FillColorOverride` | Card, Toggle, all (disabled) | SDF fill rendered before CSS background-color; also used by `FreezeSDFColors` to lock disabled appearance against `:hover` | 2026-04-03 |
 | USS-Only Theming | `_floatingLabel.style.backgroundColor` | M3TextField | Notch effect requires reading runtime surface color | 2026-04-03 |
 | Material Symbols | Checkmark + Dash in M3Checkbox | M3Checkbox | Geometric shapes, not font icons | 2026-04-03 |
 | GPU Shader | Painter2D CPU shadow rendering | SDFRectElement | Per-element shader properties break UI Toolkit batching on mobile GPUs | 2026-04-03 |
+| USS Transition Durations | M3Animate uses hardcoded ms (e.g. `200f`) | M3Toggle, M3TextField | C# cannot read USS custom property values at runtime; durations documented in animation guidelines table | 2026-04-11 |

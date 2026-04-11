@@ -54,10 +54,13 @@ namespace mehmetsrl.UISystem.Core
             {
                 if (_disabled == value) return;
                 _disabled = value;
+                // Always apply disabled class to the component root for USS targeting
+                EnableInClassList(DisabledClass, _disabled);
+                // Also delegate to state layer (applies to target + blocks events)
                 if (_stateLayer != null)
                     _stateLayer.Disabled = _disabled;
-                else
-                    EnableInClassList(DisabledClass, _disabled);
+                // Freeze/unfreeze SDF fill colors to prevent :hover from affecting disabled appearance
+                OnDisabledChanged(_disabled);
             }
         }
 
@@ -75,12 +78,14 @@ namespace mehmetsrl.UISystem.Core
         private void OnAttachToPanel(AttachToPanelEvent evt)
         {
             ThemeManager.OnThemeChanged += OnThemeChanged;
+            _stateLayer?.Attach();
             RefreshThemeColors();
         }
 
         private void OnDetachFromPanel(DetachFromPanelEvent evt)
         {
             ThemeManager.OnThemeChanged -= OnThemeChanged;
+            _stateLayer?.Detach();
         }
 
         private void OnThemeChanged(mehmetsrl.UISystem.ThemeData _) => RefreshThemeColors();
@@ -117,6 +122,52 @@ namespace mehmetsrl.UISystem.Core
         /// ❌ WRONG use: set style.color, style.backgroundColor, etc.
         /// </summary>
         protected virtual void RefreshThemeColors() { }
+
+        // ------------------------------------------------------------------ //
+        //  Disabled SDF Color Management                                       //
+        // ------------------------------------------------------------------ //
+
+        /// <summary>
+        /// Called when <see cref="Disabled"/> changes. Default implementation freezes
+        /// all child <see cref="SDFRectElement"/> fill colors via FillColorOverride
+        /// to prevent USS :hover pseudo-class from altering the disabled appearance.
+        ///
+        /// Override in subclass to apply M3-specific disabled colors instead.
+        /// </summary>
+        protected virtual void OnDisabledChanged(bool disabled)
+        {
+            if (disabled)
+                FreezeSDFColors(this);
+            else
+                UnfreezeSDFColors(this);
+        }
+
+        /// <summary>
+        /// Freezes all child SDFRectElement fill colors at their current resolved value.
+        /// </summary>
+        protected static void FreezeSDFColors(VisualElement root)
+        {
+            if (root is SDFRectElement sdf && sdf.FillColorOverride == null)
+            {
+                var resolved = sdf.resolvedStyle.backgroundColor;
+                // Guard: don't freeze if color hasn't been resolved yet (e.g. before first paint)
+                if (resolved.a > 0f)
+                    sdf.FillColorOverride = resolved;
+            }
+            foreach (var child in root.Children())
+                FreezeSDFColors(child);
+        }
+
+        /// <summary>
+        /// Clears FillColorOverride on all child SDFRectElements, letting USS take over.
+        /// </summary>
+        protected static void UnfreezeSDFColors(VisualElement root)
+        {
+            if (root is SDFRectElement sdf)
+                sdf.FillColorOverride = null;
+            foreach (var child in root.Children())
+                UnfreezeSDFColors(child);
+        }
 
         // ------------------------------------------------------------------ //
         //  Helpers                                                             //

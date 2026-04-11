@@ -72,6 +72,7 @@ namespace mehmetsrl.UISystem.Components
         private bool  _showValueLabel = false;
         private bool  _dragging = false;
         private int   _pointerId = -1;
+        private float _dragStartValue;
 
         // ------------------------------------------------------------------ //
         //  Public API                                                          //
@@ -434,6 +435,7 @@ namespace mehmetsrl.UISystem.Components
             if (base.Disabled) return;
             _dragging   = true;
             _pointerId  = evt.pointerId;
+            _dragStartValue = _value;
             _trackWrap.CapturePointer(_pointerId);
             SetValueFromPointer(evt.localPosition.x);
 
@@ -468,6 +470,8 @@ namespace mehmetsrl.UISystem.Components
 
             if (localX.HasValue)
                 SetValueFromPointer(localX.Value);
+            else
+                Value = _dragStartValue; // Restore pre-drag value on cancel
 
             if (_showValueLabel)
                 _valueLabel.style.display = DisplayStyle.None;

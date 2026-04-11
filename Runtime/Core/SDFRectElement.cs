@@ -359,6 +359,8 @@ namespace mehmetsrl.UISystem.Core
         // ------------------------------------------------------------------ //
         private void DrawShadow(Painter2D p, Rect rect, float tl, float tr, float br, float bl)
         {
+            if (_shadowColor.a <= 0f) return;
+
             // Approximate Gaussian blur as N concentric transparent layers.
             // This is a rasterization-level approximation only — the Shader Graph
             // (WP-1, T014) provides true GPU SDF shadow when assigned.

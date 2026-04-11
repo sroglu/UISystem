@@ -34,7 +34,7 @@
 }
 
 .m3-tab-item:hover {
-    background-color: rgba(28, 27, 31, 0.08);
+    background-color: var(--m3-state-hover, rgba(28, 27, 31, 0.08));
 }
 
 /* ── Tab icon ── */
@@ -77,6 +77,13 @@
     height: 3px;
     border-top-left-radius: 3px;
     border-top-right-radius: 3px;
+    opacity: 0;
+    transition: opacity var(--m3-motion-duration-standard, 200ms) ease-in-out;
+}
+
+/* Indicator visible when tab is active */
+.m3-tab-item--active .m3-tab-item__indicator {
+    opacity: 1;
 }
 
 .m3-tabs--primary .m3-tab-item__indicator {

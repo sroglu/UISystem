@@ -84,7 +84,7 @@ namespace mehmetsrl.UISystem.Components
                 if (_active == value) return;
                 _active = value;
                 EnableInClassList(ActiveClass, _active);
-                _indicator.style.display = _active ? DisplayStyle.Flex : DisplayStyle.None;
+                // Opacity animated via USS transition on .m3-tab-item--active .m3-tab-item__indicator
             }
         }
 
@@ -129,7 +129,7 @@ namespace mehmetsrl.UISystem.Components
 
             _indicator = new VisualElement();
             _indicator.AddToClassList(IndicatorClass);
-            _indicator.style.display = DisplayStyle.None;
+            // Initial opacity=0 via USS; becomes 1 via .m3-tab-item--active transition
 
             Add(_icon);
             Add(_label);
@@ -137,5 +137,8 @@ namespace mehmetsrl.UISystem.Components
 
             RegisterCallback<ClickEvent>(_ => OnTabClicked?.Invoke(this));
         }
+
+        // Indicator opacity is now fully controlled by USS transitions
+        // via .m3-tab-item--active .m3-tab-item__indicator { opacity: 1; }
     }
 }

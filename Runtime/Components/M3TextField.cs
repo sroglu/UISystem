@@ -66,6 +66,8 @@ namespace mehmetsrl.UISystem.Components
         private string           _errorMsg    = string.Empty;
         private bool             _hasError    = false;
         private int              _maxLength   = -1;
+        private bool             _isFloating  = false;
+        private IVisualElementScheduledItem _labelAnim;
 
         // ------------------------------------------------------------------ //
         //  Public API                                                          //
@@ -269,7 +271,7 @@ namespace mehmetsrl.UISystem.Components
             _container.RegisterCallback<ClickEvent>(_ => _input.Focus());
 
             ApplyVariant();
-            UpdateFloatingState();
+            UpdateFloatingState(animate: false);
         }
 
         // ------------------------------------------------------------------ //
@@ -328,75 +330,100 @@ namespace mehmetsrl.UISystem.Components
             UpdateFloatingState();
         }
 
-        private void UpdateFloatingState()
+        private void UpdateFloatingState(bool animate = true)
         {
             bool shouldFloat = !string.IsNullOrEmpty(_input.value) || _container.ClassListContains(FocusedClass);
             EnableInClassList(FloatingClass, shouldFloat);
 
-            if (shouldFloat)
-            {
-                // M3 spec (populated/focused):
-                //   Filled:   8dp top → 16dp label (12sp) → 24dp input (16sp) → 8dp bottom = 56dp
-                //   Outlined: label straddles top border (notch), 16dp top → 24dp input → 16dp bottom
-                _floatingLabel.style.fontSize        = 12f;
-                _floatingLabel.style.height          = 16f;
-                _floatingLabel.style.unityTextAlign   = TextAnchor.UpperLeft;
-                _floatingLabel.style.display         = DisplayStyle.Flex;
-                _input.style.display                 = DisplayStyle.Flex;
-                _input.style.height                  = 24f;
-                _input.style.opacity                 = 1f;
+            // Cancel any running label animation
+            _labelAnim?.Pause();
+            _labelAnim = null;
 
-                if (_variant == TextFieldVariant.Outlined)
-                {
-                    // Label sits ON the top outline border — notch effect
-                    // Use absolute positioning for the label only in outlined variant
-                    _floatingLabel.style.position         = Position.Absolute;
-                    _floatingLabel.style.top              = -8f;
-                    _floatingLabel.style.left             = 16f;
-                    _floatingLabel.style.paddingLeft      = 4f;
-                    _floatingLabel.style.paddingRight     = 4f;
-                    _floatingLabel.style.backgroundColor  = new StyleColor(_themeSurface);
-                    // Container padding: label is absolute (out of flow), so pad top for input
-                    _container.style.paddingTop    = 16f;
-                    _container.style.paddingBottom = 16f;
-                    _container.style.justifyContent = Justify.Center;
-                }
-                else
-                {
-                    // Filled: flex column layout — 8dp top, label, input, 8dp bottom
-                    _floatingLabel.style.position         = Position.Relative;
-                    _floatingLabel.style.top              = StyleKeyword.Auto;
-                    _floatingLabel.style.left             = StyleKeyword.Auto;
-                    _floatingLabel.style.paddingLeft      = 0f;
-                    _floatingLabel.style.paddingRight     = 0f;
-                    _floatingLabel.style.backgroundColor  = StyleKeyword.None;
-                    _container.style.paddingTop    = 8f;
-                    _container.style.paddingBottom = 8f;
-                    _container.style.justifyContent = Justify.FlexStart;
-                }
-            }
+            bool stateChanged = shouldFloat != _isFloating;
+            _isFloating = shouldFloat;
+
+            if (shouldFloat)
+                ApplyFloatingLayout();
             else
+                ApplyRestingLayout();
+
+            // Animate fontSize transition if state changed and panel is live
+            if (stateChanged && animate && panel != null)
             {
-                // M3 resting: label 16sp bodyLarge, vertically centered in 56dp
-                // Input stays in DOM (for focus) but zero-height so it doesn't affect layout
-                _floatingLabel.style.fontSize        = 16f;
-                _floatingLabel.style.height          = 24f;
-                _floatingLabel.style.unityTextAlign   = TextAnchor.MiddleLeft;
-                _floatingLabel.style.position        = Position.Relative;
-                _floatingLabel.style.top             = StyleKeyword.Auto;
-                _floatingLabel.style.left            = StyleKeyword.Auto;
-                _floatingLabel.style.paddingLeft     = 0f;
-                _floatingLabel.style.paddingRight    = 0f;
-                _floatingLabel.style.backgroundColor = StyleKeyword.None;
-                _floatingLabel.style.display         = DisplayStyle.Flex;
-                // Input stays but zero-height & transparent so user can click to focus
-                _input.style.display  = DisplayStyle.Flex;
-                _input.style.height   = 0f;
-                _input.style.opacity  = 0f;
+                float fromSize = shouldFloat ? 16f : 12f;
+                float toSize   = shouldFloat ? 12f : 16f;
+                float fromInputOpacity = shouldFloat ? 0f : 1f;
+                float toInputOpacity   = shouldFloat ? 1f : 0f;
+                float fromInputHeight  = shouldFloat ? 0f : 24f;
+                float toInputHeight    = shouldFloat ? 24f : 0f;
+
+                _labelAnim = M3Animate.Float(this, 0f, 1f, 200f, t =>
+                {
+                    _floatingLabel.style.fontSize = Mathf.Lerp(fromSize, toSize, t);
+                    _input.style.opacity = Mathf.Lerp(fromInputOpacity, toInputOpacity, t);
+                    _input.style.height  = Mathf.Lerp(fromInputHeight, toInputHeight, t);
+                });
+            }
+        }
+
+        private void ApplyFloatingLayout()
+        {
+            // M3 spec (populated/focused):
+            //   Filled:   8dp top → 16dp label (12sp) → 24dp input (16sp) → 8dp bottom = 56dp
+            //   Outlined: label straddles top border (notch), 16dp top → 24dp input → 16dp bottom
+            _floatingLabel.style.fontSize        = 12f;
+            _floatingLabel.style.height          = 16f;
+            _floatingLabel.style.unityTextAlign   = TextAnchor.UpperLeft;
+            _floatingLabel.style.display         = DisplayStyle.Flex;
+            _input.style.display                 = DisplayStyle.Flex;
+            _input.style.height                  = 24f;
+            _input.style.opacity                 = 1f;
+
+            if (_variant == TextFieldVariant.Outlined)
+            {
+                _floatingLabel.style.position         = Position.Absolute;
+                _floatingLabel.style.top              = -8f;
+                _floatingLabel.style.left             = 16f;
+                _floatingLabel.style.paddingLeft      = 4f;
+                _floatingLabel.style.paddingRight     = 4f;
+                _floatingLabel.style.backgroundColor  = new StyleColor(_themeSurface);
                 _container.style.paddingTop    = 16f;
                 _container.style.paddingBottom = 16f;
                 _container.style.justifyContent = Justify.Center;
             }
+            else
+            {
+                _floatingLabel.style.position         = Position.Relative;
+                _floatingLabel.style.top              = StyleKeyword.Auto;
+                _floatingLabel.style.left             = StyleKeyword.Auto;
+                _floatingLabel.style.paddingLeft      = 0f;
+                _floatingLabel.style.paddingRight     = 0f;
+                _floatingLabel.style.backgroundColor  = StyleKeyword.None;
+                _container.style.paddingTop    = 8f;
+                _container.style.paddingBottom = 8f;
+                _container.style.justifyContent = Justify.FlexStart;
+            }
+        }
+
+        private void ApplyRestingLayout()
+        {
+            // M3 resting: label 16sp bodyLarge, vertically centered in 56dp
+            _floatingLabel.style.fontSize        = 16f;
+            _floatingLabel.style.height          = 24f;
+            _floatingLabel.style.unityTextAlign   = TextAnchor.MiddleLeft;
+            _floatingLabel.style.position        = Position.Relative;
+            _floatingLabel.style.top             = StyleKeyword.Auto;
+            _floatingLabel.style.left            = StyleKeyword.Auto;
+            _floatingLabel.style.paddingLeft     = 0f;
+            _floatingLabel.style.paddingRight    = 0f;
+            _floatingLabel.style.backgroundColor = StyleKeyword.None;
+            _floatingLabel.style.display         = DisplayStyle.Flex;
+            _input.style.display  = DisplayStyle.Flex;
+            _input.style.height   = 0f;
+            _input.style.opacity  = 0f;
+            _container.style.paddingTop    = 16f;
+            _container.style.paddingBottom = 16f;
+            _container.style.justifyContent = Justify.Center;
         }
 
         private void UpdateHelperText()
@@ -424,7 +451,7 @@ namespace mehmetsrl.UISystem.Components
 
             ApplyVariant();
             UpdateHelperText();
-            UpdateFloatingState();
+            UpdateFloatingState(animate: false);
         }
     }
 }

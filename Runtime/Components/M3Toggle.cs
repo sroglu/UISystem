@@ -81,6 +81,7 @@ namespace mehmetsrl.UISystem.Components
         // ------------------------------------------------------------------ //
         private bool _value;
         private bool _pressed;
+        private IVisualElementScheduledItem _anim;
 
         // ------------------------------------------------------------------ //
         //  Public API                                                          //
@@ -198,14 +199,14 @@ namespace mehmetsrl.UISystem.Components
             _track.RegisterCallback<PointerLeaveEvent>(OnPointerLeave);
 
             Add(_track);
-            ApplyVisualState();
+            ApplyVisualState(animate: false);
         }
 
         // ------------------------------------------------------------------ //
         //  Visual State                                                        //
         // ------------------------------------------------------------------ //
 
-        private void ApplyVisualState()
+        private void ApplyVisualState(bool animate = true)
         {
             if (_value)
             {
@@ -222,38 +223,68 @@ namespace mehmetsrl.UISystem.Components
                 _track.AddToClassList(UncheckedClass);
             }
 
-            // Track & thumb colors via inline styles (USS class toggle doesn't repaint during :hover)
-            _track.style.backgroundColor = _value ? _themePrimary : _themeSurfaceContainerHighest;
-            _thumb.style.backgroundColor = _value ? _themeOnPrimary : _themeOutline;
-
-            // Track outline: 2dp when off, 0 when on
-            _track.OutlineThickness = _value ? 0f : TrackOutline;
             _track.OutlineColor = _themeOutline;
 
-            // Thumb size
-            float thumbSize = _pressed ? ThumbSizePress : (_value ? ThumbSizeOn : ThumbSizeOff);
-            float thumbRadius = thumbSize / 2f;
-            _thumb.style.width  = thumbSize;
-            _thumb.style.height = thumbSize;
-            _thumb.CornerRadius = thumbRadius;
-            _thumb.style.borderTopLeftRadius     = thumbRadius;
-            _thumb.style.borderTopRightRadius    = thumbRadius;
-            _thumb.style.borderBottomLeftRadius  = thumbRadius;
-            _thumb.style.borderBottomRightRadius = thumbRadius;
-
-            // Thumb position
-            float thumbX = _value ? ThumbOnX : ThumbOffX;
-            _thumb.style.left = thumbX - thumbSize / 2f;
-            _thumb.style.top  = (TrackHeight - thumbSize) / 2f;
-
-            // Checkmark: visible only when on (M3 Switch spec)
-            _checkIcon.style.opacity = _value ? 1f : 0f;
-            _checkIcon.MarkDirtyRepaint();
-            _track.MarkDirtyRepaint();
-            _thumb.MarkDirtyRepaint();
+            // Target values
+            float targetSize    = _pressed ? ThumbSizePress : (_value ? ThumbSizeOn : ThumbSizeOff);
+            float targetX       = _value ? ThumbOnX : ThumbOffX;
+            float targetLeft    = targetX - targetSize / 2f;
+            var targetTrackCol  = _value ? _themePrimary : _themeSurfaceContainerHighest;
+            var targetThumbCol  = _value ? _themeOnPrimary : _themeOutline;
+            float targetCheck   = _value ? 1f : 0f;
+            float targetOutline = _value ? 0f : TrackOutline;
 
             // State layer overlay color: on-surface for both states (per M3 spec)
             StateLayer.OverlayColor = _themeOnSurface;
+
+            _anim?.Pause();
+            _anim = null;
+
+            if (!animate || panel == null)
+            {
+                ApplyThumbValues(targetSize, targetLeft, targetTrackCol, targetThumbCol, targetCheck, targetOutline);
+                return;
+            }
+
+            // Capture current values
+            float curSize    = _thumb.resolvedStyle.width > 0 ? _thumb.resolvedStyle.width : targetSize;
+            float curLeft    = _thumb.resolvedStyle.left;
+            var curTrackCol  = _track.resolvedStyle.backgroundColor;
+            var curThumbCol  = _thumb.resolvedStyle.backgroundColor;
+            float curCheck   = _checkIcon.resolvedStyle.opacity;
+            float curOutline = _track.OutlineThickness;
+
+            _anim = M3Animate.Float(this, 0f, 1f, 200f, t =>
+            {
+                ApplyThumbValues(
+                    Mathf.Lerp(curSize, targetSize, t),
+                    Mathf.Lerp(curLeft, targetLeft, t),
+                    Color.Lerp(curTrackCol, targetTrackCol, t),
+                    Color.Lerp(curThumbCol, targetThumbCol, t),
+                    Mathf.Lerp(curCheck, targetCheck, t),
+                    Mathf.Lerp(curOutline, targetOutline, t));
+            });
+        }
+
+        private void ApplyThumbValues(float size, float left, Color trackCol, Color thumbCol, float checkOpacity, float outlineThickness)
+        {
+            float r = size / 2f;
+            _track.style.backgroundColor = trackCol;
+            _thumb.style.backgroundColor = thumbCol;
+            _track.OutlineThickness = outlineThickness;
+            _thumb.style.width  = size;
+            _thumb.style.height = size;
+            _thumb.CornerRadius = r;
+            _thumb.style.borderTopLeftRadius     = r;
+            _thumb.style.borderTopRightRadius    = r;
+            _thumb.style.borderBottomLeftRadius  = r;
+            _thumb.style.borderBottomRightRadius = r;
+            _thumb.style.left = left;
+            _thumb.style.top  = (TrackHeight - size) / 2f;
+            _checkIcon.style.opacity = checkOpacity;
+            _checkIcon.MarkDirtyRepaint();
+            _track.MarkDirtyRepaint();
+            _thumb.MarkDirtyRepaint();
         }
 
         protected override void RefreshThemeColors()
@@ -267,7 +298,7 @@ namespace mehmetsrl.UISystem.Components
             _themeOnPrimary = theme.GetColor(Enums.ColorRole.OnPrimary);
             _themeSurfaceContainerHighest = theme.GetColor(Enums.ColorRole.SurfaceContainerHighest);
 
-            ApplyVisualState();
+            ApplyVisualState(animate: false);
             _checkIcon.MarkDirtyRepaint();
         }
 
@@ -306,6 +337,9 @@ namespace mehmetsrl.UISystem.Components
 
         private void ApplyThumbSize()
         {
+            _anim?.Pause();
+            _anim = null;
+
             float thumbSize = _pressed ? ThumbSizePress : (_value ? ThumbSizeOn : ThumbSizeOff);
             float thumbRadius = thumbSize / 2f;
             _thumb.style.width  = thumbSize;
