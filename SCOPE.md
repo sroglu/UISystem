@@ -431,45 +431,37 @@ Driven from C# via `generateVisualContent` or a dedicated `RippleElement` custom
 
 ---
 
-### WP-10: Editor Tooling — Component Builder Wizard
+### WP-10: Editor Tooling — Page Builder + Context Menu
 
-**Goal:** Editor tools for rapidly creating UISystem components and saving them.
+**Goal:** Editor tools for rapidly composing M3 pages and creating component templates.
 
-**Motivation:**
+**Status:** ✅ Implemented (007-page-builder)
 
-Even with UI Toolkit's cleaner workflow, creating a component from scratch requires: set up UXML structure, add correct USS classes, bind to theme, configure custom element properties. The wizard automates this.
+**Implemented (007-page-builder):**
 
-**Sub-tools:**
+**A) Page Builder Window:** `Game Tools > Page Builder` — categorized M3 component palette (35 components across 6 categories). Creates UXML pages with correct style references, inserts M3 components via XML manipulation, integrates with Unity's native UI Builder for visual editing. Auto-names components (`m3-button-1`), saves UI Builder state before modifications, Clear page support.
 
-**A) Component Creator Window:** Step-by-step wizard — type → style → config → create. Generates the correct VisualElement hierarchy, applies USS classes, binds theme.
+- `Editor/PageBuilder/PageBuilderWindow.cs`
+- `Editor/PageBuilder/ComponentRegistry.cs`
+- `Editor/PageBuilder/ComponentPalette.cs`
+- `Editor/PageBuilder/UxmlExporter.cs`
 
-**B) Layout Composer Window:** Preset-based layout creation using Flexbox configurations. Simplified compared to the uGUI version since Flexbox handles layout natively — the composer mainly pre-configures flex-direction, gap, padding, and child count.
+**Implemented (005-button):**
 
-- **Presets:** Button Row, Card List, Card Grid, Header + Content + Footer, Form Layout.
-
-**C) Context Menu Shortcuts:**
+**B) Context Menu Shortcuts:**
 
 ```
 Assets > Create > UISystem > Button (Filled)
 Assets > Create > UISystem > Card (Elevated)
-Assets > Create > UISystem > Layout > Button Row
 ...
 ```
 
-**D) Prefab-equivalent Saver:** Saves configured UXML templates as reusable assets.
+- `Editor/MenuItems/UISystemMenuItems.cs`
 
-**Deliverables:**
+**Deferred:**
 
-- `Editor/Wizard/ComponentCreatorWindow.cs`
-- `Editor/Wizard/LayoutComposerWindow.cs`
-- `Editor/Wizard/UISystemMenuItems.cs`
-- `Editor/Wizard/ComponentFactory.cs`
-
-**To Research / Clarify:**
-
-- [ ] UXML template instantiation: how to create and save UXML assets programmatically from editor code?
-- [ ] UI Builder integration: can UISystem components appear in UI Builder's Library panel as custom controls?
-- [ ] Undo support for created elements.
+- Layout presets (Button Row, Card Grid, Form Layout) — planned for P3
+- UXML import/round-trip editing — planned for P2
 
 ---
 

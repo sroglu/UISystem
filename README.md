@@ -12,7 +12,9 @@ Built on **UI Toolkit** (UXML + USS + C#) with **URP Shader Graph** for custom v
 
 **Theme System** — USS custom properties powered by ScriptableObject data. `ThemeData` SO holds a 27-role color palette, elevation presets, shape tokens, and motion presets. `ThemeManager` (static class, no MonoBehaviour required) applies `light.uss` or `dark.uss` stylesheets to managed panels at runtime — all `var(--m3-*)` variables resolve automatically. Light/dark toggle via `ThemeManager.ToggleLightDark()`.
 
-**M3ComponentBase** — Abstract base class for all M3 components. Handles `ThemeManager` subscription, `StateLayerController` attach/detach lifecycle, and disabled state management. Extend it to build new components with zero boilerplate. See `COMPONENT-GUIDE.md` for the mandatory USS-only theming rule.
+**M3ComponentBase** — Abstract base class for all M3 components. Handles `ThemeManager` subscription, `StateLayerController` attach/detach lifecycle, and disabled state management. Automatic `FreezeSDFColors` on disable prevents USS `:hover` from corrupting disabled appearance. Extend it to build new components with zero boilerplate. See `COMPONENT-GUIDE.md` for the mandatory USS-only theming rule.
+
+**M3Animate** — Lightweight schedule-based animation utility (`Runtime/Core/M3Animate.cs`). Provides `M3Animate.Float()` for smooth property transitions using ease-out cubic easing via `IVisualElementScheduler`. Used for SDFRectElement color/geometry animation where USS transitions are unreliable. No DOTween dependency.
 
 **Typography** — Full M3 15-role type scale (Display L/M/S, Headline L/M/S, Title L/M/S, Body L/M/S, Label L/M/S). Roles defined as USS classes (`m3-display-large`, `m3-body-medium`, etc.) using TextCore SDF fonts.
 
@@ -20,7 +22,7 @@ Built on **UI Toolkit** (UXML + USS + C#) with **URP Shader Graph** for custom v
 
 **Flexbox Layouts** — UI Toolkit's native Flexbox engine handles all layout. No manual layout groups needed — just USS flex properties.
 
-**Component Builder Wizard** — Editor tools for rapidly creating components and layouts, with context menu shortcuts.
+**Page Builder** — Editor tool for composing M3 pages visually. Open via `Game Tools > Page Builder`. Create new UXML pages with correct M3 style references, add components from a categorized palette, and edit in Unity's native UI Builder. Each added component gets a unique name for easy identification.
 
 **MaterialSymbols** — Static class (`mehmetsrl.UISystem.Utils.MaterialSymbols`) providing 60+ Unicode codepoint constants for Material Symbols font glyphs. Use with `.m3-icon` USS class — no Painter2D drawing needed for icons.
 
@@ -41,7 +43,7 @@ Built on **UI Toolkit** (UXML + USS + C#) with **URP Shader Graph** for custom v
 | M3Dialog | — | Modal notification and confirmation |
 | M3FAB | Small, Regular, Large, Extended | Prominent floating action |
 | M3NavigationBar | 3–5 items | Bottom navigation |
-| M3RadioButton / M3RadioGroup | — | Single-choice selection |
+| M3RadioButton / M3RadioGroup | — | Single-choice selection (label clickable per WCAG) |
 | M3Slider | Continuous, Stepped | Value range input |
 | M3Snackbar | Message, WithAction, WithClose | Temporary notification |
 | M3TextField | Filled, Outlined | Text input with floating label |
@@ -105,9 +107,9 @@ Call `ThemeManager.Initialize(lightTheme, darkTheme, panelSettings)` from your g
 
 `Assets > Create > UISystem > Button (Filled)` to generate a configured UXML template.
 
-**Method B — Component Builder Wizard:**
+**Method B — Page Builder:**
 
-Open via `Window > UISystem > Component Builder`. Select type, style, and configuration, then create.
+Open via `Game Tools > Page Builder`. Click "New Page" to create an M3-ready UXML, then click components in the palette to add them. The UXML opens in Unity's native UI Builder for visual editing.
 
 **Method C — UXML / C#:**
 
@@ -130,7 +132,7 @@ rootVisualElement.Add(button);
 ### 4. Switch Themes
 
 ```csharp
-ThemeManager.Instance.SetTheme(darkThemeData);
+ThemeManager.SetTheme(darkThemeData);
 ```
 
 All USS custom properties update automatically. Components restyle instantly.
@@ -140,8 +142,8 @@ All USS custom properties update automatically. Components restyle instantly.
 ```
 ┌─────────────────────────────────────────────┐
 │           EDITOR TOOLING                     │
-│   Component Builder Wizard,                  │
-│   Layout Preset Generator                    │
+│   Page Builder, Context Menu Shortcuts,      │
+│   Dynamic Color Generator                    │
 ├─────────────────────────────────────────────┤
 │              COMPONENTS                      │
 │   Button, Card, Toggle, TextField,           │
