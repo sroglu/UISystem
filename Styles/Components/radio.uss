@@ -12,9 +12,7 @@
 /* ============================================================ */
 
 .m3-radio {
-    width: 20px;
     min-height: 48px;
-    justify-content: center;
     align-items: center;
     overflow: visible;
 }
@@ -27,7 +25,7 @@
     width: 20px;
     height: 20px;
     background-color: rgba(0, 0, 0, 0);
-    transition: background-color 150ms ease-in-out;
+    transition: background-color var(--m3-motion-duration-float, 150ms) ease-in-out;
 }
 
 /* Unselected: transparent fill, outline via C# OutlineThickness */
@@ -48,5 +46,5 @@
     width: 10px;
     height: 10px;
     background-color: var(--m3-primary, rgb(103, 80, 164));
-    transition: opacity 150ms ease-in-out;
+    transition: opacity var(--m3-motion-duration-float, 150ms) ease-in-out;
 }

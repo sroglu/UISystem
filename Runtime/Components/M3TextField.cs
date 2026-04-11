@@ -300,6 +300,7 @@ namespace mehmetsrl.UISystem.Components
                 _container.OutlineThickness = 0f;
                 _container.FillColorOverride = _themeSurfaceContainerHighest;
                 _indicator.style.display = DisplayStyle.Flex;
+                _container.style.overflow = Overflow.Hidden;
             }
             else
             {
@@ -308,6 +309,8 @@ namespace mehmetsrl.UISystem.Components
                 _container.OutlineColor = _themeOutline;
                 _container.FillColorOverride = Color.clear;
                 _indicator.style.display = DisplayStyle.None;
+                // Visible overflow so floating label at top:-8 is not clipped
+                _container.style.overflow = Overflow.Visible;
             }
 
         }

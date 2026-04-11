@@ -314,14 +314,14 @@ namespace mehmetsrl.UISystem.Components
         {
             AddDemoLabel(area, "Radio Group");
             var row = Row();
-            var rbA = new M3RadioButton();
-            var rbB = new M3RadioButton();
-            var rbC = new M3RadioButton();
+            var rbA = new M3RadioButton { Text = "Option A" };
+            var rbB = new M3RadioButton { Text = "Option B" };
+            var rbC = new M3RadioButton { Text = "Option C" };
             var group = new M3RadioGroup(rbA, rbB, rbC);
-            AddLabeledControl(row, "Option A", rbA);
-            AddLabeledControl(row, "Option B", rbB);
-            AddLabeledControl(row, "Option C", rbC);
-            AddLabeledControl(row, "Disabled", new M3RadioButton { Disabled = true });
+            row.Add(rbA);
+            row.Add(rbB);
+            row.Add(rbC);
+            row.Add(new M3RadioButton { Text = "Disabled", Disabled = true });
             area.Add(row);
         }
 

@@ -38,6 +38,7 @@ namespace mehmetsrl.UISystem.Components
         private const string BaseClass         = "m3-radio";
         private const string OuterClass        = "m3-radio__outer";
         private const string InnerClass        = "m3-radio__inner";
+        private const string LabelClass        = "m3-radio__label";
         private const string SelectedClass     = "m3-radio--selected";
         private const string UnselectedClass   = "m3-radio--unselected";
 
@@ -61,11 +62,13 @@ namespace mehmetsrl.UISystem.Components
         private readonly SDFRectElement       _outer;
         private readonly SDFRectElement       _inner;
         private readonly RippleElement        _ripple;
+        private readonly Label               _label;
 
         // ------------------------------------------------------------------ //
         //  Backing fields                                                      //
         // ------------------------------------------------------------------ //
         private bool   _selected;
+        private string _text = string.Empty;
         private string _groupName;
 
         // ------------------------------------------------------------------ //
@@ -100,6 +103,19 @@ namespace mehmetsrl.UISystem.Components
             set => base.Disabled = value;
         }
 
+        /// <summary>Label text displayed next to the radio button. Clicking the label also selects the radio button (WCAG).</summary>
+        [UxmlAttribute("text")]
+        public string Text
+        {
+            get => _text;
+            set
+            {
+                _text = value ?? string.Empty;
+                _label.text = _text;
+                _label.style.display = string.IsNullOrEmpty(_text) ? DisplayStyle.None : DisplayStyle.Flex;
+            }
+        }
+
         /// <summary>Group name for mutual exclusion (optional; use M3RadioGroup for code-based grouping).</summary>
         [UxmlAttribute("group-name")]
         public string GroupName
@@ -115,9 +131,11 @@ namespace mehmetsrl.UISystem.Components
         public M3RadioButton()
         {
             AddToClassList(BaseClass);
-            style.alignSelf      = Align.FlexStart;
-            style.justifyContent = Justify.Center;
+            style.flexDirection  = FlexDirection.Row;
             style.alignItems     = Align.Center;
+            style.flexShrink     = 0;
+            style.marginRight    = 16f;
+            style.minHeight      = 48f; // M3 touch target
             pickingMode          = PickingMode.Position;
             focusable            = true;
 
@@ -128,8 +146,9 @@ namespace mehmetsrl.UISystem.Components
                 pickingMode  = PickingMode.Position,
             };
             _outer.AddToClassList(OuterClass);
-            _outer.style.width  = OuterSize;
-            _outer.style.height = OuterSize;
+            _outer.style.width      = OuterSize;
+            _outer.style.height     = OuterSize;
+            _outer.style.flexShrink = 0;
             _outer.style.borderTopLeftRadius     = OuterRadius;
             _outer.style.borderTopRightRadius    = OuterRadius;
             _outer.style.borderBottomLeftRadius  = OuterRadius;
@@ -158,13 +177,23 @@ namespace mehmetsrl.UISystem.Components
             _inner.style.display  = DisplayStyle.None;
             _outer.Add(_inner);
 
+            // --- Label (hidden by default, shown when Text is set) ---
+            _label = new Label();
+            _label.AddToClassList(LabelClass);
+            _label.AddToClassList("m3-body-large");
+            _label.style.display    = DisplayStyle.None;
+            _label.style.marginLeft = 8f;
+            _label.style.whiteSpace = WhiteSpace.NoWrap;
+            _label.pickingMode      = PickingMode.Position;
+
             // --- State layer ---
             InitStateLayer(_outer, _ripple);
 
-            // --- Events ---
-            _outer.RegisterCallback<ClickEvent>(OnOuterClicked);
+            // --- Events: click on entire component (outer + label) selects ---
+            RegisterCallback<ClickEvent>(OnClicked);
 
             Add(_outer);
+            Add(_label);
             ApplyVisualState();
         }
 
@@ -235,7 +264,7 @@ namespace mehmetsrl.UISystem.Components
         //  Event Handlers                                                      //
         // ------------------------------------------------------------------ //
 
-        private void OnOuterClicked(ClickEvent evt)
+        private void OnClicked(ClickEvent evt)
         {
             if (base.Disabled || _selected) return;
             GroupSelectionRequested?.Invoke(this);

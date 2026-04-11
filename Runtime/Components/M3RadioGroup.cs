@@ -44,6 +44,8 @@ namespace mehmetsrl.UISystem.Components
         /// <summary>Add a radio button to this group.</summary>
         public void Add(M3RadioButton button)
         {
+            if (button == null)
+                throw new ArgumentNullException(nameof(button));
             if (_buttons.Contains(button)) return;
             _buttons.Add(button);
             button.GroupSelectionRequested += OnButtonRequested;
@@ -66,6 +68,9 @@ namespace mehmetsrl.UISystem.Components
 
         private void SelectAt(int index)
         {
+            if (index < -1 || index >= _buttons.Count)
+                throw new ArgumentOutOfRangeException(nameof(index),
+                    $"Index {index} out of range. Group has {_buttons.Count} buttons.");
             if (index == _selectedIndex) return;
 
             // Deselect previous
@@ -75,7 +80,7 @@ namespace mehmetsrl.UISystem.Components
             _selectedIndex = index;
 
             // Select new
-            if (_selectedIndex >= 0 && _selectedIndex < _buttons.Count)
+            if (_selectedIndex >= 0)
                 _buttons[_selectedIndex].SelectSilently();
 
             OnSelectionChanged?.Invoke(_selectedIndex);

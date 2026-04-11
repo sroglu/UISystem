@@ -70,6 +70,7 @@ namespace mehmetsrl.UISystem.Components
         //  Children                                                             //
         // ------------------------------------------------------------------ //
         private readonly SDFRectElement  _root;
+        private readonly SDFRectElement  _clipArea;  // clips ripple + content to visual card area
         private readonly RippleElement   _ripple;
         private readonly VisualElement   _content;
 
@@ -150,15 +151,32 @@ namespace mehmetsrl.UISystem.Components
             _root.style.borderBottomLeftRadius  = CornerRadius;
             _root.style.borderBottomRightRadius = CornerRadius;
 
+            // --- clip area: constrains ripple + content to visual card bounds ---
+            // Elevated variant uses ShadowPadding which expands _root beyond the
+            // visible card. This inner container clips children to the actual card area.
+            _clipArea = new SDFRectElement
+            {
+                CornerRadius = CornerRadius,
+                pickingMode  = PickingMode.Position,
+            };
+            _clipArea.style.flexGrow  = 1;
+            _clipArea.style.flexDirection = FlexDirection.Column;
+            _clipArea.style.overflow  = Overflow.Hidden;
+            _clipArea.style.borderTopLeftRadius     = CornerRadius;
+            _clipArea.style.borderTopRightRadius    = CornerRadius;
+            _clipArea.style.borderBottomLeftRadius  = CornerRadius;
+            _clipArea.style.borderBottomRightRadius = CornerRadius;
+            _root.Add(_clipArea);
+
             // --- ripple (only activated when Clickable = true) ---
             _ripple = new RippleElement();
             _ripple.style.display = DisplayStyle.None;
-            _root.Add(_ripple);
+            _clipArea.Add(_ripple);
 
             // --- content area (contentContainer target) ---
             _content = new VisualElement();
             _content.AddToClassList(ContentClass);
-            _root.Add(_content);
+            _clipArea.Add(_content);
 
             // CRITICAL: use hierarchy.Add to bypass contentContainer override.
             // this.Add(_root) would route _root into _content → infinite recursion.
@@ -278,14 +296,15 @@ namespace mehmetsrl.UISystem.Components
             if (clickable && StateLayer == null)
             {
                 _ripple.style.display = DisplayStyle.Flex;
-                InitStateLayer(_root, _ripple);
+                // Attach to _clipArea (not _root) so hover/press area matches visible card
+                InitStateLayer(_clipArea, _ripple);
                 StateLayer.OverlayColor = _themeOnSurface;
-                _root.RegisterCallback<ClickEvent>(OnRootClicked);
+                _clipArea.RegisterCallback<ClickEvent>(OnRootClicked);
             }
             else if (!clickable && StateLayer != null)
             {
                 StateLayer.Detach();
-                _root.UnregisterCallback<ClickEvent>(OnRootClicked);
+                _clipArea.UnregisterCallback<ClickEvent>(OnRootClicked);
                 _ripple.style.display = DisplayStyle.None;
             }
         }
