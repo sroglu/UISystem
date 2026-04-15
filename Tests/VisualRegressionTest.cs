@@ -33,6 +33,19 @@ namespace mehmetsrl.UISystem.Tests
                 Directory.CreateDirectory(ScreenshotDir);
         }
 
+        [OneTimeTearDown]
+        public void OneTimeTearDown()
+        {
+            if (Directory.Exists(ScreenshotDir))
+            {
+                Directory.Delete(ScreenshotDir, true);
+
+                string metaFile = ScreenshotDir + ".meta";
+                if (File.Exists(metaFile))
+                    File.Delete(metaFile);
+            }
+        }
+
         // ------------------------------------------------------------------ //
         //  M3Button                                                            //
         // ------------------------------------------------------------------ //
