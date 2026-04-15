@@ -329,7 +329,7 @@ namespace mehmetsrl.UISystem.Editor.PageBuilder
         private static string GetStylesRelativePath(string outputFilePath)
         {
             string outputDir = Path.GetDirectoryName(Path.GetFullPath(outputFilePath)) ?? "";
-            string stylesDir = Path.GetFullPath("Assets/UISystem/Styles/");
+            string stylesDir = Path.GetFullPath(GetUISystemRoot() + "/Styles/");
 
             try
             {
@@ -341,6 +341,22 @@ namespace mehmetsrl.UISystem.Editor.PageBuilder
             {
                 return "../../Styles/";
             }
+        }
+
+        /// <summary>
+        /// Finds UISystem root by locating the asmdef via AssetDatabase.
+        /// Works regardless of where the submodule is mounted.
+        /// </summary>
+        private static string GetUISystemRoot()
+        {
+            var guids = UnityEditor.AssetDatabase.FindAssets("mehmetsrl.UISystem t:AssemblyDefinitionAsset");
+            if (guids.Length > 0)
+            {
+                var asmdefPath = UnityEditor.AssetDatabase.GUIDToAssetPath(guids[0]);
+                return Path.GetDirectoryName(asmdefPath)?.Replace('\\', '/');
+            }
+            // Fallback
+            return "Assets/AppFramework/UISystem";
         }
     }
 }

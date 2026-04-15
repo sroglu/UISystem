@@ -3,7 +3,8 @@
     "rootNamespace": "mehmetsrl.UISystem.Editor",
     "references": [
         "mehmetsrl.UISystem",
-        "Unity.TextMeshPro"
+        "Unity.TextMeshPro",
+        "mehmetsrl.EditorHelpers"
     ],
     "includePlatforms": [
         "Editor"

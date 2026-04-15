@@ -11,7 +11,7 @@ namespace mehmetsrl.UISystem.Editor
     public sealed class DynamicColorGeneratorWindow : EditorWindow
     {
         private Color  _seedColor   = new Color(0.404f, 0.314f, 0.643f); // #6750A4 M3 baseline
-        private string _outputPath  = "Assets/UISystem/Assets/Themes/";
+        private string _outputPath  = "Assets/GameSpecific/UISystem/Themes/";
         private string _baseName    = "Generated";
 
         [MenuItem("Assets/UISystem/Generate Theme from Seed Color", priority = 300)]

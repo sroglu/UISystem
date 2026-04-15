@@ -24,7 +24,7 @@ namespace mehmetsrl.UISystem.Tests
     [TestFixture]
     public class VisualRegressionTest
     {
-        private const string ScreenshotDir = "Assets/UISystem/Tests/screenshots";
+        private const string ScreenshotDir = "Assets/GameSpecific/UISystem/Tests/screenshots";
 
         [SetUp]
         public void SetUp()
