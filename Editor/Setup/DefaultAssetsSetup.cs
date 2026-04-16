@@ -7,13 +7,11 @@ using UnityEngine;
 namespace mehmetsrl.UISystem.Editor
 {
     /// <summary>
-    /// Creates DefaultLight, DefaultDark, and DefaultTypography assets if missing.
-    /// When EditorHelpers is present, GameSpecificAssetGuard handles creation via UISystemAssetProvider.
-    /// When EditorHelpers is absent, this class runs its own periodic check as fallback.
+    /// Factory methods for DefaultLight, DefaultDark, and DefaultTypography assets.
+    /// Auto-creation is driven by <see cref="UISystemAssetProvider"/> via GameSpecificAssetGuard
+    /// (Utilities.EditorHelpers). This class provides the initialization callbacks and a manual
+    /// "Assets/UISystem/Create Default Assets" MenuItem.
     /// </summary>
-#if !HAS_EDITOR_HELPERS
-    [InitializeOnLoad]
-#endif
     internal static class DefaultAssetsSetup
     {
         private const string GameSpecificRoot  = "Assets/GameSpecific";
@@ -21,24 +19,6 @@ namespace mehmetsrl.UISystem.Editor
         private const string LightPath         = ResourcesRoot + "/DefaultLight.asset";
         private const string DarkPath          = ResourcesRoot + "/DefaultDark.asset";
         private const string TypoPath          = ResourcesRoot + "/DefaultTypography.asset";
-
-#if !HAS_EDITOR_HELPERS
-        private const double CheckIntervalSeconds = 5.0;
-        private static double _nextCheckTime;
-
-        static DefaultAssetsSetup()
-        {
-            _nextCheckTime = EditorApplication.timeSinceStartup + 1.0;
-            EditorApplication.update += PeriodicCheck;
-        }
-
-        private static void PeriodicCheck()
-        {
-            if (EditorApplication.timeSinceStartup < _nextCheckTime) return;
-            _nextCheckTime = EditorApplication.timeSinceStartup + CheckIntervalSeconds;
-            CreateMissingAssets();
-        }
-#endif
 
         [MenuItem("Assets/UISystem/Create Default Assets")]
         public static void CreateMissingAssets()
@@ -87,7 +67,7 @@ namespace mehmetsrl.UISystem.Editor
         }
 
         // ------------------------------------------------------------------ //
-        //  Internal (fallback when no Guard)                                  //
+        //  MenuItem helpers                                                   //
         // ------------------------------------------------------------------ //
 
         private static bool EnsureThemeAssets()

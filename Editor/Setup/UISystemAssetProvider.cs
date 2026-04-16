@@ -1,6 +1,5 @@
-#if HAS_EDITOR_HELPERS
 using System.Collections.Generic;
-using mehmetsrl.EditorHelpers;
+using mehmetsrl.Utilities.EditorHelpers;
 using mehmetsrl.UISystem.Data;
 using mehmetsrl.UISystem.Enums;
 using UnityEngine;
@@ -39,4 +38,3 @@ namespace mehmetsrl.UISystem.Editor
         }
     }
 }
-#endif
