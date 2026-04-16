@@ -177,6 +177,19 @@ The primary design reference is [m3.material.io](https://m3.material.io). When i
 
 UISystem does not copy M3 pixel-for-pixel. The M3 site serves as a research-backed starting point: if you don't know what value to use, what size something should be, or how a state transition should feel, pull the answer from there.
 
+## Known Limitations / Gaps
+
+When planning a project on top of UISystem, be aware of these constraints:
+
+- **UI Toolkit only — no uGUI support.** All components render via UI Toolkit `VisualElement` + USS + `SDFRectElement`. uGUI `Canvas`-based projects cannot reuse these components.
+- **No drag-and-drop primitives built in.** There is no out-of-the-box drag source / drop target / drag preview API. For interactive UI that requires dragging (e.g., packing a backpack, arranging items on a canvas), implement custom `PointerDown/PointerMove/PointerUp` handlers on top of M3 components, or build a game-specific drag utility. Apple-style mobile-friendly touch drag gestures are NOT provided.
+- **`AnimationSystem` (DOTween-based) does NOT work with `VisualElement`.** For UI Toolkit element animation, use USS `transition` properties for simple state changes, or `IVisualElementScheduler` (`M3Animate.Float()` is the built-in helper) for schedule-based tweens. Do not attempt to plug in DOTween — `VisualElement` is not a `Transform`.
+- **Flexbox-based layout — no list virtualization.** `M3List` / `M3ListItem` render all items into the visual tree. For very long lists (100+ items), consider Unity's `ListView` primitive or custom virtualization — UISystem does not wrap these.
+- **Text uses TextCore SDF fonts only.** No TextMeshPro integration. If your project requires custom TMP fonts, you must wrap them for UI Toolkit separately.
+- **`ThemeManager` is a static class.** Theming is global — there is no per-panel theme override API built in. For multi-theme apps (e.g., kids vs. adult modes in the same process), implement your own theme scope.
+- **No built-in `LocalizedString` binding to labels.** UI Toolkit text fields (`Label.text`) do not auto-bind to `Localization` module keys. Call `Localization.GetLocalizedText(key)` in C# and assign `Label.text` manually (or write a custom binding helper).
+- **Dynamic color generation is Editor-time only.** `Generate Theme from Seed Color` creates `ThemeData` assets at author time. Runtime color palette switching (e.g., user picks a seed color in-app) is not supported out-of-the-box.
+
 ## Scope and Roadmap
 
 For detailed work packages, technical decisions, and development order, see [SCOPE.md](SCOPE.md).
