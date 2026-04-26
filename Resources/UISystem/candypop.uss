@@ -156,4 +156,33 @@
     --m3-motion-duration-float:    120ms;   /* M3: 150ms */
     --m3-motion-duration-standard: 180ms;   /* M3: 200ms */
     --m3-motion-duration-long:     350ms;   /* M3: 300ms — bouncier complex */
+
+    /* ------------------------------------------------------------------ */
+    /*  Theme Structure Tokens — Candy/Bubble                              */
+    /*  Bevel widths, glossy shine geometry, and shape radii.              */
+    /*  COLORS are NOT defined here — see candy-palette.uss in consumers.  */
+    /*  Flat themes set widths/alphas to 0 to disappear bevel + shine.     */
+    /* ------------------------------------------------------------------ */
+
+    /* Bevel border widths (per-side colors set by consumer) */
+    --theme-bevel-width:           5px;     /* default beveled element */
+    --theme-bevel-width-thick:     6px;     /* large surfaces (game tiles) */
+    --theme-bevel-width-medium:    4px;     /* sections, pills */
+    --theme-bevel-width-thin:      3px;     /* small badges, thumbnails */
+
+    /* Glossy shine overlay (absolute-positioned VisualElement at top of element) */
+    --theme-shine-alpha:           0.25;    /* white overlay opacity */
+    --theme-shine-height-pct:      38%;     /* height as percent of parent */
+    --theme-shine-radius-top:      22px;    /* upper corner radius */
+    --theme-shine-radius-bottom:   50%;     /* lower curve (creates arc shape) */
+    --theme-shine-inset:           12px;    /* horizontal inset from parent edge */
+
+    /* Shape radii — puffier than M3 baseline for candy feel */
+    --theme-tile-radius:           40px;    /* game tiles */
+    --theme-card-radius:           28px;    /* general candy cards */
+    --theme-section-radius:        28px;    /* settings sections */
+    --theme-modal-radius:          36px;    /* parent gate, dialogs */
+    --theme-bubble-radius:         9999px;  /* circles, pill buttons */
+    --theme-collection-bar-radius: 32px;    /* bottom-attached tray */
+    --theme-thumbnail-radius:      20px;    /* photos, stickers, badges */
 }

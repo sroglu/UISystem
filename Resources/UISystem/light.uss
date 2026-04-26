@@ -144,4 +144,32 @@
     --m3-inverse-surface:            rgb(49, 48, 51);       /* #313033 */
     --m3-inverse-on-surface:         rgb(244, 239, 244);    /* #F4EFF4 */
     --m3-inverse-primary:            rgb(208, 188, 255);    /* #D0BCFF */
+
+    /* ------------------------------------------------------------------ */
+    /*  Theme Structure Tokens — Flat (M3 baseline)                        */
+    /*  Same names as candypop.uss but with bevel/shine effectively off    */
+    /*  so consumers using var(--theme-*) render flat in this theme.       */
+    /* ------------------------------------------------------------------ */
+
+    /* Bevel border widths — 0 hides per-side bevel borders */
+    --theme-bevel-width:           0px;
+    --theme-bevel-width-thick:     0px;
+    --theme-bevel-width-medium:    0px;
+    --theme-bevel-width-thin:      0px;
+
+    /* Glossy shine overlay — 0 alpha hides the shine VisualElement */
+    --theme-shine-alpha:           0;
+    --theme-shine-height-pct:      0%;
+    --theme-shine-radius-top:      0;
+    --theme-shine-radius-bottom:   0;
+    --theme-shine-inset:           0;
+
+    /* Shape radii — M3 baseline */
+    --theme-tile-radius:           16px;
+    --theme-card-radius:           12px;
+    --theme-section-radius:        12px;
+    --theme-modal-radius:          24px;
+    --theme-bubble-radius:         9999px;
+    --theme-collection-bar-radius: 16px;
+    --theme-thumbnail-radius:      8px;
 }
